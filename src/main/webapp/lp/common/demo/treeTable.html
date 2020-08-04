@@ -1,0 +1,153 @@
+#@common()
+#define css()
+#end
+#define main()
+<div class="content-box">
+    <div  class="layui-btn-container" >
+        <button class="layui-btn" demo-type="treeTable">treeTable</button>
+        <button class="layui-btn layui-btn-normal" demo-type="tableList">tableList</button>
+        <button class="layui-btn layui-btn-warm" demo-type="inputTags">inputTags</button>
+        <button class="layui-btn layui-btn-danger" demo-type="formSelects">formSelects</button>
+        <button class="layui-btn" demo-type="cascader">cascader</button>
+        <button class="layui-btn" demo-type="tableSelect">tableSelect</button>
+    </div>
+    <div  class="layui-btn-container" >
+        <a class="layui-btn layui-btn-primary"  onclick="window.location.reload();">刷新</a>
+        <a class="layui-btn layui-btn-primary"  onclick="reload()">reload</a>
+        <a class="layui-btn layui-btn-primary"  onclick="query()">query</a>
+        <a class="layui-btn layui-btn-primary"  onclick="add(null);">新增一行</a>
+        <a class="layui-btn layui-btn-primary"  onclick="openorclose();">隐藏或打开香蕉节点</a>
+        <a class="layui-btn layui-btn-primary"  onclick="getCheckData();">获取选中行数据</a>
+        <a class="layui-btn layui-btn-primary"  onclick="getCheckLength();">获取选中数目</a>
+        <a class="layui-btn layui-btn-primary"  onclick="print();">打印缓存对象</a>
+        <a class="layui-btn layui-btn-primary"  onclick="openAll();">展开或折叠全部</a>
+    </div>
+    <div style="height: 700px;">
+        <table class="layui-hidden" id="treeTable" lay-filter="treeTable"></table>
+    </div>
+</div>
+<script>
+    var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null;
+    layui.use(['jquery','treeGrid','layer'], function(){
+        var $=layui.jquery;
+        treeGrid = layui.treeGrid;//很重要
+        layer=layui.layer;
+        ptable=treeGrid.render({
+            id:tableId
+            ,elem: '#'+tableId
+            ,idField:'id'
+            ,url:'lp/common/demoJson/treeData.json'   //假数据
+            ,cellMinWidth: 100
+            ,treeId:'id'//树形id字段名称
+            ,treeUpId:'pId'//树形父id字段名称
+            ,treeShowName:'name'//以树形式显示的字段
+            ,iconOpen:true//是否显示图标【默认显示】
+            ,cols: [[
+                {type:'numbers'}
+                ,{type:'checkbox'}
+                ,{width:100,title: '操作', align:'center'/*toolbar: '#barDemo'*/
+                    ,templet: function(d){
+                        var html='';
+                        var addBtn='<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">添加</a>';
+                        var delBtn='<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+                        return addBtn+delBtn;
+                    }
+                }
+                ,{field:'name', width:300, title: '水果名称',edit:'text'}
+                ,{field:'id',width:100, title: 'id'}
+                ,{field:'pId', title: 'pid'}
+            ]]
+            ,page:{
+                limit:20
+            }
+        });
+
+        treeGrid.on('tool('+tableId+')',function (obj) {
+            if(obj.event === 'del'){//删除行
+                del(obj);
+            }else if(obj.event==="add"){//添加行
+                add(obj);
+            }
+        });
+    });
+
+    function del(obj) {
+        layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除，此操作不能撤销！", {icon: 3, title:'提示'},
+            function(index){//确定回调
+                obj.del();
+                layer.close(index);
+            },function (index) {//取消回调
+                layer.close(index);
+            }
+        );
+    }
+
+
+    var i=1000000;
+    //添加
+    function add(pObj) {
+        var pdata=pObj?pObj.data:null;
+        console.log(pdata);
+        var param={};
+        param.name='水果'+Math.random();
+        param.id=++i;
+        param.pId=pdata?pdata.id:null;
+        treeGrid.addRow(tableId,pdata?pdata[treeGrid.config.indexName]+1:0,param);
+    }
+
+    function print() {
+        console.log(treeGrid.cache[tableId]);
+        var loadIndex=layer.msg("对象已打印，按F12，在控制台查看！", {
+            time:3000
+            ,offset: 'auto'//顶部
+            ,shade: 0
+        });
+    }
+
+    function openorclose() {
+        var map=treeGrid.getDataMap(tableId);
+        var o= map['102'];
+        treeGrid.treeNodeOpen(o,!o[treeGrid.config.cols.isOpen]);
+    }
+
+
+    function openAll() {
+        var treedata=treeGrid.getDataTreeList(tableId);
+        treeGrid.treeOpenAll(tableId,!treedata[0][treeGrid.config.cols.isOpen]);
+    }
+
+    function getCheckData() {
+        var checkStatus = treeGrid.checkStatus(tableId)
+            ,data = checkStatus.data;
+        layer.alert(JSON.stringify(data));
+    }
+    function getCheckLength() {
+        var checkStatus = treeGrid.checkStatus(tableId)
+            ,data = checkStatus.data;
+        layer.msg('选中了：'+ data.length + ' 个');
+    }
+
+    function reload() {
+        treeGrid.reload(tableId,{
+            page:{
+                curr:1
+            }
+        });
+    }
+    function query() {
+        treeGrid.query(tableId,{
+            where:{
+                name:'sdfsdfsdf'
+            }
+        });
+    }
+    $(function(){
+        $('button[demo-type]').click(function(){
+            windowNewLocation('common/extendDemo?demoType='+$(this).attr('demo-type'));
+        });
+    });
+
+</script>
+
+
+#end

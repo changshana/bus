@@ -1,0 +1,254 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container">
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加
+                </button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md7 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        #if(aba020==null)
+                        <label class="layui-form-label">车辆类型</label>
+                        <div class="layui-input-block">
+                            <select lay-filter="aba060" id="aba060">
+                                <option value="">全部</option>
+                                #for(aba060:aba060List)
+                                <option value="#(aba060.aaa004)">#(aba060.aaa005)</option>
+                                #end
+                            </select>
+                        </div>
+                        #end
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否有效</label>
+                        <div class="layui-input-block">
+                            <select lay-filter="aaa996" id="aaa996">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    #if(aba020)
+    <table class="layui-table" lay-data="{cellMinWidth:60,url:'bus/getBusBa03List?aba020=#(aba020)',limit:20,limits:[20,30,50,100], page:true,dataId:'route_id', id:'busBa03List',height: 'full-100'}" lay-filter="busBa03List">
+    #else
+    <table class="layui-table" lay-data="{cellMinWidth:60,url:'bus/getBusBa03List',limit:20,limits:[20,30,50,100],page:true,dataId:'route_id', id:'busBa03List',height: 'full-100'}" lay-filter="busBa03List">
+    #end
+        <thead>
+            <tr>
+                <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+                <th lay-data="{field:'start'}">起点</th>
+                <th lay-data="{field:'end'}">终点</th>
+                <th lay-data="{field:'type'}">车辆类型</th>
+                <th lay-data="{field:'aca052',templet: '#aca052Switch',width:150}">学生是否可预约</th>
+                <th lay-data="{field:'aca053',templet: '#aca053Switch',width:150}">教师是否可预约</th>
+                <th lay-data="{field:'scheduleDetail',templet:'#scheduleDetail'}">时刻表</th>
+                <th lay-data="{field:'aaa996',templet: '#aaa996Switch',width:100}">状态</th>
+                <!--<th lay-data="{field:'aaa999'}">备注</th>-->
+                <!--<th lay-data="{field:'aaa995'}">排序</th>-->
+                <!--<th lay-data="{templet: '#pass',width:150}">途径点</th>-->
+                <!--<th lay-data="{templet: '#sel',width:150}">查看路线图</th>-->
+            </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="scheduleDetail">
+        <a class="layui-btn layui-btn-xs" lay-event="scheduleDetail"><i class="layui-icon">&#xe60e;</i>查看时刻表</a>
+    </script>
+    <script type="text/html" id="sel">
+        <a class="layui-btn layui-btn-xs" lay-event="sel"><i class="layui-icon">&#xe615;
+        </i>查看路线图 </a>
+    </script>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon"></i></a>
+    </script>
+    <script type="text/html" id="aaa996Switch">
+        <input type="checkbox" name="{{d.aba030}}" lay-skin="switch" value="{{d.aaa996}}" {{d.aaa996==1?'checked':''}} lay-filter="changeAaa996Status">
+    </script>
+    <script type="text/html" id="aca052Switch">
+        <input type="checkbox" name="{{d.aba030}}" lay-skin="switch" disabled value="{{d.aca052}}" {{d.aca052==1?'checked':''}} lay-filter="changeAca052Status">
+    </script>
+    <script type="text/html" id="aca053Switch">
+        <input type="checkbox" name="{{d.aba030}}" lay-skin="switch" disabled value="{{d.aca053}}" {{d.aca053==1?'checked':''}} lay-filter="changeAca053Status">
+    </script>
+
+    <script type="text/html" id="location">
+        #[[
+        <span>{{d.aba007 }}  >  {{d.aba008}}</span>
+        ]]#
+    </script>
+    <script type="text/html" id="pass">
+        #[[
+        <a class="layui-btn layui-btn-xs" lay-event="toPass">途径点({{d.count}})</a>
+        ]]#
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use('table', function () {
+        var table = layui.table, form = layui.form;
+        fnGetCode("bus_aa99","aaa996","全部",1,"aaa996");
+        table.on('tool(busBa03List)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'toEdit') {
+                windowNewLocation("bus/addOrUpdateBusBa03?aba030=" + data.aba030);
+            }
+            if(obj.event==='scheduleDetail'){
+                layer.open({
+                    type:2
+                    ,title: '查看时刻表【'+data.start+'——'+data.end+'】'
+                    ,area: ['96%', '95%']
+                    ,shade: 0.5
+                    ,maxmin: true
+                    ,content: "bus/busBa05?aba030="+ data.aba030
+                    ,btn: ['关闭']
+                    ,yes: function () {
+                        layer.closeAll();
+                    }
+                    ,zIndex: layer.zIndex //重点1
+                    ,success: function (layero) {
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+            if (obj.event === 'toPass') {
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,
+                    title: '途径点'
+                    ,
+                    area: ['80%', '90%']
+                    ,
+                    shade: 0.5
+                    ,
+                    maxmin: true
+                    ,
+                    content: "bus/busBa01?aba030=" + data.aba030
+                    ,
+                    btn: ['关闭']
+                    ,
+                    yes: function () {
+                        layer.closeAll();
+                    }
+                    ,
+                    zIndex: layer.zIndex //重点1
+                    ,
+                    success: function (layero) {
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+            if (obj.event === 'sel') {
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,
+                    title: '路线预览'
+                    , offset: 'lb',
+                    area: ['30%', '100%']
+                    ,
+                    shade: 0.5
+                    ,
+                    maxmin: true
+                    ,
+                    content: "bus/busMapPreview?aba030=" + data.aba030
+                    ,
+                    btn: ['关闭']
+                    ,
+                    yes: function () {
+                        layer.closeAll();
+                    }
+                    ,
+                    zIndex: layer.zIndex //重点1
+                    ,
+                    success: function (layero) {
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+        });
+
+        var $ = layui.$, active = {
+            refresh: function () {
+                //todo 清空条件
+                table.reload('busBa03List', {
+                    where: {
+                        search_param: ''
+                    }
+                });
+            },
+            reloadData: function () {
+                table.reload('busBa03List', {
+                    where: {
+                        aba020: $("#aba060").val()
+                        ,aaa996:$("#aaa996").val()
+                    }
+                });
+            },
+            add: function () {
+                windowNewLocation("bus/addOrUpdateBusBa03");
+            },
+            delete: function () {
+                var checkStatus = table.checkStatus('busBa03List'), data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.alert('请先选中您要删除的数据行！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aba030 + ',';
+                    });
+                    layer.confirm("确定要删除你所选中的所有数据行？", function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'bus/deleteBusBa03',
+                            data: {"ids": ids},
+                            success: function (res) {
+                                layer.close(index);
+                                table.reload('busBa03List', {
+                                    where: {
+                                        search_param: $('#search_param').val()
+                                    }
+                                });
+                            }, error: function () {
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        form.on('select(aba060)', function (data) {
+            reloadTable();
+        });
+        form.on('select(aaa996)', function (data) {
+            reloadTable();
+        });
+        table.reload('busBa03List', {
+            where: {
+                aaa996:1
+            }
+        });
+        function reloadTable(){
+            table.reload('busBa03List', {
+                where: {
+                    aba020: $("#aba060").val()
+                    ,aaa996:$("#aaa996").val()
+                }
+            });
+        }
+        form.on('switch(changeAaa996Status)', function (obj) {
+            change996(obj, 'bus_ba03', 'aba030', this.name);
+        });
+    });
+</script>
+#end

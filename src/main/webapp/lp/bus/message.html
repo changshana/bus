@@ -1,0 +1,114 @@
+#@busCommon()
+#define css()
+<style>
+    body{
+        padding: 0;
+        margin: 0;
+        background-color: #F7F6FB;
+        width: 100%;
+        height: auto;
+    }
+    .main{
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .item{
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        margin-bottom: .5rem;
+        background-color: #ffffff;
+        padding-bottom: .5rem;
+    }
+    .head{
+        width: 100%;
+        height: 2rem;
+    }
+    .head>span{
+        display: inline-block;
+        height: 2rem;
+        line-height: 2rem;
+        color: #333333;
+        float: left;
+    }
+    .title{
+        width: 70%;
+        font-size: .6rem;
+        text-indent: .4rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .creator{
+        width: 25%;
+        background: url(lp/static/images/bus/creator.png) no-repeat;
+        background-size: .6rem;
+        background-position: .3rem center;
+        text-indent: 1rem;
+        font-size: .45rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .content{
+        font-size: .4rem;
+        line-height:0.6rem;
+        height: 1.2rem;
+        padding:0 .4rem;
+        margin-bottom: .5rem;
+        color: #BFBFBF;
+    }
+    .time{
+         text-indent: .4rem;
+         color: #BFBFBF;
+         font-size: .4rem;
+     }
+    .clear{
+        clear: both;
+    }
+</style>
+#end
+#define main()
+<ul class="main">
+
+</ul>
+<script type="text/javascript" src="#(session.basePath)lp/static/js/bus/auto_size.js"></script>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form,$=layui.$,layer=layui.layer;
+        loadData();
+        function loadData(){
+            var loadIndex=layer.load(2,{shade:.6});
+            $.ajax({
+                type:'post'
+                ,url:'bus/getMessageList'
+                ,data:{}
+                ,success:function(res){
+                    $(".main").empty();
+                    layer.close(loadIndex);
+                    $.each(res,function(i,item){
+                        var li='<li class="item" aca010="'+item.messageId+'">' +
+                            '        <p class="head">' +
+                            '            <span class="title">'+item.messageTitle+'</span>' +
+                            '            <span class="creator">'+item.publisher+'</span>' +
+                            '        </p>' +
+                            '        <div class="content">'+item.describe+'</div>' +
+                            '        <p class="time">'+item.publishTime+'</p>' +
+                            '    </li>';
+                        $(".main").append(li);
+                    });
+                    $(".main li").unbind();
+                    $(".main li").click(function(){
+                        windowNewLocation("bus/toMessageDetail?aca010="+$(this).attr('aca010'))
+                    });
+                }
+                ,error:function(){
+
+                }
+            });
+        }
+    });
+</script>
+#end

@@ -1,0 +1,105 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md5 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off" onfocus="fnShowSearchTip('请输入【标题】或【内容】进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table" lay-data="{cellMinWidth:60,url:'bus/getBusCa01List', page:true,dataId:'aca010', id:'busCa01List',height: 'full-120'}" lay-filter="busCa01List">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+            <th lay-data="{field:'aaa999'}">消息标题</th>
+            <th lay-data="{field:'aca011'}">消息内容</th>
+            <th lay-data="{field:'aca012'}">消息时间</th>
+            <th lay-data="{field:'aaa996_desc'}">有效性</th>
+            <th lay-data="{field:'aaa997'}">创建用户</th>
+            <th lay-data="{field:'aaa998'}">创建时间</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon layui-icon-edit"></i></a>
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form;
+        table.on('tool(busCa01List)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'toEdit'){
+                windowNewLocation("bus/addOrUpdateBusCa01?aca010="+data.aca010);
+            }
+        });
+        var $ = layui.$, active = {
+            refresh:function(){
+                window.location.reload();
+            },
+            reloadData:function(){
+                table.reload('busCa01List', {
+                    where: {
+                        search_param:$('#search_param').val()
+                    }
+                });
+            },
+            add:function(){
+                windowNewLocation("bus/addOrUpdateBusCa01");
+            },
+            delete:function(){
+                var checkStatus = table.checkStatus('busCa01List'),data = checkStatus.data;
+                if(data.length==0){
+                    layer.alert('请先选中您要删除的数据行！');
+                }else{
+                    var ids="";
+                    $.each(data,function(i,obj){
+                        ids+=obj.aca010+',';
+                    });
+                    layer.confirm("确定要删除你所选中的所有数据行？", function(index){
+                        $.ajax({
+                            type:'post',
+                            url:'bus/deleteBusCa01',
+                            data:{"ids":ids},
+                            success:function (res) {
+                                layer.close(index);
+                                table.reload('busCa01List', {
+                                    where: {
+                                        search_param:$('#search_param').val()
+                                    }
+                                });
+                            },error:function(){
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+#end

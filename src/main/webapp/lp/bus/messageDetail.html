@@ -1,0 +1,75 @@
+#@busCommon()
+#define css()
+<style>
+    body{
+        padding: 0;
+        margin: 0;
+        background-color: #F7F6FB;
+        width: 100%;
+        height: auto;
+    }
+    .main{
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: #ffffff;
+        margin-top: 0.6rem;
+    }
+    .title{
+        padding: .4rem;
+        font-size: .6rem;
+        line-height: 0.9rem;
+        height: auto;
+        margin: .3rem 0;
+        color: #333333;
+    }
+    .info{
+        padding: 0 .4rem;
+        height: 1.2rem;
+    }
+    .info>span{
+        display: inline-block;
+        height: 1.2rem;
+        color: #999;
+        line-height: 1.2rem;
+    }
+    .creator{
+        background: url(lp/static/images/bus/creator.png) no-repeat;
+        background-size: .6rem;
+        background-position:0 center;
+        text-indent: .7rem;
+        font-size: .45rem;
+        float: left;
+    }
+    .time{
+        text-indent: .4rem;
+        font-size: .4rem;
+        float: right;
+    }
+    .content{
+        padding: .3rem;
+        height: auto;
+        line-height: 0.9rem;
+        color: #333333;
+        font-size: .5rem;
+        text-indent: 1rem;
+    }
+</style>
+#end
+#define main()
+<div class="main">
+    <div class="title">#(ca01.messageTitle)</div>
+    <p class="info">
+        <span class="creator">#(ca01.publisher)</span>
+        <span class="time">#(ca01.publishTime)</span>
+    </p>
+    <div class="content">#(ca01.content)</div>
+</div>
+<script type="text/javascript" src="#(session.basePath)lp/static/js/bus/auto_size.js"></script>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form,$=layui.$;
+    });
+</script>
+#end

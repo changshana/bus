@@ -1,0 +1,208 @@
+#@sysCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refreshRole"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="addRole"><i class="layui-icon">&#xe608;</i> 添加</button>
+                <button class="layui-btn" data-type="deleteRole"><i class="layui-icon">&#xe640;</i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md5">
+            <form name="cond-form" class="layui-form" action="">
+                #if(session.plat_id=="0")
+                <div class="layui-form-item">
+                    <label class="layui-form-label system_con_label">角色所属平台</label>
+                    <div class="layui-input-block">
+                        <select name="plat_id" value="#(plat_id==null?session.plat_id:plat_id)" id="plat_id" lay-verify="required" lay-filter="plat_select">
+                            <option value="#(session.login_plat.plat_id)">#(session.login_plat.plat_name)</option>
+                            #for(plat:session.other_plat)
+                            <option value="#(plat.plat_id)">#(plat.plat_name)</option>
+                            #end
+                        </select>
+                    </div>
+                </div>
+                #end
+                #if(session.plat_id!="0")
+                <input type="hidden" id="plat_id" value="#(session.plat_id)">
+                #end
+            </form>
+        </div>
+        <div class="layui-col-md2" style="float: right">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off" onfocus="fnShowSearchTip('请输入角色名进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table  class="layui-table" lay-data="{url:'system/getRoleList?plat_id=#(plat_id)', page:true, dataId:'role_id',id:'roleList',height: 'full-100'}" lay-filter="roleTable">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+            <th lay-data="{field:'role_name'}">角色名称</th>
+            <th lay-data="{field:'keycode',width:200}">标识码</th>
+            <th lay-data="{field:'remark',width:300}">备注</th>
+            <th lay-data="{field:'move',toolbar: '#moveBar',width:150}">移动</th>
+            <!--<th lay-data="{toolbar: '#childBar'}">子项</th>-->
+            <th lay-data="{toolbar: '#userBar', event: 'toUser',width:120}">用户</th>
+            <th lay-data="{toolbar: '#permBar', event: 'rolePerm',width:120}">权限</th>
+            <th lay-data="{toolbar: '#handCodeBar', event: 'roleOrg',width:120}">机构</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon">&#xe642;</i></a>
+    </script>
+    <script type="text/html" id="moveBar">
+        <a class="layui-btn layui-btn-xs {{d.LAY_TABLE_INDEX==0?'layui-btn-disabled':''}}" lay-event="moveOn" move-id="{{d.role_id}}" order-position="{{d.order_code}}">上移</a>
+        <a class="layui-btn layui-btn-xs layui-bg-red"  lay-event="moveDown">下移</a>
+    </script>
+    <!--<script type="text/html" id="childBar">
+        <a class="layui-btn layui-btn-xs">添加子项</a>
+        <a class="layui-btn layui-btn-xs">仅显示该组</a>
+    </script>-->
+    <script type="text/html" id="permBar">
+        <a class="layui-btn layui-btn-xs" >权限配置({{d.perm_count}})</a>
+    </script>
+    <script type="text/html" id="userBar">
+        <a class="layui-btn layui-btn-xs">用户({{d.user_count}})</a>
+    </script>
+    <script type="text/html" id="handCodeBar">
+        <a class="layui-btn layui-btn-xs">所属机构</a>
+    </script>
+</div>
+
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form;
+        var $ = layui.$;
+        form.on('select(plat_select)', function(data){
+            windowNewLocation('system/systemRole?plat_id='+$('#plat_id').val());
+        });
+        //监听工具条
+        table.on('tool(roleTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'toEdit'){ //编辑
+                windowNewLocation("system/addRole?role_id="+data.role_id+"&plat_id="+data.plat_id);
+            }
+            if(obj.event === 'toUser'){ //用户
+                windowNewLocation("system/allotRoleUser?role_id="+data.role_id+"&plat_id="+data.plat_id);
+            }
+            if(obj.event === 'rolePerm'){
+                windowNewLocation("system/allotUserPerm?role_id="+data.role_id+"&plat_id="+data.plat_id);
+            }
+            if(obj.event === 'roleOrg'){
+                windowNewLocation("system/allotRoleOrg?role_id="+data.role_id);
+            }
+            if(obj.event === 'moveOn') {
+                var prevIndex = $(obj.tr.selector).prev('tr').index();
+                if (prevIndex == -1) {return;}
+                var thisRoleId=data.role_id;
+                var thisRoleOrderCode=data.order_code;
+                var otherRoleId=$(obj.tr.selector).prev('tr').find('td[data-field="move"] a:eq(0)').attr('move-id');
+                var otherRoleOrderCode=$(obj.tr.selector).prev('tr').find('td[data-field="move"] a:eq(0)').attr('order-position');
+                moveRole(thisRoleId,thisRoleOrderCode,otherRoleId,otherRoleOrderCode,reloadRoleTableBySearch);
+            }
+            if(obj.event === 'moveDown'){
+                var nextIndex=$(obj.tr.selector).next('tr').index();
+                if(nextIndex==-1){return;}
+                var thisRoleId=data.role_id;
+                var thisRoleOrderCode=data.order_code;
+                var otherRoleId=$(obj.tr.selector).next('tr').find('td[data-field="move"] a:eq(0)').attr('move-id');
+                var otherRoleOrderCode=$(obj.tr.selector).next('tr').find('td[data-field="move"] a:eq(0)').attr('order-position');
+                moveRole(thisRoleId,thisRoleOrderCode,otherRoleId,otherRoleOrderCode,reloadRoleTableBySearch);
+            }
+
+        });
+        function moveRole(r1,c1,r2,c2,fn){
+            $.ajax({
+                type:'post',
+                url:'system/moveRole',
+                data:{'r1':r1,'c1':c1,'r2':r2,'c2':c2},
+                success:function(res){
+                    fn();
+                }
+            });
+        }
+
+        function reloadRoleTableBySearch(){
+            reloadTableBySearch(table,'roleList',$('#search_param').val())
+        }
+
+        var active = {
+            addRole:function(){
+                windowNewLocation("system/addRole?plat_id="+$('#plat_id').val());
+            },
+            deleteRole: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('roleList'),data = checkStatus.data;
+                if(data.length==0){
+                    layer.alert('请先选中您要删除的数据行！');
+                }else{
+                    //拼接ID
+                    var role_ids="";
+                    $.each(data,function(i,obj){
+                        role_ids+=obj.role_id+',';
+                    });
+                    var tip_msg='确定要删除您所选中的数据吗？';
+                    $.ajax({
+                        type:'post',
+                        url:'system/checkRoleHasUser',
+                        data:{"role_ids":role_ids},
+                        success:function (res) {
+                            if(res){
+                                layer.confirm(tip_msg, function(index){
+                                    $.ajax({
+                                        type:'post',
+                                        url:'system/deleteRole',
+                                        data:{"role_ids":role_ids},
+                                        success:function (res) {
+                                            reloadRoleTableBySearch();
+                                            layer.close(index);
+                                        },error:function(err){
+                                            timeOut(err);
+                                        }
+                                    });
+                                });
+                            }else{
+                                layer.alert("你所选中的角色包含有效用户，如要删除请先前往用户管理删除所属该角色的有效用户，谢谢!");
+                            }
+                        }
+                    });
+
+                }
+            }
+            ,refreshRole: function(){ //刷新
+                $('#search_param').val('');
+                reloadRoleTableBySearch();
+
+            }
+            ,reloadData:function(){
+                reloadRoleTableBySearch();
+            }
+
+        };
+
+        $(function(){
+            $('a[lay-event="moveDown"]:last').addClass('layui-btn-disabled').removeClass('layui-bg-red');
+            $('#plat_id').val($('#plat_id').attr('value'));
+            form.render('select');
+        });
+
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+
+    });
+
+
+
+</script>
+
+#end

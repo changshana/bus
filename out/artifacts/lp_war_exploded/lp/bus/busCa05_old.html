@@ -1,0 +1,471 @@
+#@busCommon()
+#define css()
+<style>
+    body{
+        background-color: #F5F6FA;
+    }
+    .content-box{
+        font-size: 16px;
+    }
+    .item-left{
+        float: left;
+        width: 23%;
+        height: 105%;
+        margin-top:1%;
+        margin-left:1%;
+        background-color: #FFFFFF;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-radius: 5px;
+        border: 1px solid #ECEDEF;
+    }
+    .title{
+        width: 90%;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        margin: 5px auto;
+        color: #333;
+    }
+    .title1{
+        width: 96%;
+        height: 40px;
+        line-height: 40px;
+        font-size: 18px;
+        margin: 5px auto;
+        color: #333;
+    }
+    .rout-list{
+        width: 90%;
+        margin: 10px auto;
+        height: auto;
+        border-bottom: 1px solid #E6E9EE;
+    }
+    .rout-list .rout{
+        width: 100%;
+        height: 80px;
+        line-height: 80px;
+        margin: 20px auto;
+        text-align: center;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        background-color: #F7F7F7;
+        border: 1px solid #E5E5E5;
+        color: #333;
+
+    }
+    .checked{
+        background-color: #379C94!important;
+        border: 1px solid #379C94!important;
+        color: #ffffff!important;
+    }
+    .date-panel{
+        width: 90%;
+        height: auto;
+        margin: 20px auto;
+        text-align: center;
+    }
+    .item-right{
+        width: 75%;
+        margin-top: 1%;
+        margin-left: 5px;
+        float: left;
+        height: 105%;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        border: 1px solid #ECEDEF;
+    }
+    .schedule-list{
+        width: 100%;
+        height: 65%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .schedule{
+        width: 98%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .schedule-title{
+        font-size: 18px;
+        height: 60px;
+        line-height: 60px;
+        text-indent: 2em;
+        width: 100%;
+        background-color: #ECEDEF;
+    }
+    .bus{
+        float: left;
+        width: 30.5%;
+        margin: 1%;
+        height: auto;
+        border: 1px solid #ECEDEF;
+    }
+    .number{
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        background-color: #CCE6E3;
+        color: #333333;
+        font-size: 24px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .bus-info{
+        width: 100%;
+        background-color: #F0F9F8;
+    }
+    .info-title{
+        display: inline-block;
+        width: 45%;
+        height:50px;
+        line-height: 50px;
+        margin-left: 5%;
+        font-size: 16px;
+        text-align: left;
+        border-radius: 20px;
+    }
+    .info-value{
+        display: inline-block;
+        width: 42%;
+        height:50px;
+        line-height: 50px;
+        font-size: 16px;
+        text-align: right;
+    }
+    .btnEdit{
+        border-radius: 3px;
+        border: 1px solid #379C94;
+        background-color: #379C94;
+        color: #fff;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+    .btnDelete{
+        border-radius: 3px;
+        border: 1px solid #379C94;
+        color: #333;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar
+    {
+        width: 5px;  /*滚动条宽度*/
+        height: 16px;  /*滚动条高度*/
+    }
+
+    /*定义滚动条轨道 内阴影+圆角*/
+    ::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;  /*滚动条的背景区域的圆角*/
+        background-color: #FFFFFF;/*滚动条的背景颜色*/
+    }
+
+    /*定义滑块 内阴影+圆角*/
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;  /*滚动条的圆角*/
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #D1D4D9;  /*滚动条的背景颜色*/
+    }
+    .clear{
+        clear: both;
+    }
+    .time-container{
+        width: 100%;
+        height: auto;
+        border-bottom: 5px solid #F5F6FA;
+    }
+    .time-list{
+        width: 98%;
+        height: auto;
+        margin: 8px auto;
+    }
+    .time{
+        width: auto;
+        padding: 0 50px;
+        margin: 10px 1%;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 5px;
+        background: url("lp/static/images/bus/circle-dot.png")no-repeat;
+        background-position-y: center;
+        background-position-x:10%;
+        background-size: 16px;
+        font-size: 24px;
+        display: inline-block;
+        border: 1px solid #379C96;
+        letter-spacing: 3px;
+        cursor: pointer;
+    }
+    .time-checked{
+        background: url("lp/static/images/bus/circle-dot-white.png")no-repeat;
+        background-position-y: center;
+        background-position-x:10%;
+        background-size: 16px;
+        background-color: #379C96;
+        color: #ffffff;
+    }
+    .layui-form-switch{
+        margin-top: 0px!important;
+    }
+    body .layui-laydate .layui-this {
+        background-color: #269CF4!important;
+        color: #fff!important;
+        border-radius: 50%;
+    }
+    .btn-add{
+        background-color: #379C94;
+        color: #ffffff;
+        border: 3px solid #229c91;
+        height: 35px;
+        text-align: center;
+        letter-spacing: 2px;
+        font-size: 14px;
+        padding: 0 10px;
+        border-radius: 3px;
+        margin-left: 50px;
+        cursor: pointer;
+    }
+    body .mylayer{ border-radius: 5px;}
+    body .mylayer .layui-layer-title{background:#F0F3F8; color:#333; border: none; border-radius: 5px 5px 0 0; font-size: 16px;height: 60px;line-height: 60px;}
+    body .mylayer .layui-layer-btn{
+        padding: 10px 0;
+        text-align: center;
+        background-color: #F0F3F8;
+    }
+    body .mylayer .layui-layer-btn a{
+        width: 45%;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        background-color: #379C94;
+        color: #FFFDFE;
+        font-size: 16px;
+        border-radius: 3px;
+        border: 1px solid #379C94;
+        display: inline-block;
+        padding: 0;
+    }
+    .not-audit{
+        background-color: #ffffff;
+        color: #333;
+    }
+    .no-item{
+        width: 50%;
+        height: auto;
+        margin: 50px auto;
+        text-align: center;
+        font-size: 24px;
+    }
+    .no-item img{
+        width: 60%;
+    }
+    .no-item p{
+        margin-top: 10px;
+        letter-spacing: 5px;
+    }
+</style>
+#end
+#define main()
+<div class="content-box">
+    <div class="item-left">
+        <p class="title">请选择路线</p>
+        <ul class="rout-list">
+            #for(ba03:ba03List)
+            <li class="rout" aba030="#(ba03.aba030)">#(ba03.start)-----#(ba03.end)</li>
+            #end
+        </ul>
+        <div class="date-panel" id="datePanel">
+
+        </div>
+    </div>
+    <div class="item-right">
+        <div class="time-container">
+            <p class="title1">发车时间表</p>
+            <ul class="time-list">
+
+            </ul>
+        </div>
+        <div class="schedule-list">
+            <p class="title1">班车列表<button class="btn-add">添加班车</button></p>
+            <ul class="schedule">
+
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var aba055=new Date().toLocaleDateString().replace(/\//g,'-'),layer;
+    layui.use(['table', 'laydate', 'form'], function () {
+        var $=layui.$,laydate=layui.laydate,form=layui.form;
+        layer=layui.layer;
+        $(".rout-list .rout").click(function(){
+            $(".rout-list .rout").removeClass("checked");
+            $(this).addClass("checked");
+            generateTimeList($(this).attr('aba030'),aba055);
+        });
+        $(".btn-add").click(function(){
+            openDetailLayer($(".time-list .time-checked").attr('aba050'));
+        });
+        $(".rout-list .rout").eq(0).click();
+        laydate.render({
+            elem: '#datePanel'
+            ,position: 'static'
+            ,showBottom: false
+            ,done: function(value, date, endDate){
+                aba055=value;
+                generateTimeList($('.rout-list .checked').attr('aba030'),aba055);
+            }
+        });
+        /*生成时间列表*/
+        function generateTimeList(aba030,date){
+            $.ajax({
+                url:'bus/getBa050ListByAba030'
+                ,data:{'date':date,'aba030':aba030}
+                ,type:'post'
+                ,success:function(res){
+                    $(".time-list").empty();
+                    $.each(res,function(i,item){
+                        $(".time-list").append('<li aba050="'+item.aba050+'" class="time">'+item.aba051+'</li>');
+                    });
+                    $(".time-list .time").click(function(){
+                        var aba050=$(this).attr("aba050");
+                        $(".time-list .time").removeClass("time-checked");
+                        $(this).addClass("time-checked");
+                        $("#aba050").val(aba050);
+                        generateCa05List(date,aba050);
+                    });
+                    if($(".time-list li").length>0){
+                        $(".time-list li").eq(0).click();
+                    }
+                }
+            });
+        }
+        /*生成班次列表*/
+        function generateCa05List(date,aba050){
+            $(".schedule").empty();
+            let loadIndex=layer.load(2,{shade:.5});
+            $.ajax({
+                url:'bus/getCa05ListByAba050'
+                ,data:{'date':date,'aba050':aba050}
+                ,type:'post'
+                ,success:function(res){
+                    layer.msg("数据加载完毕，一共加载数据"+res.length+"条");
+                    $.each(res,function(i,item){
+                        var li='<li class="bus">';
+                        li+='<p class="number" aca050="'+item.aca050+'">'+item.number+'</p>';
+                        li+='<p class="bus-info">' +
+                            '   <span class="info-title">司机</span>' +
+                            '   <span class="info-value">'+item.driver+'</span>' +
+                            '</p>';
+                        li+='<p class="bus-info">' +
+                            '   <span class="info-title">座位类型</span>' +
+                            '   <span class="info-value">'+item.aaa007+'座</span>' +
+                            '</p>';
+                        li+='<p class="bus-info">' +
+                            '     <span class="info-title">学生预约</span>' +
+                            '     <span class="info-value layui-form">' +
+                            '         <input type="checkbox" disabled lay-skin="switch" value="'+item.aca052+'"'+(item.aca052==1?' checked':'')+' lay-filter="aca052Item">' +
+                            '      </span>' +
+                            '</p>';
+                        li+='<p class="bus-info">' +
+                            '     <span class="info-title">教师预约</span>' +
+                            '     <span class="info-value layui-form">' +
+                            '         <input type="checkbox" disabled lay-skin="switch" value="'+item.aca053+'"'+(item.aca053==1?' checked':'')+' lay-filter="aca053Item">' +
+                            '      </span>' +
+                            '</p>';
+                        li+='<p class="bus-info">' +
+                            '     <span class="info-title btnEdit" onclick="updateDetail('+item.aca050+')">编辑</span>' +
+                            '     <span class="info-value btnDelete" onclick="deleteAca050('+item.aca050+')">删除</span>' +
+                            '</p>';
+                        li+="</li>";
+                        $(".schedule").append(li);
+                    });
+                    layer.close(loadIndex);
+                    $(".schedule").append('<div class="clear"></div>');
+                    form.render();
+                    if($(".schedule li").length==0){
+                        $(".schedule").append("<div class='no-item'><img src='lp/static/images/bus/null.png'/><p>暂无班车</p></div>")
+                    }
+                    $(".bus .number").mouseenter(function(){
+                        layer.tips("点击查看选座详情",$(this),{tips:1});
+                    });
+                    $(".bus .number").mouseleave(function(){
+                        layer.closeAll("tips");
+                    });
+                    $(".bus .number").click(function(){
+                        layer.open({
+                            title:'查看车次详情'
+                            ,type:2
+                            ,content:'bus/toSeatChooseInfo?aca050='+$(this).attr("aca050")+"&date="+aba055
+                            ,shade:.3
+                            ,area:['98%','98%']
+                            ,end:function(){
+                                generateCa05List(aba055,$(".time-list .time-checked").attr('aba050'));
+                            }
+                        });
+                    });
+                }
+            });
+        }
+        /*新增班次*/
+        function openDetailLayer(aba050){
+            layer.open({
+                type:2
+                ,title:'新增班次'
+                ,area:["600px","600px"]
+                ,skin:'mylayer'
+                ,end:function(){
+                    generateCa05List(aba055,aba050);
+                }
+                ,content:'bus/addOrUpdateBusCa05?busCa05.aba050='+aba050+'&busCa05.aca051='+aba055
+            });
+        }
+    });
+    /*编辑班次*/
+    function updateDetail(aca050){
+        layer.open({
+            type:2
+            ,title:'编辑信息'
+            ,area:["600px","600px"]
+            ,skin:'mylayer'
+            ,end:function(){
+                generateCa05List(aba055,$(".time-list .time-checked").attr('aba050'));
+            }
+            ,content:'bus/addOrUpdateBusCa05?busCa05.aca050='+aca050
+        });
+    }
+    /*删除班次*/
+    function deleteAca050(aca050){
+        layer.confirm("确实要删除嘛？",function(index) {
+            $.ajax({
+                type: 'post'
+                , url: 'bus/deleteAca050'
+                , data: {'aca050': aca050}
+                , success: function (res) {
+                    layer.close(index);
+                    if (res.flag == true) {
+                        layer.msg(res.msg);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                    $(".time-list .time-checked").click();
+                }
+                , error: function (res) {
+                    layer.msg("服务器出错了，稍后再试！");
+                }
+            });
+        });
+    }
+</script>
+#end

@@ -1,0 +1,218 @@
+#@sysCommon()
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>用户信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="system/addUserSave" method="post">
+    <input type="hidden" name="sysUser.user_id" id="user_id" value="#(sysUser==null?'':sysUser.user_id)"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysUser.login_name"  value="#(sysUser==null?'':sysUser.login_name)"  lay-verify="required" placeholder="请输入登录名" autocomplete="off" class="layui-input" onblur="fnCheckName(this)">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysUser.password" id="password" value="#(sysUser==null?'':sysUser.password)" required lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            <a class="layui-btn layui-btn-xs" onclick="fnSetPassword()">
+                <i class="layui-icon layui-icon-refresh"></i>随机生成
+            </a>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysUser.user_name" value="#(sysUser==null?'':sysUser.user_name)" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysUser.mobile" value="#(sysUser==null?'':sysUser.mobile)" lay-verify="aphone" placeholder="请输入联系电话" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">QQ</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysUser.qq" value="#(sysUser==null?'':sysUser.qq)"  placeholder="请输入QQ" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用状态</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="sysUser.status" lay-skin="switch"  value="1"  #((sysUser==null||sysUser.status==1)?'checked':'')>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-form-item layui-col-md4">
+            <label class="layui-form-label">所属机构</label>
+            <i class="required_flag">*</i>
+            <input type="hidden" name="sysUser.site_id" value="#(sysUser==null?'':sysUser.site_id)" id="site_id">
+            <div class="layui-input-block">
+                <select xm-select="selectTree">
+                    <option value="">选择用户所属机构</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属平台</label>
+        <input type="hidden" name="sysUser.plat_ids" id="plat_ids" value="#(sysUser==null?'':sysUser.plat_ids)">
+        <div class="layui-input-block">
+            #if(session.plat_id=="0")
+                #for(plat:platList)
+                    <input type="checkbox" name="plat_id" lay-skin="primary" title="#(plat.plat_name)" value="#(plat.plat_id)">
+                #end
+            #end
+            #if(session.plat_id!="0")
+                <input type="checkbox" name="plat_id" lay-skin="primary" title="#(session.login_plat.plat_name)" value="#(session.login_plat.plat_id)" checked readonly>
+            #end
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重  置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script src="js/jquery-3.2.1.js" charset="utf-8"></script>
+<script>
+
+    function fnCheckName(o){
+        if(isNotEmpty($(o).val())){
+            $.ajax({
+                type:'post',
+                url:'system/checkUserName',
+                data:{'login_name':$(o).val(),'user_id':$('#user_id').val()},
+                success:function(res){
+                    if(res>0){
+                        alertMsg("该用户名已经存在，请重新输入！",'warn')
+                        $(o).val('');
+                    }
+                }
+            });
+        }
+    }
+
+    layui.use(['jquery','form','formSelects'], function(){
+        var form = layui.form,formSelects = layui.formSelects;
+        var $ = layui.$;
+
+        if(isNotEmpty($('#plat_ids').val())){
+            $.each($('#plat_ids').val().split(","),function(i,o){
+                $(':checkbox[value="'+o+'"]').prop('checked',true).next('.layui-form-checkbox').addClass('layui-form-checked');
+            });
+        }
+
+        formSelects.render('selectTree', {
+            init: [18],
+            height: "auto",
+            radio: true,
+            direction: "auto",
+            searchType: "title",
+        });
+
+        $.ajax({
+            type:'post',
+            url:'system/getOrgTree',
+            data:{'field':'value'},
+            success:function(res) {
+                var orgTree = eval('([' + res.orgTree + '])');
+                formSelects.data('selectTree', 'local', {
+                    arr: orgTree,
+                    tree: {
+                        //在点击节点的时候, 如果没有子级数据, 会触发此事件
+                        nextClick: function(id, item, callback){
+                            //需要在callback中给定一个数组结构, 用来展示子级数据
+                            callback([
+                            ])
+                        },
+                    }
+                });
+                formSelects.value('selectTree', [$('#site_id').val()]);
+            }
+        });
+
+
+
+        form.verify({
+            pass: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        //监听提交
+        form.on('submit(formBox)', function(data){
+            var site_id=formSelects.value('selectTree', 'valStr');
+            if(isNotEmpty(site_id)){
+                $('#site_id').val(site_id);
+            }else{
+                alertMsg("清选择用户所属机构，谢谢！","warn")
+                return false;
+            }
+            //验证数据
+            var len=0,ids="";
+            $(":checkbox[name='plat_id']").each(function(i,o){
+                if($(o).next('.layui-form-checkbox').hasClass('layui-form-checked')){
+                    len++;
+                    ids+=$(o).val()+',';
+                }
+            });
+            if(len>0){
+                $('#plat_ids').val(ids.substring(0,ids.length-1));
+            }else{
+                alertMsg("请选择用户所属平台！注意：用户只拥有选中平台的操作权限。","warn")
+                return false;
+            }
+        });
+
+
+        form.on('select(parent_site)', function(data){
+            $('#site_id').val("");
+            $('#site_id option:gt(0)').remove();
+            $.ajax({
+                type:'post',
+                url:'system/getChildSiteListForPage',
+                data:{"parent_site_id":data.value},
+                success:function(res){
+                    if(res.length>0){
+                        $.each(res,function (i,o) {
+                            $('#site_id').append($("<option>").val(o.site_id).text(o.site_name));
+                        });
+                        form.render('select');
+                    }
+                }
+            });
+        });
+
+
+        $(function(){
+           /* $('#parent_site_id').val($('#parent_site_id').attr('value'));
+            $('#site_id').val($('#site_id').attr('value'));
+            form.render('select');*/
+        });
+    });
+
+    function fnSetPassword(){
+        $('#password').val(randomPassword(6));
+    }
+
+    function randomPassword(len) {
+        len = len || 32;
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+
+
+</script>
+
+#end

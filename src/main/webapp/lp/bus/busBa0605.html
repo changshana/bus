@@ -1,0 +1,177 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md3">
+            <div class="layui-btn-container">
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+            </div>
+        </div>
+        <div class="layui-col-md3 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <!--<div class="layui-form-item">
+                    <label class="layui-form-label">班次日期</label>
+                    <div class="layui-input-inline">
+                        <input id="day" class="layui-input" lay-filter="condition"/>
+                    </div>
+                </div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">时间类型</label>
+                    <div class="layui-input-inline">
+                        <select id="type" lay-filter="condition">
+                            <option value="">——请选择——</option>
+                            <option value="1">周一到周五</option>
+                            <option value="2">周六周日</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md6"></div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <blockquote class="layui-elem-quote">
+                <span class="layui-text">未设置时刻表</span>
+                <span class="layui-word-aux">温馨提示：此表格仅显示可应用预约时间设置的时刻表</span>
+            </blockquote>
+            <table class="layui-table"
+                   lay-data="{cellMinWidth:60,url:'bus/getBusTimeExist?aba060=#(aba060)',id:'busTimeExist',page:true,height: 'full-200'}"
+                   lay-filter="busTimeExist">
+                <thead>
+                <tr>
+                    <th id="checkedbox" lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                    <th lay-data="{field:'aba055_desc'}">时间类型</th>
+                    <th lay-data="{templet: '#time'}">开始时间 - 结束时间</th>
+                    <th lay-data="{templet: '#routine',width:360}">起点站 > 终点站</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <script type="text/html" id="time">
+            #[[
+            <span>{{d.aba051 }}  -  {{d.aba052 }}</span>
+            ]]#
+        </script>
+        <script type="text/html" id="routine">
+            #[[
+            <span>{{d.aba007_desc }}  >  {{d.aba008_desc }}</span>
+            ]]#
+        </script>
+        <div class="layui-col-md1">
+            <div class="layui-btn-container" style="text-align: center;margin-top: 300px;">
+                <button class="layui-btn" data-type="add"><i class="layui-icon">&#xe65b;</i>添加时刻表</button>
+                <br/>
+                <button class="layui-btn layui-btn-primary" data-type="delete"><i class="layui-icon">&#xe65a;</i>移除时刻表
+                </button>
+            </div>
+        </div>
+        <div class="layui-col-md5">
+            <blockquote class="layui-elem-quote">
+                已设置时刻表
+            </blockquote>
+            <table class="layui-table"
+                   lay-data="{cellMinWidth:60,url:'bus/getBusTimeNotExist?aba060=#(aba060)',page:true,id:'busTimeNotExist',height: 'full-200'}"
+                   lay-filter="busTimeNotExist">
+                <thead>
+                <tr>
+                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                    <th lay-data="{field:'aba055_desc'}">时间类型</th>
+                    <th lay-data="{templet: '#time'}">开始时间 - 结束时间</th>
+                    <th lay-data="{templet: '#routine',width:300}">起点站 > 终点站</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['table', 'laydate', 'form'], function () {
+        var table = layui.table, laydate = layui.laydate, form = layui.form, $ = layui.$;
+        laydate.render({
+            elem: '#day',
+            value: new Date(),
+            done: function () {
+                reloadTable('busTimeExist');
+                reloadTable('busTimeNotExist');
+            }
+        });
+
+        form.on('select(condition)', function (data) {//根据下拉条件刷新表格数据
+            reloadTable('busTimeExist');
+            reloadTable('busTimeNotExist');
+        });
+
+        var active = {
+            add: function () {
+                var checkStatus = table.checkStatus('busTimeExist'), data = checkStatus.data;
+                if (data.length === 0) {
+                    layer.alert('请先选中左侧您要选择的时刻表！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aba050 + ',';
+                    });
+                    ids = ids.substr(0, ids.length - 1);
+                    var tip_msg = '您确定要添加左侧表格中所选中的时刻表？';
+                    layer.confirm(tip_msg, function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'bus/changeBusTime',
+                            data: {"ids": ids, "aba060": "#(aba060)", "opt": "add"},
+                            success: function (res) {
+                                reloadTable('busTimeExist');
+                                reloadTable('busTimeNotExist');
+                                layer.close(index);
+                            }
+                        });
+                    });
+                }
+            },
+            delete: function () {
+                var checkStatus = table.checkStatus('busTimeNotExist'), data = checkStatus.data;
+                if (data.length === 0) {
+                    layer.alert('请先选中右侧您要移除的时刻表！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aba050 + ',';
+                    });
+                    ids = ids.substr(0, ids.length - 1);
+                    var tip_msg = '您确定要移除右侧表格中所选中的时刻表？';
+                    layer.confirm(tip_msg, function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'bus/changeBusTime',
+                            data: {"ids": ids, "aba060": "#(aba060)", "opt": 'delete'},
+                            success: function (res) {
+                                reloadTable('busTimeExist');
+                                reloadTable('busTimeNotExist');
+                                layer.close(index);
+                            }
+                        });
+                    });
+                }
+            },
+            refresh: function () {
+                window.location.reload();
+            }
+        };
+
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        function reloadTable(table_name) {
+            table.reload(table_name, {
+                where: {
+                    // day: $('#day').val()
+                    type: $('#type').val()
+                }
+            });
+        }
+    });
+</script>
+#end

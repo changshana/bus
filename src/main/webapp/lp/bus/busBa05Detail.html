@@ -1,0 +1,153 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="bus/saveBusBa05" method="post">
+    <input type="hidden" name="busBa05.aba050" value="#(busBa05.aba050)">
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">车辆类型</label>
+        <div class="layui-input-block">
+            <input type="hidden" id="bus_types" value="#(aba020==null?'':aba020)">
+            <select  id="bus_type" lay-verify="required"
+                    lay-filter="BusBa02List">
+                <option value="">——请选择——</option>
+            </select>
+        </div>
+    </div>
+    <input type="hidden" id="aba030" value="#(busBa05.aba030||aba030)">
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">路线</label>
+        <div  class="layui-input-block">
+            <select name="busBa05.aba030" id="type_id" value="#(busBa05.aba030||aba030)" lay-verify="required">
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">时间类型</label>
+        <div class="layui-input-block">
+            <select name="busBa05.aba055" id="dateType" value="#(busBa05.aba055)" lay-verify="required"
+                    lay-filter="aba055">
+                <option value="">——请选择——</option>
+                #for(dates:dateType)
+                <option value="#(dates.aaa004)" #(busBa05==null?'':(dates.aaa004==busBa05.aba055+'')?'selected':'')>#(dates.aaa005)</option>
+                #end
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">开始时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="busBa05.aba051" value="#(timeStart)" class="layui-input" id="aba051"
+                   lay-verify="required"
+                   autocomplete="off" placeholder="HH:mm">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">结束时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="busBa05.aba052" value="#(timeEnd)" class="layui-input" id="aba052"
+                   autocomplete="off" placeholder="HH:mm">
+        </div>
+    </div>
+    <input type="hidden" name="busBa05.aba030" value="#(busBa05.aba030)">
+    <input type="hidden" name="busBa05.aba060" value="#(busBa05.aba060)">
+
+    <!--<div class="layui-form-item layui-col-md6" id="aba056Container">
+        <label class="layui-form-label">是否可预约</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" name="busBa05.aba056" lay-skin="switch" value="1"
+                   #((busBa05.aba056!=0)?'checked':'')>
+        </div>
+    </div>-->
+    <input type="hidden" name="busBa05.aba056" lay-skin="switch" value="1">
+
+
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="busBa05.aaa996" lay-skin="switch" value="1"
+                   #((busBa05.aaa996!=0)?'checked':'')>
+        </div>
+    </div>
+    <input type="hidden" name="busBa05.aaa997" value="#(busBa05.aaa997)">
+    <input type="hidden" name="busBa05.aaa998" value="#(busBa05.aaa998)">
+    <div class="layui-form-item layui-col-md6">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea style="min-height: 160px;" name="busBa05.aaa999" class="layui-textarea">#(busBa05.aaa999)</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md6">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'laydate', 'upload'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#aba051'
+            , type: 'time'
+            ,format:'HH:mm'
+        });
+        laydate.render({
+            elem: '#aba052'
+            , type: 'time'
+            ,format:'HH:mm'
+        });
+        laydate.render({elem: '#aba053'});
+        var form=layui.form;
+        var $=layui.$;
+        if('#(aba020)'==2){
+            $("#aba056Container").hide();
+        }
+        fnGetCode("bus_aa99","aba060","请选择",'#(aba020)',"bus_type");
+        if(isNotEmpty($('#aba030').val())){
+            var type_id=$('#aba030').val();
+            getBa03ForAddBa05($('#bus_type').val());
+        }
+        form.on('select(BusBa02List)', function(obj){
+            $('#type_id').empty();
+            getBa03ForAddBa05(obj.value);
+            if(obj.value=='2'){
+                $("#aba056Container").hide();
+            }else{
+                $("#aba056Container").show();
+            }
+        });
+
+        function getBa03ForAddBa05(obj) {
+            var type_id=$('#aba030').val();
+            $.ajax({
+                type: 'post',
+                url: 'bus/getBa03ForAddBa05',
+                data: {"ba020": obj},
+                success: function (res) {
+                    var html='';
+                    html+= '<option value="">——请选择——</option>'
+                    if(isNotEmpty(res)){
+                        $.each(res, function (index, value) {
+                            if('#(aba030)'==value.aba030){
+                                html+= '<option selected value="'+value.aba030+'"'+(value.aba030==type_id?'selected':'')+'>'+value.start+'====='+value.end+'</option> ';
+                            }else{
+                                html+= '<option value="'+value.aba030+'"'+(value.aba030==type_id?'selected':'')+'>'+value.start+'====='+value.end+'</option> ';
+                            }
+
+                        });
+                    }
+                    $('#type_id').append(html);
+                    form.render();
+                }
+
+            });
+        }
+    });
+</script>
+#end

@@ -1,0 +1,349 @@
+#@common()
+#define css()
+<style type="text/css">
+    .layui-row,.layui-form-item,#orgTree{height: 100%;}
+    #orgTree{border-right: 1px solid #eeeeee;min-height: 500px;max-height: 800px;overflow: auto;}
+    .disabled{background-color: #eeeeee;cursor: not-allowed;}
+    .tree_btn{display: none;}
+</style>
+#end
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md3">
+            <ul id="orgTree"></ul>
+        </div>
+        <div class="layui-col-md9">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>机构信息</legend>
+            </fieldset>
+            <form class="layui-form addForm" action="system/siteInfoSaveNew" method="post">
+                <input type="hidden" field id="site_id" name="siteInfo.site_id" value=""/>
+                <input type="hidden" field id="parent_site_id" name="siteInfo.parent_site_id" value=""/>
+                <input type="hidden" field id="site_level" name="siteInfo.site_level" value="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上级机构</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="parent_site_name" field id="parent_site_name" readonly value="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-col-md6">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">站点名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="site_name" name="siteInfo.site_name" value=""  lay-verify="required" autocomplete="off"  class="layui-input" onblur="fnCheckName()">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">站点简称</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="short_name" name="siteInfo.short_name"value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">单位名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="unit_name" name="siteInfo.unit_name" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">省份</label>
+                            <div class="layui-input-block">
+                                <select field id="province" name="siteInfo.province" value="" lay-verify="" lay-search="" lay-filter="province">
+                                    <option value="">直接选择或搜索选择</option>
+                                    #for(p:province)
+                                    <option value="#(p.province_code)">#(p.province_name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">联系地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="address" name="siteInfo.address" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">邮政编码</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="zipcode" name="siteInfo.zipcode" value="" lay-verify="postalcode"  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">电子邮箱</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="link_email"  name="siteInfo.link_email" lay-verify="xemail" value="" autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">QQ号</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="link_qq" name="siteInfo.link_qq" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">教育行政部门批准文号</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="approval_number" name="siteInfo.approval_number" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">启用状态</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" id="status" name="siteInfo.status" value="1" lay-skin="switch" checked>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6">
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">站点代码</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="site_code" name="siteInfo.site_code" placeholder="请输入站点唯一标识" onblur="fnCheckSiteCode()" value=""  lay-verify="required" autocomplete="off"  class="layui-input">
+
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">完整代码</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="full_code" name="siteInfo.full_code" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">单位性质</label>
+                            <div class="layui-input-block">
+                                <input type="text" field id="site_nature" name="siteInfo.site_nature" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">地区(市)</label>
+                            <div class="layui-input-block">
+                                <select field id="city_code" name="siteInfo.city_code" value="" lay-verify="" lay-search="">
+                                    <option value="">直接选择或搜索选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">联系人</label>
+                            <div class="layui-input-block">
+                                <input field type="text" id="link_man"  name="siteInfo.link_man" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">联系电话</label>
+                            <div class="layui-input-block">
+                                <input field type="text" id="telphone"  name="siteInfo.telphone"  value="" lay-verify="telphone" autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">联系人传真</label>
+                            <div class="layui-input-block">
+                                <input field type="text" id="link_fax" name="siteInfo.link_fax" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">站点备注</label>
+                            <div class="layui-input-block">
+                                <input field type="text" id="remark" name="siteInfo.remark" value=""  autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div  class="layui-form-item">
+                            <label class="layui-form-label">教育行政部门批准日期</label>
+                            <div class="layui-input-block">
+                                <input field type="text" name="siteInfo.setup_date" id="setup_date" value="" lay-verify="ndate" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">站点分组</label>
+                        <div class="layui-input-block">
+                            <select type="text" field id="group_code"  name="siteInfo.group_code" value="" lay-verify="" lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div  class="layui-form-item">
+                        <label class="layui-form-label">联系人手机</label>
+                        <div class="layui-input-block">
+                            <input type="text" field id="link_tel"  name="siteInfo.link_tel" lay-verify="xphone" value=""  autocomplete="off"  class="layui-input">
+                        </div>
+                    </div>-->
+                    <div class="layui-form-item" id="plat_box">
+                        <label class="layui-form-label">所属平台</label>
+                        <div class="layui-input-block">
+                            <select name="siteInfo.plat_id" field #(session.plat_id=="0"?'':'disabled') value="#((siteInfo==null||siteInfo.plat_id==null)?session.plat_id:siteInfo.plat_id)" id="plat_id" lay-verify="required">
+                                <option value="#(session.login_plat.plat_id)">#(session.login_plat.plat_name)</option>
+                                #for(plat:session.other_plat)
+                                <option value="#(plat.plat_id)">#(plat.plat_name)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" value="#(topSite.plat_id)" id="top_site_plat_id">
+                    <input type="hidden" value="#(topSite.site_id)" id="top_site_id">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" id="submitBtn" lay-submit lay-filter="formBox">保存</button>
+                            <a class="layui-btn layui-btn-primary" onclick="window.location.reload()">重置</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    layui.use(['tree','form','laydate'], function(){
+        var $ = layui.$, form = layui.form,laydate = layui.laydate;
+        $.ajax({
+            type:'post',
+            url:'system/getOrgTree',
+            data:{'field':'id'},
+            success:function(res){
+                var orgTree=eval('([' +res.orgTree + '])');
+                layui.tree({
+                    elem: '#orgTree'
+                    ,add:true
+                    ,edit:true
+                    ,delete:true
+                    ,editClick: function(item){
+                        if($('#top_site_plat_id').val()==0||($('#top_site_plat_id').val()!=0&&$('#top_site_id').val()!=item.id)) {
+                            $.ajax({
+                                type:'post',
+                                url:'system/getSiteMsg',
+                                data:{'site_id':item.id},
+                                success:function(res){
+                                    if(res.plat_id==$('#top_site_plat_id').val()||!isNotEmpty(res.parent_site_id)){
+                                        $('[field]').each(function(i,o){
+                                            $(o).val(res[$(o).attr('id')]);
+                                        });
+                                        if(res.status==0){
+                                            $('#status').removeAttr('checked');
+                                        }else{
+                                            $('#status').attr('checked',true);
+                                        }
+                                        form.render();
+                                    }else{
+                                        alertMsg("请前往对应的平台管理下级机构，谢谢！","warn");
+                                    }
+                                }
+                            });
+                        }else{
+                            alertMsg("该级机构不能编辑，谢谢！","warn");
+                        }
+                    }
+                    ,deleteClick:function(item,obj){
+                        if($('#top_site_plat_id').val()==0||($('#top_site_plat_id').val()!=0&&$('#top_site_id').val()!=item.id)) {
+                            $.ajax({
+                                type:'post',
+                                url:'system/checkOrgHasChild',
+                                data:{"site_ids":item.id},
+                                success:function (res) {
+                                    if(res){
+                                        var tip_msg='确定要删除该机构吗？(该机构没有有效的下级机构)';
+                                        layer.confirm(tip_msg, function(index){
+                                            $.ajax({
+                                                type:'post',
+                                                url:'system/deleteOrg',
+                                                data:{"site_ids":item.id},
+                                                success:function (res) {
+                                                    window.location.reload();
+                                                },error:function(err){
+                                                    timeOut(err);
+                                                }
+                                            });
+                                        });
+                                    }else{
+                                        layer.alert("你所选中的机构中包含有有效分支机构，如要删除请先分支机构，谢谢!");
+                                    }
+                                }
+                            });
+                        }else{
+                            alertMsg("该级机构不能删除，谢谢！","warn");
+                        }
+                    }
+                    ,addClick: function(item){
+                        if('#(session.plat_id)'=="0"){
+                            alertMsg("请前往对应的平台管理下级机构，谢谢！","warn");
+                        }else{
+                            $('.addForm [field]').val('');
+                            $('#parent_site_id').val(item.id);
+                            $('#parent_site_name').val(item.name);
+                            $('#status').attr('checked',true);
+                            $('#plat_id').val($('#top_site_plat_id').val());
+                            form.render();
+                        }
+                    }
+                    ,nodes: orgTree
+                });
+            }
+        });
+
+
+        laydate.render({
+            elem: '#setup_date'
+        });
+
+        form.on('select(province)', function(obj){
+            $('#city_code').empty();
+            if(isNotEmpty(obj.value)){
+                $.ajax({
+                    type:'post',
+                    url:'common/getCityListByAjax',
+                    data:{'province_code':obj.value},
+                    success:function(res){
+                        $.each(res,function(i,o){
+                            $('#city_code').append('<option value="'+o.city_code+'">'+o.city_name+'</option>');
+                        });
+                        form.render('select');
+                    }
+                });
+            }else{
+                $('#city_code').append('<option value="">直接选择或搜索选择</option>');
+                form.render('select');
+            }
+        });
+
+    });
+    function fnCheckName(){
+        if(isNotEmpty($('#site_name').val())&&isNotEmpty($('#plat_id').val())) {
+            $.ajax({
+                type:'post',
+                url:'system/checkSiteName',
+                data:{'site_name':$('#site_name').val(),'site_id':$('#site_id').val(),'plat_id':$('#plat_id').val()},
+                success:function(res){
+                    if(!res){
+                        layer.alert("【站点名称："+$('#site_name').val()+"】已存在，请重新命名，谢谢！");
+                        $('#site_name').val('');
+                        $('#submitBtn').addClass('layui-btn-disabled').attr('disabled','disabled');
+                    }else{
+                        $('#submitBtn').removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+        }
+    }
+    function fnCheckSiteCode(){
+        if(isNotEmpty($('#site_code').val())&&(isNotEmpty($('#plat_id').val()))) {
+            $.ajax({
+                type:'post',
+                url:'system/checkSiteName',
+                data:{'site_code':$('#site_code').val(),'site_id':$('#site_id').val(),'plat_id':$('#plat_id').val()},
+                success:function(res){
+                    if(!res){
+                        layer.alert("【站点代码："+$('#site_code').val()+"】已存在，请重新输入，谢谢！");
+                        $('#site_code').val('');
+                        $('#submitBtn').addClass('layui-btn-disabled').attr('disabled','disabled');
+                    }else{
+                        $('#submitBtn').removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+        }
+    }
+</script>
+#end

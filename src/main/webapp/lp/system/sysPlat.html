@@ -1,0 +1,149 @@
+#@common()
+#define css()
+<style type="text/css">
+    .layui-row,.layui-col-md4,#platTree{height: 100%;}
+    #platTree{border-right: 1px solid #eeeeee;min-height: 500px;max-height: 800px;overflow: auto;}
+    .disabled{background-color: #eeeeee;cursor: not-allowed;}
+    #addBtn{display: none}
+</style>
+#end
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <ul id="platTree"></ul>
+        </div>
+        <div class="layui-col-md8">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>系统平台信息</legend>
+            </fieldset>
+            <form class="layui-form addForm" action="system/saveSysPlat" method="post">
+                <div class="layui-row">
+                    <div class="layui-col-md8">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">平台编号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="sysPlat.plat_id" id="plat_id" value=""  placeholder="" autocomplete="off" class="layui-input disabled" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">平台名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="sysPlat.plat_name" id="plat_name"  value="" required   placeholder="" autocomplete="off" class="layui-input" onblur="fnCheckName()">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" id="status" name="sysPlat.status" value="1" lay-skin="switch" checked>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" id="submitBtn" lay-submit lay-filter="formBox">保存</button>
+                                <button class="layui-btn layui-btn-primary" id="addBtn" onclick="window.location.reload()">新增</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    var form;
+    layui.use(['tree','form'], function(){
+        form=layui.form;
+        var $ = layui.$, active = {
+        };
+
+        var c_node=new Array();
+        $.ajax({
+            type:'post',
+            url:'system/getSysPlatList',
+            success:function(res){
+                for(var i=0;i<res.length;i++){
+                    if(res[i].plat_id!=0){
+                        c_node.push({name:res[i].plat_name,id:res[i].plat_id,status:res[i].status});
+                    }
+                }
+                layui.tree({
+                    elem: '#platTree' //传入元素选择器
+                    ,edit:true
+                    ,delete:true
+                    ,editClick: function(item){
+                        fnEdit(item)
+                    },click: function(item){
+                        fnEdit(item)
+                    }
+                    ,deleteClick:function(item){
+                        if(item.name!='综合管理平台') {
+                            layer.confirm("确定要删除该系统平台？",function(){
+                                $.ajax({
+                                    type:'post',
+                                    url:'system/deleteSysPlat',
+                                    data:{'plat_id':item.id},
+                                    success:function(res){
+                                        window.location.reload();
+                                    },error:function(err){
+                                        timeOut(err);
+                                    }
+                                });
+                            })
+                        }else{
+                            alertMsg("不能操作该机构信息","warn");
+                        }
+                    }
+                    ,nodes: [{ //节点
+                        name: '综合管理平台'
+                        ,spread:true
+                        ,children: c_node
+                    }]
+                });
+            }
+        });
+
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+    function fnEdit(item){
+        if(item.name!='综合管理平台'){
+            $('#plat_id').val(item.id);
+            $('#plat_name').val(item.name).focus();
+            $('#addBtn').show();
+            if(item.status==0){
+                $('#status').removeAttr('checked');
+            }else{
+                $('#status').attr('checked',true);
+            }
+            form.render();
+        }else{
+            alertMsg("不能操作该机构信息","warn");
+        }
+    }
+
+    function fnCheckName(){
+        if(isNotEmpty($('#plat_name').val())){
+            $.ajax({
+                type:'post',
+                url:'system/checkPlatName',
+                data:{'plat_name':$('#plat_name').val(),'plat_id':$('#plat_id').val()},
+                success:function(res){
+                    if(!res){
+                        layer.alert("已存在同名的系统平台，请重新命名，谢谢！");
+                        $('#submitBtn').addClass('layui-btn-disabled').attr('disabled','disabled');
+                    }else{
+                        $('#submitBtn').removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+        }
+    }
+</script>
+#end

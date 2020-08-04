@@ -1,0 +1,53 @@
+#@sysCommon()
+#define css()
+<script type="text/javascript" src="lib/codemirror/codemirror.js"></script>
+<script type="text/javascript" src="lib/codemirror/mode/javascript/javascript.js"></script>
+<link rel="stylesheet" href="lib/codemirror/codemirror.css">
+<link rel="stylesheet" href="lib/codemirror/theme/blackboard.css">
+<style type="text/css">
+.content-box>b{line-height: 30px;font-size: 14px;}
+.content-box>b,.code-btn{float: left;margin-top: 20px;margin-bottom: 20px;}
+.code-box{display: none;}
+.CodeMirror{clear: both;margin: auto;}
+.CodeMirror *{font-size: 12px;line-height: 20px;font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;}
+</style>
+#end
+#define main()
+<div class="content-box">
+    <div class="layui-btn-container">
+        <button class="layui-btn" onclick="window.location.reload()"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+        <button class="layui-btn" onclick="windowNewLocation('system/projectManager?module_id=#(module_id)')">返回</button>
+    </div>
+    <b>自动生成代码类型：</b>
+    <div class="layui-btn-container code-btn">
+        <input type="hidden" value="#(type)" id="type">
+        <input type="hidden" value="#(table_id)" id="table_id">
+        <a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="databaseSql" >数据库sql</a>
+        <a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="tableService" >service</a>
+        <a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="tableController" >controller</a>
+        <a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="tableListPage" >列表页</a>
+        <a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="tablePropPage" >属性页</a>
+        <!--<a class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" data-code="tableExportSql" >表格导出sql</a>-->
+    </div>
+    <textarea id="txtContent" class="code-box">#(code)</textarea>
+</div>
+
+<script>
+$('[data-code="'+$('#type').val()+'"]').addClass('layui-btn-danger');
+$('[data-code]').click(function(){
+    windowNewLocation("system/tableCode?table_id="+$('#table_id').val()+"&type="+$(this).attr('data-code'));
+});
+var myTextarea = document.getElementById('txtContent');
+var CodeMirrorEditor = CodeMirror.fromTextArea(myTextarea, {
+    mode: "text/javascript",
+    lineNumbers: true,
+    theme: "blackboard"
+});
+
+CodeMirrorEditor.setSize('95%', '600px');
+
+
+
+</script>
+
+#end

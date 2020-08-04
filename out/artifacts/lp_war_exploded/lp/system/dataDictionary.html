@@ -1,0 +1,39 @@
+#@sysCommon()
+#define main()
+<div class="content-box" style="width: 80%;margin: auto">
+    #for(table:tables)
+    <blockquote class="layui-elem-quote layui-text">
+    #(table.table.table_name)——#(table.table.remark)
+    </blockquote>
+        <table class="layui-table" style="margin-bottom: 50px;">
+            <thead>
+            <tr>
+                <th width="30%">列名</th>
+                <th width="30%">注释</th>
+                <th width="20%">类型</th>
+                <th width="10%">是否为空</th>
+                <th width="10%">是否主键</th>
+            </tr>
+            </thead>
+            <tbody>
+            #for(field:table.fieldList)
+                <tr>
+                    <td>#(field.field_name)</td>
+                    <td>#(field.field_alias)</td>
+                    <td>#(field.field_type)(#(field.field_max_length))</td>
+                    <td>#(field.field_isnullable==1?'Y':'N')</td>
+                    <td>#(field.field_iskey==1?'P':'')</td>
+                </tr>
+            #end
+            </tbody>
+        </table>
+    #end
+
+</div>
+
+<script type="text/javascript">
+    layui.use('table', function() {
+    });
+
+</script>
+#end

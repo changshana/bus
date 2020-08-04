@@ -1,0 +1,143 @@
+#@busCommon()
+#define css()
+<style type="text/css">
+    .layui-table-cell{height: auto}
+    .workDayBusTimeSetting,.weekendBusTimeSetting,.tempBusTimeSetting{width: 20%;line-height: 30px;padding-bottom: 25px!important;line-height: 23px!important;}
+    .workDayBusTimeSetting span,.weekendBusTimeSetting span,.tempBusTimeSetting span{display: inline-block;width: 20%;text-align: center;float: left;cursor: pointer;}
+    .busLineSetting span{cursor: pointer;}
+    .busLineSetting span:hover{color: #0ea779;}
+    .tempBusTimeSetting p{text-align: left;clear: both;}
+    .layui-table tbody tr:hover{background-color: #ffffff!important;}
+    .add-line,.time-setting{color:#0ea779;cursor: pointer;}
+    .time-setting{margin-bottom: 5px;}
+    .hide-setting{visibility:hidden}
+    .workDayBusTimeSetting:hover,.weekendBusTimeSetting:hover,.tempBusTimeSetting:hover{background-color: antiquewhite}
+    .workDayBusTimeSetting span:hover,.weekendBusTimeSetting span:hover,.tempBusTimeSetting span:hover{color: #f2680e}
+    .workDayBusTimeSetting:hover .time-setting{visibility:visible}
+    .weekendBusTimeSetting:hover .time-setting{visibility:visible}
+    .tempBusTimeSetting:hover .time-setting{visibility:visible}
+</style>
+#end
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>校车类型</th><th>校车路线</th><th>周一至周五时刻表</th><th>周六周日时刻表</th><th>临时时刻表</th>
+        </tr>
+        </thead>
+        <tbody>
+        #for(aba020:aba020List)
+            #for(line:aba020.busLineList)
+                <tr>
+                    #if(for.first)
+                        #(aba020.rowspan)
+                    #end
+                    <td class="busLineSetting" data-type="#(line.aba001)">
+                        <span onmouseenter="showTipMessage('途径站点：站点一，站点二',this)" onmouseleave="hideTipMessage()">#(line.aba007_desc)——>#(line.aba008_desc)</span>
+                    </td>
+                    <td class="workDayBusTimeSetting">
+                            <div class="time-setting hide-setting" onclick="busTimeSetting(this,1)">设置时刻表</div>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                            <span onmouseenter="showTipMessage('发车时间：08:00；车型：44座',this)" onmouseleave="hideTipMessage()">08:00</span>
+                    </td>
+                    <td class="weekendBusTimeSetting">
+                        <div class="time-setting" onclick="busTimeSetting(this,2)">设置时刻表</div>
+                    </td>
+                    <td class="tempBusTimeSetting">
+                        <div class="time-setting" onclick="busTimeSetting(this,3)">设置时刻表</div>
+                    </td>
+                </tr>
+                #if(for.last)
+                    <tr data-type="#(aba020.aaa004)" data-name="#(aba020.aaa005)">
+                    <td class="busLineSetting"><span class="add-line" onclick="busLineSetting(this)">设置路线</span></td>
+                    <td></td><td></td><td></td>
+                    </tr>
+                #end
+            #else
+                <tr data-type="#(aba020.aaa004)" data-name="#(aba020.aaa005)">
+                    <td>#(aba020.aaa005)</td>
+                    <td class="busLineSetting"><span class="add-line" onclick="busLineSetting(this)">设置路线</span></td>
+                    <td></td><td></td><td></td>
+                </tr>
+            #end
+        #end
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function(){
+
+        var $ = layui.$, active = {
+            refresh:function(){
+                window.location.reload();
+            },
+
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    function busLineSetting(o){
+        var type=$(o).parents('tr[data-type]').attr('data-type');
+        var type_name=$(o).parents('tr[data-type]').attr('data-name');
+        layer.open({
+            type: 2
+            ,title: '管理校车路线信息——'+type_name
+            ,area: ['75%', '80%']
+            ,shade: 0.6
+            ,maxmin: true
+            ,content: 'bus/lineManager?aba020='+type
+            ,btn: ['关闭']
+            ,btn2: function(){
+                window.location.reload();
+                layer.closeAll();
+            }
+            ,end :function (){
+                window.location.reload();
+            }
+            ,zIndex: layer.zIndex
+            ,success: function(layero){
+                layer.setTop(layero);
+            }
+        });
+
+    }
+    function busTimeSetting(obj,type){
+        layer.open({
+            type: 2
+            ,title: '设置'+$(obj).parent().siblings('td[rowspan]').text()+'（'+(type==1?'周一至周五':(type==2?'周六周日':'临时'))+'）时刻表信息【路线：'+$(obj).parent().siblings('.busLineSetting').find('span').text()+'】'
+            ,area: ['75%', '80%']
+            ,shade: 0.6
+            ,maxmin: true
+            ,content: 'bus/timeManager?aba001='+$(obj).parent().siblings('.busLineSetting').attr('data-type')
+            ,btn: ['关闭']
+            ,btn2: function(){
+                window.location.reload();
+                layer.closeAll();
+            }
+            ,end :function (){
+                window.location.reload();
+            }
+            ,zIndex: layer.zIndex
+            ,success: function(layero){
+                layer.setTop(layero);
+            }
+        });
+    }
+</script>
+#end

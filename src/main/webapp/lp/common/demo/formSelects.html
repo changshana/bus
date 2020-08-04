@@ -1,0 +1,179 @@
+#@common()
+#define css()
+<script src="js/jquery-3.2.1.js" charset="utf-8"></script>
+#end
+#define main()
+<div class="content-box">
+    <div  class="layui-btn-container" >
+        <button class="layui-btn" demo-type="treeTable">treeTable</button>
+        <button class="layui-btn layui-btn-normal" demo-type="tableList">tableList</button>
+        <button class="layui-btn layui-btn-warm" demo-type="inputTags">inputTags</button>
+        <button class="layui-btn layui-btn-danger" demo-type="formSelects">formSelects</button>
+        <button class="layui-btn" demo-type="cascader">cascader</button>
+        <button class="layui-btn" demo-type="tableSelect">tableSelect</button>
+    </div>
+    <form class="layui-form">
+        <!--基础单选-->
+        <div class="layui-form-item  layui-col-md5">
+            <select name="city" xm-select="select0" xm-select-radio="">
+                <option value="">单选模式</option>
+                <option value="1" >北京</option>
+                <option value="2" >上海</option>
+                <option value="3">广州</option>
+                <option value="4" >深圳</option>
+                <option value="5">天津</option>
+            </select>
+        </div>
+        <!--基础多选：xm-select-max：最多几项；xm-select-skin：皮肤；xm-select-search：搜索选择；xm-select-direction：面板方向；lay-verify：表单-->
+        <div class="layui-form-item  layui-col-md5">
+            <select name="city" xm-select="select1" xm-select-max="3" xm-select-skin="default" xm-select-search="" xm-select-direction="down" lay-verify="select14">
+                <option value="1" disabled="disabled">北京</option>
+                <option value="2" selected="selected">上海</option>
+                <option value="3">广州</option>
+                <option value="4" selected="selected">深圳</option>
+                <option value="5">天津</option>
+            </select>
+        </div>
+        <div class="layui-form-item layui-form-pane layui-col-md5">
+            <!--pane模式-->
+            <label class="layui-form-label">多选框</label>
+            <div class="layui-input-block">
+                <select name="city" xm-select="select2">
+                    <option value="1" disabled="disabled">北京</option>
+                    <option value="2" selected="selected" disabled="disabled">上海</option>
+                    <option value="3">广州</option>
+                    <option value="4" selected="selected">深圳</option>
+                    <option value="5">天津</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item  layui-col-md5">
+            <!--多选分组-->
+            <select name="city" xm-select="select3">
+                <option value="">多选分组</option>
+                <optgroup label="分组1">
+                    <option value="1" disabled="disabled">北京</option>
+                    <option value="2">上海</option>
+                </optgroup>
+                <optgroup label="分组2">
+                    <option value="3">广州</option>
+                    <option value="4">深圳</option>
+                    <option value="5">天津</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="layui-form-item  layui-col-md5">
+            <select name="city" xm-select="select4">
+                <option value="">联动多选</option>
+            </select>
+        </div>
+        <div class="layui-form-item layui-col-md5">
+            <select name="city" xm-select="select5">
+                <option value="">树状结构</option>
+            </select>
+        </div>
+    </form>
+
+</div>
+<script type="text/javascript">
+    layui.use(['jquery', 'formSelects'], function(){
+        var formSelects = layui.formSelects;
+        //重新渲染
+        /*formSelects.render('select1', {
+            init: ["1", "2"],               //默认值
+            skin: "danger",                 //多选皮肤
+            height: "auto",                 //是否固定高度, 38px | auto
+            radio: false,                   //是否设置为单选模式
+            direction: "auto",
+            create: function(id, name){
+                console.log(id);    //多选id
+                console.log(name);  //创建的标签名称
+                return Date.now();  //返回该标签对应的val
+            },
+            filter: '',         //同formSelects.filter
+            max: 3,                 //多选最多选择量
+            maxTips:null,        //同formSelects.maxTips
+            on: null,             //同formSelects.on
+            searchType: "title",    //搜索框的位置
+            template: function(name, value, selected, disabled){
+                console.log(name);      //选项名
+                console.log(value);     //选项值
+                console.log(selected);  //是否被选中
+                console.log(disabled);  //是否被禁用
+                //例如: 反转字符串
+                //return name.split('').reverse().join('');
+                return name;        //返回一个html结构, 用于显示选项
+            },
+            showCount:5,           //多选的label数量, 0,负值,非数字则显示全部
+        });*/
+
+
+
+        formSelects.data('select4', 'local', {
+            arr: [
+                {
+                    "name": "北京",
+                    "value": 1,
+                    "children": [
+                        {"name": "北京市1", "value": 12, "children": [
+                            {"name": "朝阳区1", "value": 13, "children": [
+                                {"name": "朝阳区111", "value": 111, "children": []},
+                                {"name": "朝阳区112", "value": 112, "children": []},
+                                {"name": "朝阳区113", "value": 113, "children": []},
+                            ]},
+                            {"name": "朝阳区2", "value": 14, "children": []},
+                            {"name": "朝阳区3", "value": 15, "children": []},
+                            {"name": "朝阳区4", "value": 16, "children": []},
+                        ]},
+                        {"name": "北京市2", "value": 17, "children": []},
+                        {"name": "北京市3", "value": 18, "children": []},
+                        {"name": "北京市4", "value": 19, "children": []},
+                    ]
+                },
+                {
+                    "name": "天津",
+                    "value": 2,
+                    "children": [
+                        {"name": "天津市1", "value": 51, "children": []},
+                    ]
+                },
+            ],
+            linkage: true
+        });
+
+        //如果有需要默认值的小伙伴请使用formSelects.value
+//        formSelects.value('select4', ['1/12/13/111', '1/12/14'])
+
+
+
+        formSelects.data('select5', 'local', {
+            arr: [
+                {name: '分组1', type: 'optgroup'},
+                {name: '北京', value: 1, xslkdf: '123', children: [{name: '朝阳', disabled: true, value: 11}, {name: '海淀', value: 12}]},
+                {name: '分组2', type: 'optgroup'},
+                {name: '深圳', value: 2, children: [{name: '龙岗', value: 21}]},
+            ],
+            tree: {
+                //在点击节点的时候, 如果没有子级数据, 会触发此事件
+                nextClick: function(id, item, callback){
+                    //需要在callback中给定一个数组结构, 用来展示子级数据
+                    callback([
+                        {name: 'test1', value: Math.random()},
+                        {name: 'test2', value: Math.random()}
+                    ])
+                },
+            }
+        });
+
+
+    });
+
+    $(function(){
+        $('button[demo-type]').click(function(){
+            windowNewLocation('common/extendDemo?demoType='+$(this).attr('demo-type'));
+        });
+    });
+</script>
+
+
+#end

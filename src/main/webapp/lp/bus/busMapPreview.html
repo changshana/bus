@@ -1,0 +1,147 @@
+#@common()
+#define main()
+#define css()
+<style type="text/css">
+    .time-vertical {
+        list-style-type: none;
+        border-left: 1px solid #AFC7EB;
+        padding: 0px;
+        width: 90%;
+        float: right;
+    }
+
+    .time-vertical li {
+        height: 70px;
+        position: relative;
+        border-bottom: 1px solid #eaedee;
+    }
+
+    .time-vertical li a {
+        display: inline-block;
+        margin-left: 20px;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #464646;
+        font-weight: normal;
+        font-family: 微软雅黑;
+        font-size: 15px;
+    }
+
+    .time-vertical li b:before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: -12px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #AFC7EB;
+        border-radius: 10px;
+        background: #AFC7EB;
+    }
+
+    .time-vertical li span {
+        position: absolute;
+        color: #fff;
+        top: 15px;
+        left: -3px;
+    }
+
+    #container {
+        width: 100%;
+        height: 300px
+    }
+
+    .row1 {
+        border-bottom: 1px solid gainsboro;
+        padding-bottom: 20px;
+    }
+
+    .title_left {
+        padding-left: 20px;
+        padding-top: 20px;
+        float: left;
+    }
+
+    .title_right {
+        padding-top: 40px;
+        padding-right: 10px;
+        float: right;
+    }
+
+    .approach {
+        float: right;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        width: 200px;
+    }
+
+    .time {
+        color: #000;
+        font-size: 14px;
+        font-family: 微软雅黑;
+        font-weight: bolder;
+        margin-top: 5px
+    }
+</style>
+#end
+<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+<script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
+<script type="text/javascript"
+        src='https://webapi.amap.com/maps?v=1.4.11&key=e9b18963d72903a8f9d8110bf05066cd&plugin=AMap.TruckDriving'></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<div id="container"></div>
+<div id="panel" style="display: none"></div>
+<div class="layui-row">
+    <div class="layui-col-md12">
+        <div class="container">
+            <ul class="time-vertical">
+                #for(bus_ba01:bus_ba01)
+                <li>
+                    <div style="float: left"><b></b><span></span><a href="javascript:void(0)">#(bus_ba01.aba002)</a>
+                    </div>
+                    <div class="approach">#(bus_ba01.aaa999)
+                    </div>
+                </li>
+                #end
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var map = new AMap.Map("container", {});
+    var truckOptions = {
+        map: map,
+        policy: 0,
+        size: 1,
+        city: 'beijing',
+        panel: 'panel'
+    };
+    var driving = new AMap.TruckDriving(truckOptions);
+
+    var path = [];
+
+    $.ajax({
+        type: 'post',
+        data: {'aba030': "#(bus_ba03.aba030)"},
+        url: 'bus/findApproach',
+        success: function (res) {
+            var start = "#(bus_ba03.startLongitude)".split(",");
+            path.push({lnglat: [start[0], start[1]]});//起点
+            $.each(res.approach, function (index, value) {
+                var approach = value.aba072.split(",");
+                path.push({lnglat: [approach[0], approach[1]]});//途径
+            })
+            var end = "#(bus_ba03.endLongitude)".split(",");
+            path.push({lnglat: [end[0], end[1]]});//终点
+            driving.search(path, function (status, result) {
+                if (status === 'complete') {
+                } else {
+                    log.error('获取货车规划数据失败：' + result)
+                }
+            });
+        }
+    })
+</script>
+#end

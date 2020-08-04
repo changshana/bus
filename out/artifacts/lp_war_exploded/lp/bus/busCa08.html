@@ -1,0 +1,138 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md6 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否有效</label>
+                        <div class="layui-input-block">
+                            <select id="aaa996" name="aaa996" lay-filter="aaa996">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">人员类型</label>
+                        <div class="layui-input-block">
+                            <select id="aca044" name="aca044" lay-filter="aca044">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off" onfocus="fnShowSearchTip('请输入关键字进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table" export-id="bus.getBusCa08List" lay-data="{cellMinWidth:60,url:'bus/getBusCa08List', page:true,dataId:'aca080',limit:100,id:'busCa08List',height: 'full-120'}" lay-filter="busCa08List">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+            <th export-key="aca081" lay-data="{field:'aca081'}">登录账号</th>
+            <th export-key="aca082" lay-data="{field:'aca082'}">姓名</th>
+            <th export-key="aca083" lay-data="{field:'aca083'}">手机号码</th>
+            <th export-key="aca084" lay-data="{field:'aca084'}">证件号码</th>
+            <th export-key="aca044_desc" lay-data="{field:'aca044_desc'}">人员类型</th>
+            <th export-key="aaa996" lay-data="{field:'aaa996'}">状态</th>
+            <th lay-data="{field:'aaa997'}">创建用户</th>
+            <th lay-data="{field:'aaa998'}">创建时间</th>
+            <th lay-data="{field:'aaa999'}">备注</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon layui-icon-edit"></i></a>
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form;
+        table.on('tool(busCa08List)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'toEdit'){
+                windowNewLocation("bus/addOrUpdateBusCa08?aca080="+data.aca080);
+            }
+        });
+        fnGetCode("bus_aa99","aaa996","请选择",null,"aaa996",null);
+        fnGetCode("bus_aa99","aca044","请选择",null,"aca044",null);
+        var $ = layui.$, active = {
+            refresh:function(){
+                //todo 清空条件
+                table.reload('busCa08List', {
+                    where: {
+                        search_param:''
+                    }
+                });
+            },
+            reloadData:function(){
+                loadDta();
+            },
+            add:function(){
+                windowNewLocation("bus/addOrUpdateBusCa08");
+            },
+            delete:function(){
+                var checkStatus = table.checkStatus('busCa08List'),data = checkStatus.data;
+                if(data.length==0){
+                    layer.alert('请先选中您要删除的数据行！');
+                }else{
+                    var ids="";
+                    $.each(data,function(i,obj){
+                        ids+=obj.aca080+',';
+                    });
+                    layer.confirm("确定要删除你所选中的所有数据行？", function(index){
+                        $.ajax({
+                            type:'post',
+                            url:'bus/deleteBusCa08',
+                            data:{"ids":ids},
+                            success:function (res) {
+                                layer.close(index);
+                                table.reload('busCa08List', {
+                                    where: {
+                                        search_param:$('#search_param').val()
+                                    }
+                                });
+                            },error:function(){
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        form.on('select(aaa996)', function (data) {//根据下拉条件刷新表格数据
+            loadDta();
+        });
+        form.on('select(aca044)', function (data) {//根据下拉条件刷新表格数据
+            loadDta();
+        });
+        function loadDta() {
+            table.reload('busCa08List', {
+                where: {
+                    aaa996: $("#aaa996").val(),
+                    search_param: $("#search_param").val(),
+                    aca044: $("#aca044").val()
+                }
+            });
+        }
+    });
+</script>
+#end

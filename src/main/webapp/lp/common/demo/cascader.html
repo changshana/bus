@@ -1,0 +1,87 @@
+#@common()
+#define css()
+#end
+#define main()
+<div class="content-box">
+    <div  class="layui-btn-container" >
+        <button class="layui-btn" demo-type="treeTable">treeTable</button>
+        <button class="layui-btn layui-btn-normal" demo-type="tableList">tableList</button>
+        <button class="layui-btn layui-btn-warm" demo-type="inputTags">inputTags</button>
+        <button class="layui-btn layui-btn-danger" demo-type="formSelects">formSelects</button>
+        <button class="layui-btn" demo-type="cascader">cascader</button>
+        <button class="layui-btn" demo-type="tableSelect">tableSelect</button>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择框</label>
+        <div class="layui-input-block">
+            <input type="text" id="a" class="layui-input" readonly="readonly">
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form',"jquery","cascader"], function(){
+        var $ = layui.jquery;
+        var cascader = layui.cascader;
+
+        var data = [
+            {
+                value: 'A',
+                label: 'a',
+                children: [
+                    {
+                        value: 'AA1',
+                        label: 'aa1',
+                        children:[
+                            {
+                             value:'AAA1',
+                             label:'aaa1'
+                            },
+                            {
+                             value:'AAA2',
+                             label:'aaa2',
+                                children:[
+                                    {
+                                        value:'AAAA2',
+                                        label:'aaaa2'
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        value: 'BB1',
+                        label: 'bb1'
+                    }
+                ]
+            },
+            {
+                value: 'B',
+                label: 'b',
+            }
+        ]
+        cascader({
+            elem: "#a",
+            data: data,
+            // url: "/aa",
+            // type: "post",
+            // triggerType: "change",
+            // showLastLevels: true,
+            // where: {
+            //     a: "aaa"
+            // },
+            value: ["A", "AA1","AAA2","AAAA2"],
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $(function(){
+        $('button[demo-type]').click(function(){
+            windowNewLocation('common/extendDemo?demoType='+$(this).attr('demo-type'));
+        });
+    });
+</script>
+
+
+#end

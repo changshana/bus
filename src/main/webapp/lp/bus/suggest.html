@@ -1,0 +1,205 @@
+#@busCommon()
+#define css()
+<style type="text/css">
+
+    .content{
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+    .content .head{
+        height: 1.6rem;
+        line-height: 1.6rem;
+        width: 100%;
+        text-align: center;
+        color: #6E4700;
+        background-color: #FFD300;
+        font-size: .55rem;
+        letter-spacing: .1rem;
+    }
+    .content .phone-box{
+        width: 90%;
+        margin: 0 auto;
+        height: 1.6rem;
+        line-height: 1.6rem;
+        font-size: .45rem;
+    }
+    .phone-box .title{
+        height: 1.6rem;
+        line-height: 1.6rem;
+        color: #858585;
+        margin:0 0.2rem;
+    }
+    .phone-box .input{
+        width: 6rem;
+        border: none;
+        color: #333333;
+    }
+    .content .note-box{
+        width: 90%;
+        margin: 0 auto;
+        height: auto;
+    }
+    .gap{
+        height: .5rem;
+        width: 100%;
+        background-color: #EFEFEF;
+        border-top: 0.03rem solid #DDDDDD;
+        border-bottom: 0.03rem solid #DDDDDD;
+    }
+    .note-box .note{
+        border: none;
+        resize: none;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding: .8rem 0;
+        width: 100%;
+        height: 4rem;
+        font-size: .4rem;
+        line-height: .5rem;
+        color: #333333;
+    }
+    .note-box .img-box{
+        width: 100%;
+        height: auto;
+        line-height: 1.5rem;
+        margin: 0 auto;
+    }
+    .img-box .tip{
+        width: 100%;
+        height: 1rem;
+        line-height: 1rem;
+        color: #858585;
+        font-size: .4rem;
+    }
+    .img-box img{
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: .15rem .3rem;
+    }
+    .content .btn-confirm{
+        width: 90%;
+        height: 1.6rem;
+        border: .01rem solid #FFD300;
+        border-radius: .8rem;
+        background-color: #FFD300;
+        color: #6E4700;
+        letter-spacing: .1rem;
+        font-size: .55rem;
+        margin: .5rem 5%;
+    }
+    .disable{
+        border: .01rem solid #EFEFEF!important;
+        background-color: #EFEFEF!important;
+        color: #BFBFBF!important;
+    }
+    .zoomImg{
+        width: 100%;
+        height: auto;
+    }
+</style>
+#end
+#define main()
+<div class="content">
+    <div class="head">意见反馈</div>
+    <div class="phone-box">
+        <span class="title">联系电话：</span>
+        <input type="text" id="aaa034" class="input" placeholder="请输入联系电话"/>
+    </div>
+    <div class="gap"></div>
+    <div class="note-box">
+        <textarea class="note" id="aaa032" placeholder="请详细描述您的反馈意见，我们将为您的信息严格保密..."></textarea>
+        <div class="img-box" id="img-box">
+            <p class="tip">点击上传图片（双击删除图片）</p>
+            <img id="uploader" src="#(session.basePath)lp/static/images/bus/upload-icon.png"/>
+        </div>
+    </div>
+    <button class="btn-confirm">确定</button>
+</div>
+<script type="text/javascript" src="#(session.basePath)lp/static/js/bus/auto_size.js"></script>
+<script type="text/javascript">
+    var accessHead=Base.BasePath+"upload";
+    layui.use(['upload','layer'],function(){
+        var upload=layui.upload,$=layui.$;
+        var carousel = layui.carousel;
+        var loadIndex="";
+        var uploadInst = upload.render({
+            elem: '#uploader' //绑定元素
+            ,url: 'bus/uploadCleanImg' //上传接口
+            ,choose: function(obj){
+                loadIndex=layer.load(2,{
+                    shade:0.6
+                });
+            }
+            ,done: function(res){
+                layer.close(loadIndex);
+                $("#uploader").before('<img class="uploaded" storePath="'+res.storePath+'" src="'+accessHead+res.storePath+'"/>');
+                var interval="";
+                $(".uploaded").unbind('click',null);
+                /*$(".uploaded").click(function(){
+                    layer.open({
+                        type:1
+                        ,title:"查看大图"
+                        ,area:"9rem"
+                        ,content:"<img class='zoomImg' src='"+accessHead+res.storePath+"'>"
+                        ,closeBtn:1
+                    });
+                });*/
+                $(".uploaded").dblclick(function(){
+                    $(this).remove();
+                });
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+        $(".btn-confirm").on('click',function(){
+            if(!$(this).hasClass("disable")){
+                var aaa031="";
+                $.each($(".uploaded"),function(i,val){
+                    aaa031+=$(val).attr("storePath")+",";
+                });
+                var aaa032=$("#aaa032").val();
+                var aaa034=$("#aaa034").val();
+                if(isNotEmpty(aaa034)){
+                    if(/\d{11}/.test(aaa034.trim())){
+                        aaa034=aaa034.trim();
+                    }else{
+                        errMsg("电话号码格式错误");
+                        return false;
+                    }
+                }else{
+                    errMsg("电话号码不能为空");
+                    return false;
+                }
+                if(isNotEmpty(aaa032)){
+                    aaa032=aaa032.trim();
+                }else{
+                    errMsg("反馈意见不能为空");
+                }
+                $.ajax({
+                    url:"bus/addSuggest"
+                    ,type:'post'
+                    ,data:{"aaa031":aaa031,"aaa032":aaa032,"aaa034":aaa034}
+                    ,success:function(res){
+                        if(isNotEmpty(res)){
+                            if(res.flag==true){
+                                layer.msg(res.msg,{time: 2000});
+                                $(".btn-confirm").addClass("disable");
+                            }else{
+                                layer.msg(res.msg,{time: 2000,icon:5});
+                            }
+                        }
+                    }
+                    ,error:function(){
+                        layer.msg("服务器繁忙，稍后再试",{time: 2000,icon:5});
+                    }
+                });
+            }
+        });
+        function errMsg(msg){
+            layer.msg(msg,{time: 2000});
+        }
+    });
+</script>
+#end

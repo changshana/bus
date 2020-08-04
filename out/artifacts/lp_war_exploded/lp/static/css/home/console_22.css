@@ -1,0 +1,46 @@
+.layui-layout-body{overflow: scroll!important;}
+.chart_box{min-width: 1600px;min-height:600px;width: 100%;height: 100%;overflow: hidden;background:url("../../images/dormitory/image_bg.jpg") no-repeat center;background-size: 100% 100%;}
+.chart_box>div{height: 97%;padding: 25px 25px;}
+.chart_box>div>div{height: 100%;}
+.chart_top,.chart_center,.chart_bottom{height: 31%;margin-top: 6%;}
+.center_header{height: 6%;background: url("../../images/dormitory/top_tit.png") center no-repeat;background-size: 100%;display: flex;align-items: center;justify-content: center;font-size: 18px;color: #ffffff;}
+.center_top{height: 57%;margin-top: 2%;}
+.center_bottom{height: 32%;margin-top: 1.5%;}
+.center_bottom>div,.center_bottom>div>div{height: 100%;margin-top:  0px;padding-top:  0px;}
+.chart_series{width: 100%;height: 100%;box-shadow: 0px 0px 6px #1664b3;border-radius: 5px;
+    background:url("../../images/dormitory/b_top_left.png") 0 0 no-repeat,
+    url("../../images/dormitory/b_top_right.png") 100% 0 no-repeat,
+    url("../../images/dormitory/b_bottom_left.png") 0 100% no-repeat,
+    url("../../images/dormitory/b_bottom_right.png") 100% 100% no-repeat,
+    url("../../images/dormitory/b_line.png") center -1px no-repeat,
+    url("../../images/dormitory/a_line.png") -1px center no-repeat,
+    url("../../images/dormitory/a_line.png") 100.5% center no-repeat;}
+.chart_title{background: url("../../images/dormitory/tit_normal.png") center no-repeat;background-size: 100% 100%;
+    height: 12%;display: flex;align-items: center;color: #ffffff;font-size: 14px;padding-left: 10px;}
+.chart_show{height: 88%;}
+.map_box{width: 100%;height: 100%;background: url("../../images/dormitory/bg_map.png") center no-repeat;background-size: 100%;}
+.statistics_box{float: left;width: 100%;height: 100%;z-index: 99;}
+.statistics_top{height: 80%;}
+.statistics_bottom{height: 20%;background: url("../../images/dormitory/normal_tit.png") center no-repeat;background-size: 100% 100%;}
+.statistics_msg{width: 20%;height: 100%;display: flex;align-items: center;justify-content: center;float: left;}
+.statistics_msg_count>span{display: block;color: #51D9FF;font-size: 15px;}
+.statistics_msg_count>span>i{font-size: 22px;}
+.statistics_msg img{width:80px;height: 80px;}
+.statistics_top_title{float: left;width: 200px;height: 50px;background: url("../../images/dormitory/map_tit.png") center no-repeat;line-height: 50px;color: #ffffff;font-size: 18px;text-align: center;margin-top: 10px;margin-left: 10px;}
+.statistics_top_context{width: 100%;height: 100%;position: relative;z-index: 2;}
+.point_img{width: 54px;height: 54px;background: url("../../images/dormitory/small.png");border-radius: 27px;float: left;display: block;position: fixed;cursor: pointer;}
+.statistics_msg:first-child{background: url("../../images/dormitory/b_bottom_left.png") 0 100% no-repeat;}
+.statistics_msg:last-child{background: url("../../images/dormitory/b_bottom_right.png") 100% 100% no-repeat;}
+.point_click{background: url("../../images/dormitory/point_bg.png")no-repeat center;width: 240px;height: 240px;float: left;}
+.point_bg{width: 100%;height: 100%;background: url("../../images/dormitory/point_bg1.png") 88% 15% no-repeat;animation: autoMove 2s infinite linear;transform-style: preserve-3d;}
+.point_msg{margin-left:25px;width: 220px;height: 240px;float: left;overflow: hidden;background: url("../../images/dormitory/b_line.png") center -1px no-repeat,url("../../images/dormitory/b_line.png") center 100.5% no-repeat,url("../../images/dormitory/a_line.png") -1px center no-repeat,  url("../../images/dormitory/a_line.png") 100.5% center no-repeat;color:#ffffff;font-size: 16px;}
+.msg_title{min-height: 35px;display: flex;justify-content: center;align-items: center;background: url("../../images/dormitory/tit_normal.png");background-size: 100% 100%;}
+.msg_title>img{margin-right: 5px;}
+.msg_content{height: 205px;padding: 20px 30px;line-height: 30px;font-size: 15px;color: #ffffff;background: url("../../images/dormitory/point_show.png")}
+.msg_content span{padding-left: 15px;}
+.point_content{opacity: 0.8;position: fixed;z-index: 9999;width: 580px;height: 320px;background: url("../../images/dormitory/b_line2.png") center -2px no-repeat,url("../../images/dormitory/b_line2.png") center 100.5% no-repeat,url("../../images/dormitory/a_line.png") -1px center no-repeat,url("../../images/dormitory/a_line.png") 100.2% center no-repeat,url("../../images/dormitory/point_show.png");display: flex;align-items: center;justify-content: center;}
+@keyframes autoMove {from { }to {transform: rotateZ(-360deg);}}
+.point_check{background: url("../../images/dormitory/small_check.png")}
+.btnBox{position: fixed;top:0;right: 2%;z-index: 9999;color: #ffffff;}
+.btnBox>span{padding: 10px 10px 10px 10px;display: inline-block;cursor: pointer;}
+.btnBox>span:hover{color: #FFB800;}

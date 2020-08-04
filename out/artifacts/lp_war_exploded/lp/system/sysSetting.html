@@ -1,0 +1,292 @@
+#@sysCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>系统全局配置</legend>
+</fieldset>
+<form class="layui-form addForm content-box" id="settingForm">
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">系统名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="sysSetting.setting_id" value="#(setting==null?'':setting.setting_id)">
+                <input type="text" name="sysSetting.sys_name" value="#(setting==null?'':setting.sys_name)" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">访问地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.manage_url" value="#(setting==null?'':setting.manage_url)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">登录地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.login_url" value="#(setting==null?'':setting.login_url)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">学生端地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.student_url" value="#(setting==null?'':setting.student_url)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">学习平台地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.learning_url" value="#(setting==null?'':setting.learning_url)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">毕业论文查重地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.exam_url" value="#(setting==null?'':setting.exam_url)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">学校代码</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.school_code" value="#(setting==null?'':setting.school_code)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">学校名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.school_name" value="#(setting==null?'':setting.school_name)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">主站所在省份</label>
+            <div class="layui-input-block">
+                <select name="sysSetting.main_site_code" value="#(setting==null?'':setting.main_site_code)">
+                    <option value="">——请选择——</option>
+                    #for(p:province)
+                    <option value="#(p.province_code)">#(p.province_name)</option>
+                    #end
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">主站点代码</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.main_hand_code" value="#(setting==null?'':setting.main_hand_code)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">主教学点代码</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.main_province_code" value="#(setting==null?'':setting.main_province_code)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.keywords" value="#(setting==null?'':setting.keywords)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">作者</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.author" value="#(setting==null?'':setting.author)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">版本信息</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.copyright" value="#(setting==null?'':setting.copyright)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">域名</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.domain" value="#(setting==null?'':setting.domain)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">备案号</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.icp" value="#(setting==null?'':setting.icp)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.phone" value="#(setting==null?'':setting.phone)" lay-verify="aphone" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">服务QQ</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.qq" value="#(setting==null?'':setting.qq)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.email" value="#(setting==null?'':setting.email)" lay-verify="xemail"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md8">
+            <label class="layui-form-label">地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="sysSetting.address" value="#(setting==null?'':setting.address)"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">登录页logo</label>
+            <div class="layui-upload">
+                <a class="layui-btn img_upload_btn" id="logo_login_btn">上传图片</a>
+                <input type="hidden" name="sysSetting.logo_login" value="#(setting==null?'':setting.logo_login)">
+                <div class="layui-upload-img">
+                    <img name="logo_login" id="logo_login_img" src="#(setting==null||setting.logo_login==null||setting.logo_login==''?'lp/static/images/system/aui-icon-image.png':'upload/'+setting.logo_login)">
+                </div>
+                <p id="logo_login"></p>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">管理平台logo</label>
+            <div class="layui-upload">
+                <a class="layui-btn img_upload_btn" id="logo_admin_btn">上传图片</a>
+                <input type="hidden" name="sysSetting.logo_admin" value="#(setting==null?'':setting.logo_admin)">
+                <div class="layui-upload-img">
+                    <img name="logo_admin" id="logo_admin_img" src="#(setting==null||setting.logo_admin==null||setting.logo_admin==''?'lp/static/images/system/aui-icon-image.png':'upload/'+setting.logo_admin)">
+                </div>
+                <p id="logo_admin"></p>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">子系统平台logo</label>
+            <div class="layui-upload">
+                <a class="layui-btn img_upload_btn" id="logo_roll_table_btn">上传图片</a>
+                <input type="hidden" name="sysSetting.logo_roll_table" value="#(setting==null?'':setting.logo_roll_table)">
+                <div class="layui-upload-img">
+                    <img name="logo_roll_table" id="logo_roll_table_img" src="#(setting==null||setting.logo_roll_table==null||setting.logo_roll_table==''?'lp/static/images/system/aui-icon-image.png':'upload/'+setting.logo_roll_table)">
+                <p id="logo_roll_table"></p>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">简要描述</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" name="sysSetting.description" value="#(setting==null?'':setting.description)"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存配置</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+
+
+
+
+
+</form>
+<script>
+    layui.use(['upload','form'], function() {
+        var $ = layui.jquery, upload = layui.upload,form=layui.form;
+
+        form.on('submit(formBox)', function(data){
+            $.ajax({
+                type:'post',
+                url:'system/sysSettingSave',
+                data:$('#settingForm').serialize(),
+                success:function(res){
+                    layer.alert('保存成功');
+                },error:function(err){
+                    timeOut(err);
+                }
+            });
+            return false;
+        });
+
+        //普通图片上传
+        var uploadInst1 = upload.render({
+            elem: '#logo_login_btn'
+            ,url:'system/uploadImg?type=logo_login'
+            ,before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#logo_login_img').attr('src', result); //图片链接（base64）
+                    layer.open({
+                        type: 3,
+                        content: '上传中...'
+                    });
+                });
+            },
+            done:function(res){
+                layer.closeAll();
+                $('#logo_login_img').prev('input').val(res.data);
+            },
+            error:function(error){
+                layer.closeAll();
+                alert('图片上传失败，检查网络是否出现问题，稍后重试');
+            }
+        });
+        var uploadInst2 = upload.render({
+            elem: '#logo_admin_btn'
+            ,url:'system/uploadImg?type=logo_admin'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#logo_admin_img').attr('src', result); //图片链接（base64）
+                    layer.open({
+                        type: 3,
+                        content: '上传中...'
+                    });
+                });
+            },
+            done:function(res){
+                $('#logo_admin_img').prev('input').val(res.data);
+                layer.closeAll();
+            },
+            error:function(error){
+                alert('图片上传失败，检查网络是否出现问题，稍后重试');
+                layer.closeAll();
+            }
+        });
+        var uploadInst3 = upload.render({
+            elem: '#logo_roll_table_btn'
+            ,url:'system/uploadImg?type=logo_roll_table'
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#logo_roll_table_img').attr('src', result); //图片链接（base64）
+                    layer.open({
+                        type: 3,
+                        content: '上传中...'
+                    });
+                });
+            },
+            done:function(res){
+                $('#logo_roll_table_img').prev('input').val(res.data);
+                layer.closeAll();
+            },
+            error:function(error){
+                alert('图片上传失败，检查网络是否出现问题，稍后重试');
+                layer.closeAll();
+            }
+        });
+    });
+
+</script>
+
+#end

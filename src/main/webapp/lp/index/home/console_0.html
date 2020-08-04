@@ -1,0 +1,373 @@
+#@common()
+#define css()
+<link rel="stylesheet" href="lp/static/css/home/console.css">
+<link rel="stylesheet" href="lp/static/css/home/console_0.css">
+<script type="text/javascript" src="js/echarts.min.js"></script>
+#end
+#define main()
+<script type="text/javascript">
+    var data=[];
+</script>
+<div class="layui-fluid">
+    <div class="version_type">
+        <span class="type_click">统计1</span>
+        <span>统计2</span>
+        <span>统计3</span>
+    </div>
+
+    <div class="versions1 content_box">
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-row">
+                        <div class="layui-col-md2">
+                            <div class="total_icon_box">
+                                <div class="total_icon">
+                                    <i class="layui-icon icon1">&#xe68e;</i>
+                                </div>
+                                <div class="total_detail">
+                                    <div class="detail_number1">#(all_plat.size())</div>
+                                    <div class="detail_tag">平台总数</div>
+                                </div>
+                            </div>
+                            <div class="total_icon_box">
+                                <div class="total_icon">
+                                    <i class="layui-icon icon2">&#xe613;</i>
+                                </div>
+                                <div class="total_detail">
+                                    <div class="detail_number2">#(total.role_count)</div>
+                                    <div class="detail_tag">角色总数</div>
+                                </div>
+                            </div>
+                            <div class="total_icon_box">
+                                <div class="total_icon">
+                                    <i class="layui-icon icon3">&#xe66f;</i>
+                                </div>
+                                <div class="total_detail">
+                                    <div class="detail_number3">#(total.user_count)</div>
+                                    <div class="detail_tag">用户总数</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md10">
+                            <div class="layui-card-body">
+                                <!--<div class="layui-row layui-col-space10">
+                                    #for(plat:hot_plat4)
+                                    <div class="layui-col-xs12 layui-col-sm3">
+                                        <div class="layuiadmin-card-text">
+                                            <div class="text_name">
+                                                <i class="layui-icon layui-icon-water">&#xe68e;</i>
+                                                #(plat.name.replaceAll('%',''))
+                                            </div>
+                                            <div>
+                                                <i class="layui-icon layui-icon-water">&#xe735;</i>
+                                                角色数量：<span class="text_number1">#(plat.role_count)</span>
+                                            </div>
+                                            <div>
+                                                <i class="layui-icon layui-icon-water">&#xe770;</i>
+                                                用户数量：<span class="text_number2">#(plat.value)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    #end
+                                </div>-->
+                                <div id="myChart5" class="chartClass5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">通知公告</div>
+                    <div class="layui-card-body">
+                        <div class="message_box">
+                            <ul>
+                                <li>
+                                    <span class="message_text">关于就《中华人民共和国会计法》修订重点问题征询社会意见的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于印发《管理会计应用指引第204号——作业预算》等5项管理会计应用指引征求意见稿的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于征求《代理记账行业协会管理办法》意见的函</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于下达2018年“三区”人才计划教师专项工作补助经费预算的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于下达2018年科技馆免费开放补助资金的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">财政部预算司关于《推进中国绩效预算改革研究—中国预算绩效管理路径与方案研究》征询意向公告</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li>
+                                <li>
+                                    <span class="message_text">关于就《中华人民共和国会计法》修订重点问题征询社会意见的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于印发《管理会计应用指引第204号——作业预算》等5项管理会计应用指引征求意见稿的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于征求《代理记账行业协会管理办法》意见的函</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于下达2018年“三区”人才计划教师专项工作补助经费预算的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于下达2018年科技馆免费开放补助资金的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">财政部预算司关于《推进中国绩效预算改革研究—中国预算绩效管理路径与方案研究》征询意向公告</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-card-header">快捷菜单</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs12">
+                                <div class="layui-btn-container">
+                                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                                        权限管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                                        角色管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                                        用户管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm">
+                                        系统平台管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary">
+                                        <i class="layui-icon">&#xe654;</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">平台用户比例</div>
+                    <div class="layui-card-body">
+                        <div id="myChart1" class="chartClass1">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="versions2 content_box">
+        <div class="fluid_title"><span class="system_name">综合管理平台</span></div>
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-md5">
+                <!--<div id="myChart2" class="chartClass2"></div>-->
+                <div class="circle_content">
+                    <div class="content_text">一共入驻了<br><span class="text_number3">#(all_plat.size())</span>个平台</div>
+                </div>
+                <div class="detail_box">
+                    <div>角色总数：<span  class="text_number3">#(total.role_count)</span></div>
+                    <div>用户总数：<span  class="text_number3">#(total.user_count)</span></div>
+                </div>
+                <div class="plat_content">
+                    #for(plat:hot_plat5)
+                    <div class="plat_box">
+                        <div class="context_1">#(plat.name.replaceAll('%',''))</div>
+                        <div class="context_2"><i class="layui-icon">&#xe735;</i><span class="text_number3 role">#(plat.role_count)</span></div>
+                        <div class="context_2"><i class="layui-icon">&#xe770;</i><span class="text_number3 user">#(plat.value)</span></div>
+                    </div>
+                    #end
+                </div>
+            </div>
+            <div class="layui-col-md7">
+                <div class="fluid_title">
+                    <span class="title_btn">数据服务汇总</span>
+                </div>
+                <div id="myChart3"  class="chartClass3">
+
+                </div>
+                <div id="myChart4"  class="chartClass4">
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    <div class="versions3 content_box">
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-md2">
+                <div class="total_type">
+                    <span class="type_click">用户排行</span>
+                    <span>角色排行</span>
+                </div>
+                <div class="total_count_rank">
+                    <ul>
+                        #for(plat:hot_plat10)
+                            <li>
+                                <span class="rank_number">#(for.index+1)</span>
+                                <span class="rank_object">#(plat.name.replaceAll('%','')):<span class="rank_detail">#(plat.value)</span></span>
+                            </li>
+                        #end
+                    </ul>
+                    <ul>
+                        #for(plat:all_plat_sort_role10)
+                            <li>
+                                <span class="rank_number">#(for.index+1)</span>
+                                <span class="rank_object">#(plat.name.replaceAll('%','')):<span class="rank_detail">#(plat.role_count)</span></span>
+                            </li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div id="myChart6" class="chartClass6">
+
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-card-header">快捷菜单</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs12">
+                                <div class="layui-btn-container">
+                                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                                        权限管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                                        角色管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                                        用户管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm">
+                                        系统平台管理
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary">
+                                        <i class="layui-icon">&#xe654;</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">通知公告</div>
+                    <div class="layui-card-body">
+                        <div class="message_box line-class">
+                            <ul>
+                                <li>
+                                    <span class="message_text">关于就《中华人民共和国会计法》修订重点问题征询社会意见的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">中华人民共和国财政部令第94号--政府采购质疑和投诉办法</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li><li>
+                                    <span class="message_text">关于确认2018－2020年中央国库现金管理商业银行定期存款参与银行团成员名单的通知</span>
+                                    <span class="message_time">2018-06-10</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <input type="hidden" value="#(all_plat)" id="all_plat">
+    <input type="hidden" value="#(hot_plat10)" id="hot_plat10">
+</div>
+<script type="text/javascript" src="lp/static/js/home/console_0.js"></script>
+<script type="text/javascript">
+    $('.version_type span').click(function(){
+        $(this).addClass('type_click').siblings().removeClass('type_click');
+        $('.versions'+parseInt($(this).index()+1)).show().siblings('.content_box').hide();
+    });
+    $('.total_type span').click(function(){
+        $(this).addClass('type_click').siblings().removeClass('type_click');
+        $('.total_count_rank ul:eq('+$(this).index()+')').show().siblings('ul').hide();
+    });
+
+    var all_plat=$('#all_plat').val();
+    var hot_plat10=$('#hot_plat10').val();
+    var data=eval(all_plat.replace(/%/g,'"'));
+    var data10=eval(hot_plat10.replace(/%/g,'"'));
+    var user_arr=[],role_arr=[],name_arr=[];
+    var all_user_arr=[],all_role_arr=[],all_name_arr=[],max_count=0,data2=[],all_pm_arr=[],all_cm_arr=[];
+    $.each(data,function(i,o){
+        if(o.value>max_count){
+            max_count=o.value;
+        }
+        if(i<6){
+            //部分统计
+            user_arr.push(o.value);
+            role_arr.push(o.role_count);
+            name_arr.push(o.name);
+        }
+        all_user_arr.push(o.value);
+        all_role_arr.push(o.role_count);
+        all_name_arr.push(o.name);
+        all_pm_arr.push(o.pm_count);
+        all_cm_arr.push(o.cm_count);
+    });
+
+
+</script>
+
+#end

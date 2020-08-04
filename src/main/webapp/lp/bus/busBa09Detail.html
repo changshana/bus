@@ -1,0 +1,79 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="bus/saveBusBa09" method="post">
+    <input type="hidden" name="busBa09.aba090" value="#(busBa09.aba090)">
+    <div class="layui-form-item">
+        <label class="layui-form-label">驾驶员姓名</label>
+        <div class="layui-input-inline">
+            <select name="busBa09.aba020" value="#(busBa09.aba020)"  lay-filter="aba020">
+                <option value="">——请选择——</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">里程数</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busBa09.aba091"  value="#(busBa09.aba091)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片url</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busBa09.aba092"  value="#(busBa09.aba092)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">审核状态</label>
+        <div class="layui-input-inline">
+            <select name="busBa09.aba093" value="#(busBa09.aba093)"  lay-filter="aba093">
+                <option value="">——请选择——</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">审核人</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busBa09.aba094"  value="#(busBa09.aba094)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">审核时间</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busBa09.aba095" value="#(busBa09.aba095)" id="aba095" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" name="busBa09.aaa996"  value="1"  #((busBa09.aaa996==null||busBa09.aaa996==1)?'checked':'')>
+        </div>
+    </div>
+    <input type="hidden" name="busBa09.aaa997" value="#(busBa09.aaa997)">
+    <input type="hidden" name="busBa09.aaa998" value="#(busBa09.aaa998)">
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+			<textarea name="busBa09.aaa999"  class="layui-textarea">#(busBa09.aaa999)</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laydate','upload'], function(){
+        var laydate = layui.laydate;
+        laydate.render({elem: '#aba095' });
+    });
+</script>
+#end

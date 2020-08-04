@@ -1,0 +1,193 @@
+#@busCommon()
+#define main()
+
+<style type="text/css">
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .main{
+        width: 98%;
+        height: auto;
+        margin: 10px  auto;
+    }
+    .title{
+        height: 50px;
+        line-height: 50px;
+        width: 100%;
+        margin: 10px auto;
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+        letter-spacing: 5px;
+    }
+    .content{
+        width: 100%;
+        height: 330px;
+    }
+    .content>div{
+        float: left;
+    }
+    .datePanel{
+        width: 38%;
+        height: inherit;
+        margin-left: 2%;
+        text-align: center;
+    }
+    .chart-content{
+        width: 100%;
+        height: 400px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    }
+    .chart{
+        width: inherit;
+        height: inherit;
+    }
+    .general_view{
+        width: 58.6%;
+        height: inherit;
+        box-shadow: 0 2px 4px rgba(0,0,0,.12);
+        border:1px solid #d2d2d2;
+    }
+    .general_view>div{
+        float: left;
+    }
+    .general_view .left,.general_view .right{
+        width: 50%;
+        height: inherit;
+        text-align: center;
+    }
+    .general_view img{
+        width: 200px;
+        height: 200px;
+    }
+    .general_view .num{
+        height: 30px;
+        line-height: 30px;
+        margin-top: 30px;
+        font-size: 25px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        color: #333;
+    }
+    #timeZone{
+        color: #aa5500;
+        letter-spacing: 0;
+    }
+</style>
+<!-- 内容主体区域 -->
+<div class="main">
+    <p class="title">校园班车系统运行情况概览（<span id="timeZone">#(dateStart) ~ #(dateEnd)</span>）</p>
+    <div class="content">
+        <div class="general_view">
+            <div class="left">
+                <img src="lp/bus/img/bus.png"/>
+                <p class="num" id="busNum"></p>
+            </div>
+            <div class="right">
+                <img src="lp/bus/img/people.png"/>
+                <p class="num" id="peopleNum"></p>
+            </div>
+        </div>
+        <div class="datePanel" id="datePanel"></div>
+    </div>
+    <div class="chart-content">
+        <div class="chart" id="chart1">
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    layui.use(['form', 'jquery', 'laydate', 'table'], function () {
+        let laydate=layui.laydate,$=layui.$,layer=layui.layer;
+        laydate.render({
+            elem:"#datePanel"
+            ,position: 'static'
+            ,format:'yyyy-MM-dd'
+            ,range: "~"
+            ,btns:["confirm"]
+            //,max:7
+            ,value:'#(dateStart) ~ #(dateEnd)'
+            ,done:function (value, date, endDate) {
+                if(isNotEmpty(value)){
+                    getData(value.substr(0,value.indexOf("~")).trim(),value.substr(value.indexOf("~")+1).trim());
+                }
+            }
+        });
+        //getData('#(dateStart)','#(dateEnd)');
+        getData('#(dateStart)','#(dateEnd)');
+        function getData(dateStart,dateEnd){
+            let loadIndex=layer.load(2,{shade:.5});;
+            $.ajax({
+                url:"bus/getBusConsoleData"
+                ,type:'post'
+                ,data:{"dateStart":dateStart,"dateEnd":dateEnd}
+                ,success:function(res){
+                    if(res.flag){
+                        $("#busNum").html(res.data.busNum+"班次");
+                        $("#peopleNum").html(res.data.peopleNum+"人次");
+                        $("#timeZone").html(res.dateStart+' ~ '+res.dateEnd);
+                        initChart("chart1",res);
+                    }else{
+                        layer.close(loadIndex);
+                        layer.msg(res.msg,{icon:5});
+                    }
+                }
+                ,error:function(res){
+                    layer.close(loadIndex);
+                    layer.msg("网络繁忙，请稍后重试！",{icon:5});
+                }
+            });
+        }
+        function initChart(containerId,data){
+            console.log(data);
+            let chart=document.getElementById(containerId);
+            let myChart = echarts.init(chart);
+            let option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+
+                },
+                color:['#32D093','#44A6FF', '#FFAB15', '#FE5E5E'],
+                grid: {
+                    left: '2%',
+                    right: '2%',
+                    bottom: '2%',
+                    containLabel: true
+                },
+                legend: {
+                    data: data.legend
+                    ,position: 'right'
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: data.xAxisData
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: data.series
+            };
+            myChart.setOption(option);
+            layer.closeAll();
+            layer.msg(data.msg,{icon:6});
+        }
+    });
+</script>
+#end

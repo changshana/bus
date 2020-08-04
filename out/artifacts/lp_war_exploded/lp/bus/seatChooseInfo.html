@@ -1,0 +1,428 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/bus/seatChoose.css">
+<style>
+    #time, #routine {
+        color: #009688;
+        cursor: pointer;
+    }
+
+    .scheduleList {
+        width: 100%;
+        height: auto;
+        display: none;
+        padding: 0.5em 0;
+    }
+
+    .scheduleList li {
+        cursor: pointer;
+    }
+
+    .scheduleList .schedule {
+        height: 2em;
+        line-height: 2em;
+        width: 80%;
+        border: 0.1em solid #6C77F7;
+        color: #6C77F7;
+        border-radius: 1em;
+        margin: 0.5em auto;
+        text-align: center;
+    }
+
+    .scheduleList .schedule-not {
+        height: 2em;
+        line-height: 2em;
+        width: 80%;
+        border: 0.1em solid #CCCCCC;
+        color: #6C77F7;
+        border-radius: 1em;
+        margin: 0.5em auto;
+        text-align: center;
+        background-color: #CCCCCC;
+        cursor: not-allowed !important;
+    }
+
+    .scheduleList .schedule-timeOut {
+        height: 2em;
+        line-height: 2em;
+        width: 80%;
+        border: 0.1em solid #ab1a04;
+        color: #ab1a04;
+        border-radius: 1em;
+        margin: 0.5em auto;
+        text-align: center;
+        color: #999999;
+        background-color: #F6F6F6;
+        cursor: pointer;
+    }
+
+    .scheduleList .schedule:hover {
+        background-color: #6C77F7;
+        color: white;
+    }
+
+    .scheduleList .noSchedule {
+        height: 2em;
+        line-height: 2em;
+        width: 80%;
+        color: #6C77F7;
+        margin: 1em auto;
+        text-align: center;
+    }
+
+    .routList {
+        width: 100%;
+        height: auto;
+        display: none;
+        padding: 0.5em 0;
+    }
+
+    .routList li {
+        cursor: pointer;
+    }
+
+    .routList .rout {
+        height: 3em;
+        line-height: 3em;
+        width: 80%;
+        border: .1em solid #6C77F7;
+        color: #6C77F7;
+        border-radius: 1.2em;
+        margin: 1em auto;
+        text-align: center;
+    }
+
+    .routList .rout:hover {
+        background-color: #6C77F7;
+        color: white;
+    }
+
+    .routList .noRout {
+        height: 3em;
+        line-height: 3em;
+        width: 80%;
+        margin: 1em auto;
+        color: #6C77F7;
+        text-align: center;
+    }
+</style>
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>车辆座位图</legend>
+</fieldset>
+<form class="layui-form addForm content-box">
+    <div class="layui-fluid layadmin-homepage-fluid main-box">
+        <div class="layui-row layui-col-space8 main-box">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md6 main-box">
+                <div class="left-box45">
+                    <ul id="seatGrid" class="seatGrid">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md6 main-box">
+                <div class="right-box">
+                    <div class="icon-title">
+                        <span class="sample"><img src="lp/static/images/bus/icon-seat-red.png">已选择</span>
+                        <span class="sample"><img src="lp/static/images/bus/icon-seat-blue.png">当前选择</span>
+                        <span class="sample"><img src="lp/static/images/bus/icon-seat-gray.png">空&nbsp;位</span>
+                        <span class="sample"><img src="lp/static/images/bus/icon-seat-cyan.png">已锁定</span>
+                    </div>
+                    <!--<div id="calendar" class="calendar"></div>-->
+                    <ul class="busInfo">
+                        <li class="left">
+                            <label>车辆类型：</label>
+                            <span>#(busInfo.aba003)座大巴车</span>
+                        </li>
+                        <!--<li class="right">
+                            <label>车辆名称：</label>
+                            <span>#(busInfo.aaa002)</span>
+                        </li>-->
+                        <li class="right">
+                            <label>车牌号：</label>
+                            <span>#(busInfo.aaa005)</span>
+                        </li>
+                        <li class="left">
+                            <label>车辆班次：</label>
+                            <span>#(busInfo.aba051)</span>
+                        </li>
+                        <!--<li class="left">
+                            <label>时间：</label>
+                            <span id="time">#(busInfo.aba051) - #(busInfo.aba052)</span>
+                        </li>-->
+                        <li class="right">
+                            <label>座次情况：</label>
+                            <span class="seatChoseInfo"></span>
+                        </li>
+                        <li class="total" style="display: none;">
+                            <label>已选座位：</label>
+                            <span id="selectedSeat">还未选座，点击右侧座位图选座</span>
+                        </li>
+                        <li class="total">
+                            <label>首尾站：</label>
+                            <span id="routine">#(busInfo.aba007) —— #(busInfo.aba008)</span>
+                        </li>
+                        <li class="total"></li>
+                        <li class="total psgInfo">
+                            <label>乘客信息</label>
+                        </li>
+                        <li class="left">
+                            <label class="psgInfo">乘客姓名：</label>
+                            <span id="personName"></span>
+                        </li>
+                        <li class="left">
+                            <label class="psgInfo">座位号：</label>
+                            <span id="seatNo"></span>
+                        </li>
+                        <li class="left">
+                            <label class="psgInfo">人员类型：</label>
+                            <span id="personType"></span>
+                        </li>
+                        <li class="left">
+                            <label class="psgInfo">账号：</label>
+                            <span id="account"></span>
+                        </li>
+                        <!--<li class="left">
+                            <label>支付状态：</label>
+                            <span id="payState"></span>
+                        </li>-->
+                        <li class="btn-left btnContainer">
+                            <button class="confirm">锁定座位</button>
+                        </li>
+                        <li class="btn-middle btnContainer">
+                            <button class="cancel">取消发车</button>
+                        </li>
+                        <li class="btn-right btnContainer">
+                            <button class="refresh">刷<span style="display: inline-block;width: 2em;"></span>新</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul class="scheduleList" id="scheduleList">
+
+    </ul>
+    <ul class="routList" id="routList">
+
+    </ul>
+</form>
+<script>
+    var $, form, element, laydate, layer;
+    layui.use(['form', 'laydate', 'upload', 'element', 'layer'], function () {
+        $ = layui.$;
+        form = layui.form;
+        element = layui.element;
+        laydate = layui.laydate;
+        layer = layui.layer;
+        $(".sample").css("line-height", $(".sample").height() + "px");
+        $(".busInfo li").css("line-height", $(".busInfo li").height() + "px");
+        laydate.render({
+            elem: '#calendar'
+            , value: '#(date)'
+            , position: 'static'
+            , change: function (value, date, endDate) {
+                //windowNewLocation("bus/toSeatChooseInfo?date=" + value + "&aba050=#(busInfo.aba050)&aba030=#(busInfo.aba030)");
+            }
+        });
+        generateSeat('#(busInfo.col)', '#(busInfo.row)');
+    });
+    $('.confirm').bind('click', function () {
+        var selectedSeat = $('.seat-icon-selected');
+        if (selectedSeat.length == 0) {
+            alertMsg("请选择座位", 'warn');
+        } else {
+            var seats = "";
+            $.each(selectedSeat, function (i, value) {
+                seats += $(value).html() + ",";
+            });
+            seats = seats.substr(0, seats.length - 1);
+            var confirmIndex = layer.confirm("确定锁定本车【" + seats + "】号座位？", function () {
+                layer.close(confirmIndex);
+                var loadIndex = layer.load(
+                    2,
+                    {
+                        shade: 0.4,
+                        content: "<p style='font-size: 24px;color:#F6F6F6; width: 180px;margin-left: 40px;'>请稍候...</p>"
+                    }
+                );
+                $.post({
+                    url: 'bus/chooseSeat',
+                    data: {'aba032': '#(date)', 'aca050': '#(busInfo.aca050)', 'aba041': seats,'type':0}
+                    , success: function (data) {
+                        layer.close(loadIndex);
+                        if (data.flag == true) {
+                            if (isNotEmpty(data.msg)) {
+                                layer.msg("本车座位【" + data.msg + "】已被其他人选择,请选择其他座位！", {icon: 5});
+                            } else {
+                                layer.msg("座位锁定成功！", {icon: 6});
+                            }
+                        } else {
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                        generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                    }
+                    , error: function () {
+                        alertMsg("服务器繁忙，稍后再试！", 'error');
+                    }
+                });
+            });
+        }
+        return false;
+    });
+
+    $(".refresh").bind("click", function () {
+        window.location.reload();
+        return false;
+    });
+
+    $(".cancel").bind("click", function () {
+        var index=layer.confirm('是否确认取消发车？', {icon: 3, title:'提示'}, function(index){
+            layer.close(index);
+            var loadIndex=layer.load(2,{'shade':0.5});
+            $.ajax({
+                type:'post'
+                ,url:'bus/cancelBus'
+                ,data:{'aca050':'#(busInfo.aca050)'}
+                ,success:function(res){
+                    layer.close(loadIndex);
+                    layer.msg(res.msg);
+                    setTimeout(function () {
+                        parent.layer.closeAll();
+                    },200);
+                }
+                ,error:function(res){
+                    generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                    layer.msg("系统繁忙，稍后再试！")
+                }
+            });
+        });
+        return false;
+    });
+
+    function generateSeat(col,row) {
+        var width = $(".seatGrid").width();
+        var height = $(".seatGrid").height();
+        var margin_top = height * 0.009;
+        var margin_left = width * 0.015;
+        var seatWidth = width / col - margin_left * 2 + "px";
+        var seatHeight = height / row - margin_top * 2 + "px";
+        var seatNum = 0;
+        $(".seatGrid").empty();
+        for (var i = 0; i < row; i++) {
+            for (var j = 0; j < col; j++) {
+                $(".seatGrid").append("<li class='seatHidden' style='width: " + seatWidth + ";height:" + seatHeight + ";margin: " + margin_top + "px " + margin_left + "px;'  orderNUm=" + (++seatNum) + "><i></i></li>");
+            }
+        }
+        generateSeatByAjax(seatHeight);
+    }
+
+    function generateSeatByAjax(seatHeight) {
+        $.ajax({
+            url: '#(session.basePath)bus/getSeatInfo'
+            , type: 'post'
+            , data: {"id": "#(busInfo.aba020)",  "aca050": "#(busInfo.aca050)"}
+            , success: function (res) {
+                if (isNotEmpty(res) && res.length !== 0) {
+                    var $seat;
+                    $.each(res, function (i, seat) {
+                        $seat = $(".seatGrid").find(".seatHidden[orderNum=" + seat.aba045 + "]");
+                        if (isNotEmpty(seat)) {
+                            if (seat.isLocked == 1 && seat.aca044 == 0) {
+                                $seat.removeClass('seatHidden').addClass('seat').html('<i class="seat-icon-locked">' + seat.aba041 + '</i>').attr("id", seat.aba040).css("line-height", seatHeight);
+                            } else if (seat.isLocked == 1) {
+                                $seat.removeClass('seatHidden').addClass('seat').html('<i aca030='+seat.aca030+'  class="seat-icon-chose">' + seat.aba041 + '</i>').attr("id", seat.aba040).css("line-height", seatHeight);
+                            } else {
+                                $seat.removeClass('seatHidden').addClass('seat').html('<i class="seat-icon">' + seat.aba041 + '</i>').attr("id", seat.aba040).css("line-height", seatHeight);
+                            }
+                        }
+                    });
+                    $(".seat i").mouseenter(function(){
+                        var layerIndex;
+                        if ($(this).hasClass("seat-icon-locked")){
+                            layerIndex=layer.tips('点击取消锁定', $(this), {
+                                tips: 1
+                            });
+                        }
+                        $(".seat i").mouseleave(function(){
+                            layer.close(layerIndex);
+                        });
+                    });
+                    $(".seat i").click(function () {
+                        if ($(this).hasClass("seat-icon")) {
+                            $(this).removeClass('seat-icon').addClass("seat-icon-selected");
+                        } else if ($(this).hasClass("seat-icon-selected")) {
+                            $(this).removeClass('seat-icon-selected').addClass("seat-icon");
+                        } else if ($(this).hasClass("seat-icon-locked")) {
+                            var aba041 = $(this).html();
+                            var cancelIndex = layer.confirm("是否要解锁【" + aba041 + "】号座位？", function () {
+                                $.ajax({
+                                    url: "bus/cancelChooseSeat"
+                                    , type: "post"
+                                    , data: {"aba041": aba041, "aca050": '#(busInfo.aca050)', "aba032": '#(date)'}
+                                    , success: function (data) {
+                                        generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                                        layer.close(cancelIndex);
+                                    }
+                                    , error: function () {
+                                        layer.close(cancelIndex);
+                                        layer.msg("服务器错误，稍后再试！");
+                                        setTimeout(function () {
+                                            generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                                        },500)
+                                    }
+                                });
+                            });
+                        }else if($(this).hasClass("seat-icon-chose")){//选座
+                            $("#personName").html('');
+                            $("#seatNo").html('');
+                            $("#personType").html('');
+                            $("#account").html('');
+                            $.ajax({
+                                type:'post'
+                                ,url:'bus/getInfoByAca030'
+                                ,data:{"aca030":$(this).attr('aca030')}
+                                ,success:function(res){
+                                    if(res.flag==true){
+                                        let ca03=res.ca03;
+                                        $("#personName").html(ca03.aca043);
+                                        $("#seatNo").html(ca03.aba041);
+                                        $("#personType").html(ca03.aca044_dsc);
+                                        $("#account").html(ca03.aca041);
+                                        //generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                                    }else{
+                                        generateSeat('#(busInfo.col)', '#(busInfo.row)');
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                                ,error:function(res){
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        }
+                    });
+                    if ('#(busInfo.aaa995)' == 2) {
+                        $(".left-box45").removeClass("left-box45").addClass("left-box44");
+                    } else if('#(busInfo.aaa995)' == 1) {
+                        $(".left-box44").removeClass("left-box44").addClass("left-box45");
+                    }
+                    var count = 0, sum = 0;
+                    $.each($("#seatGrid .seat"), function (i, value) {
+                        sum++;
+                        if ($(value).find("i").hasClass("seat-icon-chose") || $(value).find("i").hasClass("seat-icon-locked")) {
+                            count++;
+                        }
+                    });
+                    $(".seatChoseInfo").html("<b style='color: orangered;'>" + count + "</b> / " + sum);
+                } else {
+                    layer.msg("服务器繁忙，加载座位图出错，稍后再试！", {icon: 2});
+                }
+            }
+            , error: function (res) {
+                layer.msg("服务器繁忙，稍后再试！", {icon: 2});
+            }
+        });
+    }
+</script>
+#end

@@ -1,0 +1,222 @@
+#@sysCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>机构信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="system/siteInfoSave" method="post">
+    <input type="hidden" name="siteInfo.site_id" value="#(siteInfo==null?'':siteInfo.site_id)"/>
+    <input type="hidden" name="siteInfo.parent_site_id" value="#(parent_site_id)"/>
+    <input type="hidden" id="site_level" name="siteInfo.site_level" value="#(parent_site_id==null?'1':'2')">
+    #if(site_name!=null)
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级机构</label>
+        <div class="layui-input-block">
+            <input type="text" name="parent_site_name" disabled value="#(site_name)" class="layui-input">
+        </div>
+    </div>
+    #end
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">站点名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="site_name" name="siteInfo.site_name" value="#(siteInfo==null?'':siteInfo.site_name)"  lay-verify="required" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">站点简称</label>
+            <div class="layui-input-block">
+                <input type="text" id="short_name" name="siteInfo.short_name"value="#(siteInfo==null?'':siteInfo.short_name)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">启用状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" id="status" name="siteInfo.status" value="1" lay-skin="switch" #((siteInfo==null||siteInfo.status==1)?'checked':'')>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">站点代码</label>
+            <div class="layui-input-block">
+                <input type="text" id="site_code" name="siteInfo.site_code"  value="#(siteInfo==null?'':siteInfo.site_code)"  lay-verify="required" autocomplete="off"  class="layui-input">
+
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">完整代码</label>
+            <div class="layui-input-block">
+                <input type="text" id="full_code" name="siteInfo.full_code" value="#(siteInfo==null?'':siteInfo.full_code)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">依托单位名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="unit_name" name="siteInfo.unit_name" value="#(siteInfo==null?'':siteInfo.unit_name)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">依托单位性质</label>
+            <div class="layui-input-block">
+                <input type="text" id="site_nature" name="siteInfo.site_nature" value="#(siteInfo==null?'':siteInfo.site_nature)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">教育行政部门批准日期</label>
+            <div class="layui-input-block">
+                <input type="text" name="siteInfo.setup_date" id="setup_date" value="#(siteInfo==null?'':siteInfo.setup_date)" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">教育行政部门批准文号</label>
+            <div class="layui-input-block">
+                <input type="text" id="approval_number" name="siteInfo.approval_number" value="#(siteInfo==null?'':siteInfo.approval_number)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">站点分组</label>
+            <div class="layui-input-block">
+                <select type="text" id="group_code"  name="siteInfo.group_code" value="#(siteInfo==null?'':siteInfo.group_code)" lay-verify="" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">省份</label>
+            <div class="layui-input-block">
+                <select id="province" name="siteInfo.province" value="#(siteInfo==null?'':siteInfo.province)" lay-verify="" lay-search="" lay-filter="province">
+                    <option value="">直接选择或搜索选择</option>
+                    #for(p:province)
+                    <option value="#(p.province_code)">#(p.province_name)</option>
+                    #end
+                </select>
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">地区(市)</label>
+            <div class="layui-input-block">
+                <select id="city_code" name="siteInfo.city_code" value="#(siteInfo==null?'':siteInfo.city_code)" lay-verify="" lay-search="">
+                    <option value="">直接选择或搜索选择</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">联系地址</label>
+            <div class="layui-input-block">
+                <input type="text" id="address" name="siteInfo.address" value="#(siteInfo==null?'':siteInfo.address)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">邮政编码</label>
+            <div class="layui-input-block">
+                <input type="text" id="zipcode" name="siteInfo.zipcode" value="#(siteInfo==null?'':siteInfo.zipcode)" lay-verify="postalcode"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-block">
+                <input type="text" id="telphone"  name="siteInfo.telphone"  value="#(siteInfo==null?'':siteInfo.telphone)" lay-verify="telphone" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">联系人</label>
+            <div class="layui-input-block">
+                <input type="text" id="link_man"  name="siteInfo.link_man" value="#(siteInfo==null?'':siteInfo.link_man)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">联系人手机</label>
+            <div class="layui-input-block">
+                <input type="text" id="link_tel"  name="siteInfo.link_tel" lay-verify="xphone" value="#(siteInfo==null?'':siteInfo.link_tel)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">联系人传真</label>
+            <div class="layui-input-block">
+                <input type="text" id="link_fax" name="siteInfo.link_fax" value="#(siteInfo==null?'':siteInfo.link_fax)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">联系人电子邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" id="link_email"  name="siteInfo.link_email" lay-verify="xemail" value="#(siteInfo==null?'':siteInfo.link_email)" autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">联系人QQ号</label>
+            <div class="layui-input-block">
+                <input type="text" id="link_qq" name="siteInfo.link_qq" value="#(siteInfo==null?'':siteInfo.link_qq)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+        <div  class="layui-col-md4">
+            <label class="layui-form-label">站点备注</label>
+            <div class="layui-input-block">
+                <input type="text" id="remark" name="siteInfo.remark" value="#(siteInfo==null?'':siteInfo.remark)"  autocomplete="off"  class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存信息</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重  置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    layui.use(['form','laydate'], function(){
+        var form = layui.form,laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#setup_date'
+        });
+
+        form.on('select(province)', function(obj){
+            $('#city_code').empty();
+            if(isNotEmpty(obj.value)){
+                $.ajax({
+                    type:'post',
+                    url:'common/getCityListByAjax',
+                    data:{'province_code':obj.value},
+                    success:function(res){
+                        $.each(res,function(i,o){
+                            $('#city_code').append('<option value="'+o.city_code+'">'+o.city_name+'</option>');
+                        });
+                        form.render('select');
+                    }
+                });
+            }else{
+                $('#city_code').append('<option value="">直接选择或搜索选择</option>');
+                form.render('select');
+            }
+        });
+
+        //监听提交
+        form.on('submit(formBox)', function(data){
+            //验证数据
+
+        });
+        var $ = layui.$;
+    });
+
+</script>
+
+
+
+#end

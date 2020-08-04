@@ -1,0 +1,74 @@
+#@sysCommon()
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>模块权限信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="system/addPermSave" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属模块</label>
+        <div class="layui-input-inline">
+            <input type="hidden" name="sysPerm.perm_id" value="#(perm==null?'':perm.perm_id)">
+            <input type="hidden" name="sysPerm.module_id" value="#(module_id)">
+            <input type="text" name="module_name" value="#(module_name)" required class="layui-input" disabled>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysPerm.perm_name" value="#(perm==null?'':perm.perm_name)"  lay-verify="required" placeholder="请输入权限名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限代码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sysPerm.perm_code" value="#(perm==null?'':perm.perm_code)"  placeholder="请输入权限代码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label">权值</label>
+        <div class="layui-input-block">
+            <input type="hidden" id="perm_value" name="sysPerm.perm_value" value="#(perm==null?'':perm.perm_value)">
+            <input type="checkbox" id="perm_value_1" value="1" lay-skin="primary" title="浏览[1]"   #((perm==null||(perm!=null&&perm.perm_value_1!=0))?'checked':'') >
+            <input type="checkbox" id="perm_value_2" value="2" lay-skin="primary" title="添加[2]"   #((perm==null||(perm!=null&&perm.perm_value_2!=0))?'checked':'')>
+            <input type="checkbox" id="perm_value_4" value="4" lay-skin="primary" title="编辑[4]"   #((perm==null||(perm!=null&&perm.perm_value_4!=0))?'checked':'')>
+            <input type="checkbox" id="perm_value_8" value="8" lay-skin="primary" title="处理1[8]"   #((perm==null||(perm!=null&&perm.perm_value_8!=0))?'checked':'')>
+            <input type="checkbox" id="perm_value_16" value="16" lay-skin="primary" title="处理2[16]"  #((perm==null||(perm!=null&&perm.perm_value_16!=0))?'checked':'')>
+            <input type="checkbox" id="perm_value_32" value="32" lay-skin="primary" title="处理3[32]"  #((perm==null||(perm!=null&&perm.perm_value_32!=0))?'checked':'')>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限备注</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" name="sysPerm.remark" placeholder="请输入权限备注">#(perm==null?'':perm.remark)</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formBox)', function(data){
+            //验证数据
+            var index=[1,2,4,8,16,32];
+            var perm_value=0;
+            $.each(index,function(i,o){
+                if($('#perm_value_'+index[i]).attr('checked')){
+                    perm_value+=parseInt($('#perm_value_'+index[i]).val());
+                }
+            });
+            $('#perm_value').val(perm_value);
+        });
+    });
+</script>
+
+#end

@@ -1,0 +1,166 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container">
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加
+                </button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md5 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">车辆类型</label>
+                        <div class="layui-input-block">
+                            <select id="aba060" lay-filter="aba060">
+                                <option value="">--请选择--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off"
+                           onfocus="fnShowSearchTip('请输入【车牌号】进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table"
+           lay-data="{cellMinWidth:60,url:'busOrder/getBusOrderAa01List', page:true,dataId:'aaa001',limit:10, id:'busAa01List',height: 'full-120'}"
+           lay-filter="busAa01List">
+        <thead>
+        <!--        <tr>
+                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                    <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+                    <th lay-data="{field:'aaa002'}">名称</th>
+                    <th lay-data="{field:'aaa003'}">编号</th>
+                    <th lay-data="{field:'aaa004'}">品牌</th>
+                    <th lay-data="{field:'aaa005'}">车牌</th>
+                    <th lay-data="{field:'aaa006'}">生产厂商</th>
+                    <th lay-data="{field:'aba002'}">车辆类型</th>
+                    <th lay-data="{field:'aaa007'}">核载人数</th>
+                    <th lay-data="{field:'aba002',templet:'#seatInfo'}">车辆座次类型</th>
+                    <th lay-data="{field:'aaa999'}">备注</th>
+                </tr>-->
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+            <th lay-data="{field:'aaa005'}">车牌</th>
+            <th lay-data="{field:'aba002'}">车型</th>
+            <th lay-data="{field:'aaa007'}">座位数</th>
+            <th lay-data="{field:''}">驾驶证</th>
+            <th lay-data="{field:'aba002',templet:'#seatInfo'}">车辆座次类型</th>
+            <th lay-data="{field:'aaa009',templet:'#img'}">照片</th>
+            <th lay-data="{field:'aaa999'}">备注</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon"></i></a>
+    </script>
+    <script type="text/html" id="seatInfo">
+        #[[
+        <a class="layui-btn layui-btn-xs" lay-event="view">{{d.aba002}}</a>
+        ]]#
+    </script>
+    <script type="text/html" id="img">
+        {{d.aaa009!=null?'<img style="width: 30px;height: 50px;" lay-event="userIcon" class="userIcon" src="'+d.aaa009+'">':''}}
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use(['table', 'form'], function () {
+        var table = layui.table, form = layui.form, $ = layui.$;
+        $(function () {
+            fnGetCode('bus_aa99', 'aba060', null, null, 'aba060');
+        });
+        table.on('tool(busAa01List)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'toEdit') {
+                windowNewLocation("busOrder/addOrUpdateBus?aaa001=" + data.aaa001);   //改为车辆管理详情
+            }
+            if (obj.event === 'view') {
+                windowNewLocation("bus/addOrUpdateBusBa04?aba020=" + data.aba020 + "&type=view");
+            }
+            if (obj.event === 'userIcon') {
+                parent.layer.open({
+                    type: 1
+                    , title: false //不显示标题栏
+                    , shadeClose: true
+                    , closeBtn: true
+                    , area: ['640', '330']
+                    , shade: 0.3
+                    , id: 'PHOTO_VIEW' //设定一个id，防止重复弹出
+                    // ,btn: ['火速围观', '残忍拒绝']
+                    , btnAlign: 'c'
+                    , moveType: 1 //拖拽模式，0或者1
+                    , content: '<img src="' + data.aaa009 + '" alt="" />'
+                });
+            }
+        });
+        form.on('select(aba060)', function (obj) {
+            reloadData();
+        });
+
+        function reloadData() {
+            table.reload('busAa01List', {
+                where: {
+                    search_param: $('#search_param').val(),
+                    aba060: $("#aba060").val()
+                }
+            });
+        };
+        var $ = layui.$, active = {
+            refresh: function () {
+                //todo 清空条件
+                $('#search_param').val("");
+                $('#aba060').val("");
+                form.render('select');
+            },
+            reloadData: function () {
+                reloadData();
+            },
+            add: function () {
+                windowNewLocation("busOrder/addOrUpdateBus");
+            },
+            delete: function () {
+                var checkStatus = table.checkStatus('busAa01List'), data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.alert('请先选中您要删除的数据行！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aaa001 + ',';
+                    });
+                    layer.confirm("确定要删除所选信息？<br/><span style='color: orangered;'>注意：<br/>车辆信息删除后，相应的【驾驶员绑定信息】也将一并删除！</span>", function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'bus/deleteBusAa01',
+                            data: {"ids": ids},
+                            success: function (res) {
+                                layer.close(index);
+                                reloadData();
+                            }, error: function () {
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+#end

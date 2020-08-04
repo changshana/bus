@@ -1,0 +1,193 @@
+#@sysCommon()
+#define css()
+<style type="text/css">
+    .layui-elem-quote{padding: 10px!important;margin-top: 10px;}
+    #tableList{max-height: 700px;overflow: auto;}
+    #tableList li{display: block;margin: auto;width: 90%;white-space: nowrap;height: 30px;line-height: 30px;font-size: 14px;padding-left: 20px;background: url("lp/static/images/system/point.png") no-repeat left;cursor: pointer;}
+    #tableList li:hover{color: #009688;background: url("lp/static/images/system/point-check.png") no-repeat left;background-color: #f2f2f2;}
+    .module_check{color: #009688;background: url("lp/static/images/system/point-check.png") no-repeat left!important;background-color: #f2f2f2!important;}
+</style>
+#end
+#define main()
+<input type="hidden" id="module_id" value="#(module_id)">
+<input type="hidden" id="table_id" value="#(table_id)">
+<div class="content-box">
+    <div class="layui-btn-container" >
+        <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+        <button class="layui-btn" data-type="addPmFieldWithTable">添加</button>
+        <button class="layui-btn" data-type="deletePmField">删除</button>
+        <!--<button class="layui-btn" data-type="refreshTable">字段调整到SQL</button>-->
+        <button class="layui-btn" data-type="toIndex">索引</button>
+        <!--<button class="layui-btn" data-type="refreshTable">规范字段</button>-->
+        <!--<button class="layui-btn" data-type="refreshTable">整表字段调整到SQL</button>-->
+        <button class="layui-btn" data-type="tableCode">代码</button>
+        <button class="layui-btn" onclick="windowNewLocation('system/projectManager?module_id=#(module_id)')">返回</button>
+    </div>
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md2">
+            <blockquote class="layui-elem-quote layui-text">数据库表</blockquote>
+            <ul id="tableList">
+                #for(table:tableList)
+                    <li default-id="#(table.table_id)">#(table.table_name)  #(table.remark==null?'':'('+table.remark+')')</li>
+                #end
+            </ul>
+        </div>
+        <div class="layui-col-md10">
+            <table default-module="#(table_id)" class="layui-table" lay-data="{cellMinWidth:60,url:'system/queryPmFieldList?table_id=#(table_id)', dataId:'field_id', id:'pmFieldList',height: 'full-100'}" lay-skin="line" id="pmFieldList" lay-filter="pmFieldList">
+                <thead>
+                    <tr>
+                        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                        <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+                        <th lay-data="{field:'field_name',width:150}">字段名</th>
+                        <th lay-data="{field:'field_alias',width:80}">别名</th>
+                        <th lay-data="{field:'field_type'}">类型</th>
+                        <!--<th lay-data="{field:'remark', edit: 'text'}">备注</th>-->
+                        <th lay-data="{field:'field_max_length'}">长度</th>
+                        <th lay-data="{width:90,field:'input_type'}">输入类型</th>
+                        <th lay-data="{width:150,field:'move',toolbar: '#childMoveBar'}">移动</th>
+                        <th lay-data="{field:'status',width:80,templet: '#switchStatus', unresize: true}">状态</th>
+                        <!--<th lay-data="{field:'status'}">DB类型</th>-->
+                        <th lay-data="{width:90,field:'field_iskey',templet: '#isKeyCheck'}">是否主键</th>
+                        <th lay-data="{width:90,field:'field_auto_increment',templet: '#incrementCheck'}">SEQ自增</th>
+                        <th lay-data="{width:90,field:'field_unique',templet: '#uniqueCheck'}">值唯一</th>
+                        <th lay-data="{width:90,field:'field_isnullable',templet: '#isnullableCheck'}">允许为空</th>
+                        <th lay-data="{width:90,field:'list_page_show',templet: '#showCheck'}">列表显示</th>
+                        <th lay-data="{width:90,field:'is_exist',templet: '#existCheck'}">是否在库</th>
+                    </tr>
+                </thead>
+            </table>
+            <script type="text/html" id="childMoveBar">
+                <a class="layui-btn layui-btn-xs {{d.LAY_TABLE_INDEX==0?'layui-btn-disabled':''}}" lay-event="moveOn" move-id="{{d.field_id}}" order-position="{{d.order_code}}">上移</a>
+                <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="moveDown">下移</a>
+            </script>
+            <script type="text/html" id="editBar">
+                <a class="layui-btn layui-btn-xs" lay-event="toEditPmField"><i class="layui-icon">&#xe642;</i></a>
+            </script>
+            <script type="text/html" id="switchStatus">
+                <input type="checkbox" lay-skin="switch" value="{{d.status}}" {{d.status==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="isKeyCheck">
+                <input type="checkbox"  {{d.field_iskey==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="incrementCheck">
+                <input type="checkbox"  {{d.field_auto_increment==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="uniqueCheck">
+                <input type="checkbox"  {{d.field_unique==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="isnullableCheck">
+                <input type="checkbox"  {{d.field_isnullable==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="showCheck">
+                <input type="checkbox"  {{d.list_page_show==1?'checked':''}} disabled>
+            </script>
+            <script type="text/html" id="existCheck">
+                <input type="checkbox"  {{d.is_exist==1?'checked':''}} disabled>
+            </script>
+        </div>
+    </div>
+</div>
+<script>
+
+    layui.use('table', function(){
+        var table = layui.table;
+        var $ = layui.$;
+
+        if(isNotEmpty($('#pmFieldList').attr('default-module'))){
+            $('#tableList li[default-id="'+$('#pmFieldList').attr('default-module')+'"]').addClass("module_check");
+        }
+
+        $('#tableList li').click(function(){
+            resetBaseSessionStorageWithTableReload();
+            windowNewLocation('system/tableFields?table_id='+$(this).attr('default-id')+"&module_id="+$('#module_id').val());
+        });
+
+        table.on('tool(pmFieldList)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'toEditPmField') {
+                windowNewLocation("system/addPmField?table_id="+$('#pmFieldList').attr('default-module')+"&field_id="+data.field_id+"&module_id="+$('#module_id').val());
+            }
+            if(obj.event === 'moveOn') {
+                var prevIndex = $('.layui-col-md10').find(obj.tr.selector).prev('tr').index();
+                if (prevIndex == -1) {return;}
+                var thisFieldId=data.field_id;
+                var thisFieldOrderCode=data.order_code;
+                var otherFieldId=$('.layui-col-md10').find(obj.tr.selector).prev('tr').find('td[data-field="move"] a:eq(0)').attr('move-id');
+                var otherFieldOrderCode=$('.layui-col-md10').find(obj.tr.selector).prev('tr').find('td[data-field="move"] a:eq(0)').attr('order-position');
+                moveField(thisFieldId,thisFieldOrderCode,otherFieldId,otherFieldOrderCode,refreshFieldTable);
+            }
+            if(obj.event === 'moveDown'){
+                var nextIndex=$('.layui-col-md10').find(obj.tr.selector).next('tr').index();
+                if(nextIndex==-1){return;}
+                var thisFieldId=data.field_id;
+                var thisFieldOrderCode=data.order_code;
+                var otherFieldId=$('.layui-col-md10').find(obj.tr.selector).next('tr').find('td[data-field="move"] a:eq(0)').attr('move-id');
+                var otherFieldOrderCode=$('.layui-col-md10').find(obj.tr.selector).next('tr').find('td[data-field="move"] a:eq(0)').attr('order-position');
+                moveField(thisFieldId,thisFieldOrderCode,otherFieldId,otherFieldOrderCode,refreshFieldTable);
+            }
+        });
+
+        function refreshFieldTable(){
+            reloadTable(table,"pmFieldList");
+        }
+        function moveField(f1,c1,f2,c2,fn){
+            $.ajax({
+                type:'post',
+                url:'system/moveField',
+                data:{'f1':f1,'c1':c1,'f2':f2,'c2':c2},
+                success:function(res){
+                    fn();
+                }
+            });
+        }
+
+        var active = {
+            refresh:function(){
+                windowNewLocation("system/tableFields?module_id="+$('#module_id').val()+"&table_id="+$('#table_id').val());
+            },
+            addPmFieldWithTable: function () {
+                windowNewLocation("system/addPmField?table_id="+$('#pmFieldList').attr('default-module')+"&module_id="+$('#module_id').val());
+            },
+            tableCode:function(){
+                windowNewLocation("system/tableCode?table_id="+$('#table_id').val());
+            },
+            toIndex:function(){
+                windowNewLocation("system/tableIndex?table_id="+$('#table_id').val());
+            },
+            deletePmField: function () {
+                var checkStatus = table.checkStatus('pmFieldList'),data = checkStatus.data;
+                if(isNotEmpty(data)){
+                    var field_ids="";
+                    $.each(data,function(i,obj){
+                        field_ids+=obj.field_id+',';
+                    });
+                    layer.confirm("确定要删除您选中的数据库表字段信息？", function(index){
+                        $.ajax({
+                            type:'post',
+                            url:'system/deletePmField',
+                            data:{"field_ids":field_ids},
+                            success:function (res) {
+                                windowNewLocation('system/tableFields?table_id='+$('#table_id').val()+"&module_id="+$('#module_id').val());
+                                layer.close(index);
+                            },error:function(err){
+                                timeOut(err);
+                            }
+                        });
+                    });
+                }else{
+                    layer.alert("请先选择要删除的数据库表字段信息！");
+                }
+            }
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        $(function(){
+            $('.layui-col-md10 a[lay-event="moveDown"]:last').addClass('layui-btn-disabled').removeClass('layui-bg-red');
+        });
+    });
+</script>
+
+#end

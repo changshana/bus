@@ -1,0 +1,82 @@
+#@common()
+#define main()
+
+<div class="layui-fluid">
+    <div class="layui-row" style="background: #FFFFFF!important;">
+        <form class="layui-form addForm content-box" action="code/addSysCode" method="post">
+
+            <input type="hidden" value="#(sysCode==null?'':sysCode.status)" id="status_checked">
+            <input type="hidden" value="#(sysCode==null?'':sysCode.iframe)" name="iframe" id="iframe">
+
+            <fieldset class="layui-elem-field layui-field-title" style="border-color: #e5e6e7;border-width: 10px 0 0; ">
+                <legend>码表记录新增/修改</legend>
+            </fieldset>
+
+            <div class="layui-form-item" style="#(sysCode==null?'':(sysCode.iframe=='true'?'display:none;':''))">
+                <label class="layui-form-label">类别代码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sysCode.code_type"  value="#(sysCode==null?'':sysCode.code_type)" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="#(sysCode==null?'':(sysCode.iframe=='true'?'display:none;':''))">
+                <label class="layui-form-label">类别描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sysCode.code_name"  value="#(sysCode==null?'':sysCode.code_name)" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">码值</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sysCode.code_value"  value="#(sysCode==null?'':sysCode.code_value)" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">码值描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sysCode.name"  value="#(sysCode==null?'':sysCode.name)" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否有效</label>
+                <div class="layui-input-block">
+                    <select name="sysCode.status" required lay-verify="required" id="status">
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    #(sysCode==null?'':(sysCode.iframe=='true'?'':'<a type="back" class="layui-btn layui-btn-primary" onClick="returnPage()">返回</a>'))
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','layer'],function(){
+        var form = layui.form;
+        var layer=layui.layer;
+        var $ = layui.$;
+        form.on("submit(formBox)",function(){
+            if($("#iframe").val()=='true'){
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index);
+            }
+        });
+
+        if($("#iframe").val()=='true'){
+            $(".layui-elem-field").children("legend").html("新增基础类别");
+        }
+    });
+
+    fnGetCodeFormSys_code("EFFECTIVE","请选择",$("#status_checked").val(),"status","sys_code");
+</script>
+#end

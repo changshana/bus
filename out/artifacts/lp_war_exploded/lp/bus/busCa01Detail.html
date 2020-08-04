@@ -1,0 +1,96 @@
+#@busCommon()
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="bus/saveBusCa01" method="post">
+    <input type="hidden" name="busCa01.aca010" value="#(busCa01.aca010)">
+    <div class="layui-form-item">
+        <label class="layui-form-label">消息标题</label>
+        <div class="layui-input-block">
+            <input name="busCa01.aaa999"  class="layui-input" value="#(busCa01.aaa999)"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">消息内容</label>
+        <div class="layui-input-block">
+			<textarea name="busCa01.aca011"  id="aca011" class="layui-textarea">#(busCa01.aca011)</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">消息时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="busCa01.aca012" value="#(busCa01.aca012)" id="aca012" lay-verify="datetime" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数据有效性</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="busCa01.aaa996" id="aaa996" value="#(busCa01.aaa996==null || busCa01.aaa996==1?'1':'0')">
+            <input type="checkbox" lay-text="有效|无效" #(busCa01.aaa996==null || busCa01.aaa996==1?'checked':'')  lay-skin="switch" value="1" lay-filter="aaa996">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<!--引入kindeditor-->
+<link rel="stylesheet" href="lp/static/js/kindeditor/themes/default/default.css" />
+<link rel="stylesheet" href="lp/static/js/kindeditor/plugins/code/prettify.css" />
+<script charset="utf-8" src="lp/static/js/kindeditor/plugins/code/prettify.js"></script>
+<script src="lp/static/js/kindeditor/kindeditor.js"></script>
+<script src="lp/static/js/kindeditor/lang/zh_CN.js"></script>
+<!--引入kindeditor-->
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('#aca011', {
+            uploadJson : 'bus/uploadKindeditorFile',
+            allowFileManager : false,
+            height:"400px",
+            afterCreate : function() {
+                var self = this;
+                K.ctrl(document, 13, function() {
+                    self.sync();
+                    document.forms['example'].submit();
+                });
+                K.ctrl(self.edit.doc, 13, function() {
+                    self.sync();
+                    document.forms['example'].submit();
+                });
+            },afterBlur: function(){
+                //利用该方法处理当富文本编辑框失焦之后，立即同步数据
+                editor.sync();
+            },items:[
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|',
+                'flash', 'media',  'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about','insertfile','image', /*'multiimage',*/
+            ]
+        });
+        prettyPrint();
+    });
+</script>
+<script>
+    layui.use(['form','laydate','upload'], function(){
+        var laydate = layui.laydate,$=layui.$,form=layui.form;
+        laydate.render({
+            elem: '#aca012'
+            ,type:'datetime'
+            ,format:'yyyy-MM-dd HH:mm:ss'
+            ,value:new Date()
+        });
+        form.on('switch(aaa996)', function(data){
+            $("#aaa996").val(data.elem.checked?1:0);
+        });
+    });
+</script>
+#end

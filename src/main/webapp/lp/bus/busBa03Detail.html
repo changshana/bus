@@ -1,0 +1,127 @@
+#@common()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="bus/saveBusBa03" method="post">
+    <input type="hidden" name="busBa03.aba030" value="#(busBa03.aba030)">
+
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">车辆类型</label>
+        <div class="layui-input-block">
+            <select name="busBa03.aba020" id="type_id" value="#(busBa03.aba020)" lay-verify="required"
+                    lay-filter="aba020">
+                <option value="">——请选择——</option>
+                #for(busBa02:busBa02)
+                <option value="#(busBa02.aaa004)">#(busBa02.aaa005)</option>
+                #end
+            </select>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">起点</label>
+        <div class="layui-input-block">
+            <select name="busBa03.aba007" id="startPoint" value="#(busBa03.aba007)" lay-verify="required"
+                    lay-search=""
+                    lay-filter="aba007">
+                <option value="">——请选择——</option>
+                #for(busBa07:busBa07)
+                <option value="#(busBa07.aba070)">#(busBa07.aba071)</option>
+                #end
+            </select>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item ">
+        <label class="layui-form-label">终点</label>
+        <div class="layui-input-block">
+            <select name="busBa03.aba008" id="endPoint" value="#(busBa03.aba008)" lay-verify="required"
+                    lay-search=""
+                    lay-filter="aba008">
+                <option value="">——请选择——</option>
+                #for(busBa07:busBa07)
+                <option value="#(busBa07.aba070)">#(busBa07.aba071)</option>
+                #end
+            </select>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">途经点信息</label>
+        <div class="layui-input-block">
+            <textarea name="busBa03.aba031" class="layui-textarea">#(busBa03.aba031)</textarea>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">学生是否可预约</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="busBa03.aca052" id="aca052" value="#(busBa03.aca052==null?1:busBa03.aca052)"/>
+            <input type="checkbox" lay-filter="aca052" lay-skin="switch" #((busBa03.aca052==0)?'':'checked')>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">教师是否可预约</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="busBa03.aca053" id="aca053" value="#(busBa03.aca053==null?1:busBa03.aca053)"/>
+            <input type="checkbox" lay-filter="aca053" lay-skin="switch" #((busBa03.aca053==0)?'':'checked')>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input type="text" name="busBa03.aaa995" value="#(busBa03.aaa995)" placeholder="" autocomplete="off"
+                   lay-verify="number"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="busBa03.aaa999" class="layui-textarea">#(busBa03.aaa999)</textarea>
+        </div>
+    </div>
+    <div class="layui-col-md4 layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="busBa03.aaa996" lay-skin="switch" value="1" #((busBa03.aaa996!=0)?'checked':'')>
+        </div>
+    </div>
+    <input type="hidden" name="busBa03.aaa996" value="#(busBa03.aaa996)">
+    <input type="hidden" name="busBa03.aaa997" value="#(busBa03.aaa997)">
+    <input type="hidden" name="busBa03.aaa998" value="#(busBa03.aaa998)">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'laydate', 'upload'], function () {
+        var form = layui.form;
+        $(function () {
+            $('#type_id').val('#(busBa03.aba020)');
+            $('#startPoint').val('#(busBa03.aba007)');
+            $('#endPoint').val('#(busBa03.aba008)');
+            form.render('select');
+            form.on('switch(aca052)', function(data){
+                if(data.elem.checked){
+                    $("#aca052").val(1);
+                }else{
+                    $("#aca052").val(0);
+                }
+            });
+            form.on('switch(aca053)', function(data){
+                if(data.elem.checked){
+                    $("#aca053").val(1);
+                }else{
+                    $("#aca053").val(0);
+                }
+            });
+        });
+    });
+
+</script>
+#end

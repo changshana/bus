@@ -1,0 +1,121 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" method="post">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <input type="hidden" name="busBa06.aba060" value="#(busBa06.aba060)">
+            <div class="layui-form-item">
+                <label class="layui-form-label">预约时间设置<br/>名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="busBa06.aba061" maxlength="20" value="#(busBa06.aba061)" placeholder=""
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预约开始时间（发车前）</label>
+                <div class="layui-input-block">
+                    <input type="number" name="busBa06.aba062" min="0" maxlength="3" value="#(busBa06.aba062)"
+                           placeholder="" autocomplete="off" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始时间单位</label>
+                <div class="layui-input-block">
+                    <select name="busBa06.aba063" id="start_time_unit" value="#(busBa06.aba063)" lay-verify="required"
+                            lay-filter="aba063">
+                        <option value="">——请选择——</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预约结束时间（发车前）</label>
+                <div class="layui-input-block">
+                    <input type="number" name="busBa06.aba064" min="0" maxlength="10" value="#(busBa06.aba064)"
+                           placeholder="" autocomplete="off" class="layui-input" lay-verify="required">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束时间单位</label>
+                <div class="layui-input-block">
+                    <select name="busBa06.aba065" id="end_time_unit" value="#(busBa06.aba065)" lay-verify="required"
+                            lay-filter="aba065">
+                        <option value="">——请选择——</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea name="busBa06.aba999" class="layui-textarea" maxlength="200">#(busBa06.aba999)</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="busBa06.aba996" lay-skin="switch" lay-filter="status" lay-text="启用|禁用"
+                           #(busBa06.aba996==0 ? "" : "checked")>
+                </div>
+            </div>
+            <input type="hidden" name="busBa06.aba997" value="#(busBa06.aba997)">
+            <input type="hidden" name="busBa06.aba998" value="#(busBa06.aba998)">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function () {
+        var form = layui.form, $ = layui.$;
+        $(function () {
+            fnGetCode('bus_aa99', 'aba063', null, $('#start_time_unit').attr('value'), 'start_time_unit');
+            fnGetCode('bus_aa99', 'aba063', null, $('#end_time_unit').attr('value'), 'end_time_unit');
+        });
+
+        var status = '#(busBa06.aba996)';
+        form.on('switch(status)', function (data) {
+            status = Number(data.elem.checked); //开关是否开启，true或者false
+        });
+        form.on('submit(formBox)', function (data) {
+            data.field['busBa06.aba996'] = (status === '' ? 1 : status);
+            //console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+
+            var start_time = Number(data.field['busBa06.aba062']), end_time = Number(data.field['busBa06.aba064']);
+            if (start_time >= 0 && end_time >= 0) {
+                if (start_time * timeTransform(data.field['busBa06.aba063']) > end_time * timeTransform(data.field['busBa06.aba065'])) {
+                    $.ajax({
+                        type: 'post',
+                        url: 'bus/saveBusBa06',
+                        data: data.field,
+                        success: function (res) {
+                            windowNewLocation("bus/busBa06");
+                        },
+                        error: function () {
+                            windowNewLocation("error");
+                        }
+                    });
+                } else {
+                    alertMsg("预约开始时间必须大于预约结束时间！", 'error');
+                }
+            } else {
+                alertMsg("预约开始时间和预约结束时间不能为负！", 'error');
+            }
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        function timeTransform(type) {
+            return type === '1' ? 24 * 60 : type === '2' ? 60 : 1;
+        }
+    });
+</script>
+#end

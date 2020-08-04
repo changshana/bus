@@ -1,0 +1,33 @@
+#@sysCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-btn-container">
+        <button class="layui-btn" data-type="refreshTable"><i class="layui-icon layui-icon-refresh"></i>数据初始</button>
+        <button class="layui-btn" data-type="refreshTable">数据库对比</button>
+        <button class="layui-btn" data-type="refreshTable">PM数据生成SQL语句</button>
+        <button class="layui-btn" data-type="sqlExecute">SQL执行</button>
+        <button class="layui-btn" data-type="refreshTable">数据库补丁</button>
+        <button class="layui-btn" data-type="refreshTable">Tomcat日志</button>
+        <button class="layui-btn" data-type="refreshTable">Git命令</button>
+        <button class="layui-btn" data-type="refreshTable">序列初始化</button>
+        <button class="layui-btn" data-type="refreshTable">文件编码查看</button>
+        <button class="layui-btn" data-type="refreshTable">系统环境检测</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    layui.use('table', function () {
+        var $ = layui.$, active = {
+            sqlExecute: function () {
+                windowNewLocation('system/skipSqlExecute')
+            }
+        }
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+
+</script>
+#end

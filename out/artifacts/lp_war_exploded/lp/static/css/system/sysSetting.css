@@ -1,0 +1,5 @@
+.addForm .layui-form-label{clear: both;padding: 9px 15px;width: 110px;}
+.addForm .layui-input-block{margin-left: 140px;  }
+.layui-upload-img{width: 50%;height: 145px;float: left;overflow: hidden;text-align:  center;margin-bottom: 15px;border: 1px dashed #eee;line-height: 143px;}
+.layui-upload-img img{max-height: 100%;margin: auto;max-width:  100%;}
+.img_upload_btn{float: right;}

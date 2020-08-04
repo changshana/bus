@@ -1,0 +1,155 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md2">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <!--<button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>-->
+            </div>
+        </div>
+        <div class="layui-col-md8 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <input type="hidden" id="startDate" name="start" value="#(mon)"/>
+                        <input type="hidden" id="endDate" name="end" value="#(sun)"/>
+                        <label class="layui-form-label">发车日期</label>
+                        <div class="layui-input-block">
+                            <input id="date" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">线路</label>
+                        <div class="layui-input-block">
+                            <select id="line" name="line" lay-filter="line">
+                                <option value="">——请选择——</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off" onfocus="fnShowSearchTip('请输入关键字进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table" export-id="bus.getSeatStatisticList" lay-data="{cellMinWidth:60,url:'bus/getSeatStatisticList', page:true,dataId:'aca030',limits:[1000,2000,3000,5000,10000],limit:1000,id:'seatInfoList',height: 'full-120'}" lay-filter="seatInfoList">
+        <thead>
+        <tr>
+            <th export-key="date" lay-data="{field:'date'}">日期</th>
+            <th export-key="time" lay-data="{field:'time'}">发车时间</th>
+            <th export-key="bus_no" lay-data="{field:'bus_no'}">车牌号</th>
+            <th export-key="driver" lay-data="{field:'driver'}">驾驶员</th>
+            <th export-key="startPoint" lay-data="{field:'startPoint'}">始发站</th>
+            <th export-key="endPoint" lay-data="{field:'endPoint'}">终点站</th>
+            <th export-key="seat_no" lay-data="{field:'seat_no'}">座位号</th>
+            <th export-key="person" lay-data="{field:'person'}">乘车人</th>
+            <th export-key="gh" lay-data="{field:'gh'}">账号</th>
+            <th export-key="type" lay-data="{field:'type'}">人员类型</th>
+            <!--<th export-key="pay_state" lay-data="{field:'pay_state'}">支付状态</th>-->
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon layui-icon-edit"></i></a>
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use(['table','laydate'], function(){
+        var table = layui.table,form=layui.form,laydate=layui.laydate,$=layui.$;
+        /*table.on('tool(seatInfoList)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'toEdit'){
+                windowNewLocation("bus/addOrUpdateBusCa08?aca080="+data.aca080);
+            }
+        });*/
+        laydate.render({
+            elem:'#date'
+            ,type:'date'
+            ,range:'~'
+            ,value:'#(mon) ~ #(sun)'
+            ,done:function(value, date, endDate){
+                if(isNotEmpty(value)){
+                    let startDate=value.substr(0,value.indexOf("~")).trim();
+                    let endDate1=value.substr(value.indexOf("~")+1).trim();
+                    $("#startDate").val(startDate);
+                    $("#endDate").val(endDate1);
+                }else{
+                    $("#startDate").val('');
+                    $("#endDate").val('');
+                }
+                loadData();
+            }
+        });
+        getBa03ForAddBa05();
+        form.on('select(line)', function(obj){
+            loadData();
+        });
+        fnGetCode("bus_aa99","aaa996","请选择",null,"aaa996",null);
+        //重新加载一次数据
+        loadData();
+        var $ = layui.$, active = {
+            refresh:function(){
+                /*//todo 清空条件
+                $("#date").val("");
+                $("#line").val("");
+                $("#time").val("");
+                table.reload('seatInfoList', {
+                    where: {
+                        search_param:''
+                    }
+                });*/
+                window.location.reload();
+            },
+            reloadData:function(){
+                loadData();
+            }
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        form.on('select(aaa996)', function (data) {//根据下拉条件刷新表格数据
+            loadData();
+        });
+        function loadData() {
+            table.reload('seatInfoList', {
+                where: {
+                    line: $("#line").val(),
+                    start: $("#startDate").val(),
+                    end: $("#endDate").val(),
+                    //time: $("#time").val(),
+                    search_param: $("#search_param").val()
+                }
+            });
+        }
+        function getBa03ForAddBa05(obj) {
+            var type_id=$('#aba030').val();
+            $.ajax({
+                type: 'post',
+                url: 'bus/getBa03ForAddBa05',
+                data: {"ba020": obj,ba020:2},
+                success: function (res) {
+                    var html='';
+                    html+= '<option value="">全部</option>'
+                    if(isNotEmpty(res)){
+                        $.each(res, function (index, value) {
+                            html+= '<option value="'+value.aba030+'"'+(value.aba030==type_id?'selected':'')+'>'+value.start+'>'+value.end+'</option> ';
+                        });
+                    }
+                    $('#line').append(html);
+                    form.render();
+                }
+
+            });
+        }
+    });
+</script>
+#end

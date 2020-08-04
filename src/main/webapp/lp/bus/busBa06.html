@@ -1,0 +1,163 @@
+#@busCommon()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md5">
+            <div class="layui-btn-container">
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加
+                </button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+            </div>
+        </div>
+        <div class="layui-col-md5 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline">
+                        <select id="status" name="status" lay-filter="status">
+                            <option value="">——请选择——</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off"
+                           onfocus="fnShowSearchTip('请输入预约时间设置名称关键字进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table"
+           lay-data="{cellMinWidth:60,url:'bus/getBusBa06List', page:true,dataId:'aba060', id:'busBa06List',height: 'full-200'}"
+           lay-filter="busBa06List">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
+            <!--<th lay-data="{field:'aba060'}">预约时间ID</th>-->
+            <th lay-data="{field:'aba061'}">预约时间设置名称</th>
+            <th lay-data="{toolbar: '#start_time'}">开始预约时间</th>
+            <!--<th lay-data="{field:'aba062'}">预约开始时间</th>-->
+            <!--<th lay-data="{field:'aba063'}">预约开始时间单位</th>-->
+            <th lay-data="{toolbar: '#end_time'}">结束预约时间</th>
+            <!--<th lay-data="{field:'aba064'}">预约结束时间</th>-->
+            <!--<th lay-data="{field:'aba065'}">预约结束时间单位</th>-->
+            <th lay-data="{templet: '#toSet'}">应用设置</th>
+            <th lay-data="{templet: '#switchStatus'}">状态</th>
+            <!--<th lay-data="{field:'aba996'}">状态</th>-->
+            <th lay-data="{field:'aba997'}">创建用户</th>
+            <th lay-data="{field:'aba998'}">创建时间</th>
+            <th lay-data="{field:'aba999'}">备注</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon layui-icon-edit"></i></a>
+    </script>
+    <script type="text/html" id="start_time">
+        （发车前）{{d.aba062}}{{d.aba063_desc}}
+    </script>
+    <script type="text/html" id="end_time">
+        （发车前）{{d.aba064}}{{d.aba065_desc}}
+    </script>
+    <script type="text/html" id="toSet">
+        #[[
+        <a class="layui-btn layui-btn-xs" title="提示：仅部分学生班车可应用预约时间设置" lay-event="toSet">应用设置({{d.count}})</a>
+        ]]#
+    </script>
+    <script type="text/html" id="switchStatus">
+        <input type="checkbox" name="{{d.aba060}}" lay-skin="switch" value="{{d.aba996}}" {{d.aba996===1?'checked':''}}
+               lay-filter="changeStatus"/>
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use(['table', 'form'], function () {
+        var table = layui.table, form = layui.form, $ = layui.$;
+        $(function () {
+            fnGetCode('bus_aa99', 'aba996', null, null, 'status');
+        });
+
+        form.on('select(status)', function () {
+            reloadTable();
+        });
+        table.on('tool(busBa06List)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'toEdit') {
+                windowNewLocation("bus/addOrUpdateBusBa06?aba060=" + data.aba060);
+            } else if (obj.event === 'toSet') {
+                if (data.aba996 === 1) {
+                    windowNewLocation("bus/busBa0605?aba060=" + data.aba060);
+                } else {
+                    alertMsg("该预约时间设置处于禁用状态，不能应用此设置！", 'error');
+                }
+            }
+        });
+        form.on('switch(changeStatus)', function (obj) {
+            $.ajax({
+                type: 'post',
+                url: 'bus/changeStatus',
+                data: {'id': this.name, 'status': (obj.elem.checked ? 1 : 0)},
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alertMsg('error', 'error');
+                }
+            });
+        });
+        var active = {
+            refresh: function () {
+                window.location.reload();
+            },
+            reloadData: function () {
+                reloadTable();
+            },
+            add: function () {
+                windowNewLocation("bus/addOrUpdateBusBa06");
+            },
+            delete: function () {
+                var checkStatus = table.checkStatus('busBa06List'), data = checkStatus.data;
+                if (data.length === 0) {
+                    layer.alert('请先选中您要删除的数据行！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aba060 + ',';
+                    });
+                    layer.confirm("确定要删除你所选中的所有数据行？", function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'bus/deleteBusBa06',
+                            data: {"ids": ids},
+                            success: function (res) {
+                                layer.close(index);
+                                reloadTable();
+                            }, error: function () {
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        function reloadTable() {
+            table.reload('busBa06List', {
+                where: {
+                    search_param: $('#search_param').val(),
+                    status: $('#status').val()
+                }
+            });
+        }
+    });
+</script>
+#end

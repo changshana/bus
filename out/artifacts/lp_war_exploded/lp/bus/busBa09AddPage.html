@@ -1,0 +1,119 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" type="text/css" href="#(session.basePath)lp/static/css/bus/busBa09AddPage.css">
+#end
+
+#define main()
+<div class="content">
+    <div class="head">里程数上传</div>
+    <div class="main">
+        <div class="title">
+            <p class="name">张三</p>
+            <p class="miles"><span class="attention">#(time)</span></p>
+        </div>
+        <div class="title">
+            <p class="mile-n">里程数</p>
+            <input class="mile-v" id="aba091" placeholder="请输入里程数（公里）"/>
+        </div>
+        <div class="img-box">
+            <p class="tip">里程拍照<span class="attention uploadTip">（点击上传）</span></p>
+            <div class="img">
+                <img id="uploader" src="#(session.basePath)lp/static/images/bus/upload-icon.png">
+            </div>
+            <button class="btn">提交审核</button>
+           <!-- <p class="item">
+                <span class="item-n">审核人：</span>
+                <span class="item-v">李四</span>
+            </p>
+            <p class="item">
+                <span class="item-n">审核时间：</span>
+                <span class="item-v">2019-03-13 10:40</span>
+            </p>-->
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="#(session.basePath)lp/static/js/bus/auto_size.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'laydate', 'upload', 'element', 'layer'], function () {
+        var $ = layui.$,upload = layui.upload,layer = layui.layer;
+        var accessHead=Base.BasePath+"upload";
+        var loadIndex;
+        var uploadInst = upload.render({
+            elem: '#uploader' //绑定元素
+            ,url: 'bus/uploadCleanImg' //上传接口
+            ,choose: function(obj){
+                loadIndex=layer.load(2,{
+                    shade:0.6
+                });
+            }
+            ,done: function(res){
+                layer.close(loadIndex);
+                $("#uploader").hide();
+                $("#uploader").before('<img class="uploaded" id="aba092" storePath="'+res.storePath+'" src="'+accessHead+res.storePath+'"/>');
+                $(".uploadTip").html("（双击图片删除）");
+                $(".uploaded").unbind('click',null);
+                $(".uploaded").dblclick(function(){
+                    $(this).remove();
+                    $("#uploader").show();
+                    $(".uploadTip").html("（点击上传）");
+                });
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+
+        $(".btn").on('click',function(){
+            if(!$(this).hasClass('btn-disable')){
+                var aba091=$("#aba091").val();
+                if(isNotEmpty(aba091)){
+                    aba091=aba091.trim();
+                }else{
+                    layer.msg('请输入里程数!');
+                    return false;
+                }
+                var aba092=null;
+                if($("#aba092").length>0){
+                    aba092=$("#aba092").attr("storePath");
+                    if(isNotEmpty(aba092)){
+                        aba092=aba092.trim();
+                    }else{
+                        layer.msg('请重新上传图片!');
+                        return false;
+                    }
+                }else{
+                    layer.msg('请上传图片!');
+                    return false;
+                }
+                var loadIndex=layer.load(2,{shade:0.3});
+                $.ajax({
+                    type:'post'
+                    ,url:'bus/saveBusBa09'
+                    ,data:{
+                        'busBa09.aaa020':'1'
+                        ,'busBa09.aba091':aba091
+                        ,"busBa09.aba092":aba092
+                        ,"busBa09.aba093":'0'
+                    }
+                    ,success:function(res){
+                        layer.close(loadIndex);
+                        if(isNotEmpty(res)){
+                            if(res.flag==true){
+                                layer.msg(res.msg,{icon:6});
+                                $(".btn").removeClass("btn").addClass("btn-disable").html("已提交");
+                            }else{
+                                layer.msg(res.msg,{icon:5});
+                            }
+                        }
+                    }
+                    ,error:function(){
+                        layer.close(loadIndex);
+                        layer.msg("服务器繁忙，稍后再试！",{icon:5});
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+#end

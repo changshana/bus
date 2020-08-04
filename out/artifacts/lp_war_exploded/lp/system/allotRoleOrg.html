@@ -1,0 +1,131 @@
+#@sysCommon()
+#define main()
+<div class="content-box">
+    <input type="hidden" id="role_id" value="#(role_id)"/>
+    <div class="layui-row layui-col-space20">
+        <div class="layui-btn-container" >
+            <button class="layui-btn" data-type="refreshTable"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+            <button type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</button>
+        </div>
+        <div class="layui-col-md5">
+            <blockquote class="layui-elem-quote">
+                隶属机构
+            </blockquote>
+            <table class="layui-table" lay-data="{url:'system/getRoleOrgList?role_id=#(role_id)', id:'siteList',height: 'full-100'}"  lay-filter="siteTable">
+                <thead>
+                <tr>
+                    <th lay-data="{field:'site_name', event: 'queryChileSite', style:'cursor: pointer;'}">机构名称</th>
+                    <th lay-data="{field:'child_site_count', event: 'queryChileSite', width:100}">分支机构数</th>
+                    <th lay-data="{field:'role_site_count', event: 'queryChileSite', width:150}">已选中分支机构数</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="layui-col-md7" >
+            <blockquote class="layui-elem-quote">
+                角色所属分支机构
+            </blockquote>
+            <table default-site="" class="layui-table" lay-filter="childSiteTable"  lay-data="{url:'system/getRoleChildOrgList?role_id=#(role_id)', dataId:'site_id',id:'childSiteList',height: 'full-100'}" id="childSiteTable">
+                <thead>
+                <tr>
+                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                    <th lay-data="{field:'site_name'}">分支机构名称</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form = layui.form;
+
+        table.on('tool(siteTable)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'queryChileSite'){
+                reloadTableByParentSiteId2(table,'childSiteList',data.site_id,fnSetChecked);
+                $('#childSiteTable').attr('default-site',data.site_id);
+            }
+        });
+
+
+        table.on('checkbox(childSiteTable)', function(obj){
+            if(obj.type=='all'){
+                if(obj.checked){
+                    updateRoleSiteAll('add');
+                }else{
+                    updateRoleSiteAll('remove');
+                }
+            }else{
+                if(obj.checked){
+                    updateRoleSite(obj.data.site_id,'add');
+                }else{
+                    updateRoleSite(obj.data.site_id,'remove');
+                }
+            }
+        });
+
+        var $ = layui.$, active  = {
+            refreshTable: function (){
+                reloadTable(table,'siteList');
+                reloadTableByParentSiteId(table,'childSiteList','');
+            }
+        };
+               $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        function updateRoleSite(site_id,flag){
+            $.ajax({
+                type:'post',
+                url:'system/saveRoleSite',
+                data:{'role_id':$('#role_id').val(),'parent_site_id':$('#childSiteTable').attr('default-site'),'site_id':site_id,'flag':flag},
+                success:function(data){
+                    reloadTable(table,'siteList');
+                }
+            });
+        }
+        function updateRoleSiteAll(flag){
+            var site_id=$('#childSiteTable').attr('default-site');
+            $.ajax({
+                type:'post',
+                url:'system/saveRoleSiteAll',
+                data:{'parent_site_id':$('#childSiteTable').attr('default-site'),'role_id':$('#role_id').val(),'flag':flag},
+                success:function(data){
+                    reloadTable(table,'siteList');
+                }
+            });
+        }
+    });
+
+    function fnSetChecked(){
+        $.ajax({
+            type:'post',
+            url:'system/getRoleSitesByParentSite',
+            data:{'role_id':$('#role_id').val(),'parent_site_id':$('#childSiteTable').attr('default-site')},
+            success:function(res){
+                var checked_site_ids=[];
+                if(isNotEmpty(res.site_ids)){
+                    checked_site_ids=res.site_ids.split(",");
+                }
+                var index=0,len=0;
+                $.each(checked_site_ids,function(i,o){
+                    index=$('.layui-col-md7 :checkbox[data-id="'+o+'"]').parents('tr[data-index]').attr('data-index');
+                    $('.layui-col-md7 tr[data-index="'+index+'"] :checkbox').attr('checked',"checked").next('.layui-form-checkbox').addClass('layui-form-checked');
+                    len++;
+                });
+                if($('.layui-col-md7 .layui-table-main tbody tr').length==len&&len!=0){
+                    $('.layui-col-md7 thead :checkbox').attr('checked',true).next('.layui-form-checkbox').addClass('layui-form-checked');
+                }
+
+            }
+        });
+    }
+
+
+
+</script>
+
+#end

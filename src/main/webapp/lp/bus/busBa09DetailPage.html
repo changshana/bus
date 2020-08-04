@@ -1,0 +1,89 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" type="text/css" href="#(session.basePath)lp/static/css/bus/busBa09DetailPage.css">
+#end
+
+#define main()
+<div class="content">
+    <div class="head">审核详情</div>
+    <div class="main">
+        <div class="title">
+            <p class="name">#(ba09.aaa002)</p>
+            <p class="miles">里程<span class="attention">#(ba09.aba091)</span>公里</p>
+        </div>
+        <div class="img-box">
+            <p class="tip">里程照片<span class="attention uploadTip"></span></p>
+            <div class="img">
+                <img id="uploaded" src="#(session.basePath)upload#(ba09.aba092)">
+            </div>
+            #if(ba09.aba093==0)
+            <button class="btn pass">审核通过</button>
+            <button class="btn not-pass">审核不通过</button>
+           #else
+            <p class="item">
+                <span class="item-n">审核结果：</span>
+                <span class="item-v">#(ba09.aba093_desc)</span>
+            </p>
+            <p class="item">
+                <span class="item-n">审核人：</span>
+                <span class="item-v">#(ba09.aba094)</span>
+            </p>
+            <p class="item">
+                <span class="item-n">审核时间：</span>
+                <span class="item-v">#(ba09.aba095)</span>
+            </p>
+                #if(ba09.aaa999)
+                <p class="item">
+                    <span class="item-n">审核备注：</span>
+                    <span class="item-v">#(ba09.aaa999)</span>
+                </p>
+                #end
+            #end
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="#(session.basePath)lp/static/js/bus/auto_size.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'laydate', 'upload', 'element', 'layer'], function () {
+        var $ = layui.$,upload = layui.upload,layer = layui.layer;
+        $(".not-pass").on('click',function(){
+
+            var index=layer.prompt({
+                formType: 2,
+                title: '审核不通过备注',
+                area: ['8rem', '4rem'] //自定义文本域宽高
+            }, function(value, index, elem){
+               if(isNotEmpty(value)){
+                   $.ajax({
+                       type:'post'
+                       ,url:'bus/auditBa09'
+                       ,data:{"aba090":'#(ba09.aba090)',"aba093":2,"aaa999":value}
+                       ,success:function(res){
+                           window.location.reload();
+                       }
+                       ,error:function(res){
+                           layer.close(index);
+                           layer.msg("服务器繁忙，请稍后重试！");
+                       }
+                   });
+               }
+                layer.close(index);
+            });
+        });
+        $(".pass").on('click',function(){
+            $.ajax({
+                type:'post'
+                ,url:'bus/auditBa09'
+                ,data:{"aba090":'#(ba09.aba090)',"aba093":1}
+                ,success:function(res){
+                    window.location.reload();
+                }
+                ,error:function(res){
+                    layer.close(index);
+                    layer.msg("服务器繁忙，请稍后重试！");
+                }
+            });
+        });
+    });
+</script>
+#end

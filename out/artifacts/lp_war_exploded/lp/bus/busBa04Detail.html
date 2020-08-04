@@ -1,0 +1,394 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/bus/busOrderSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>车辆座位图</legend>
+</fieldset>
+<form class="layui-form addForm content-box" >
+    <input type="hidden" name="busBa04.aba040" value="#(busBa04==null?'':busBa04.aba040)">
+    <div class="layui-fluid layadmin-homepage-fluid main-box">
+        <div class="layui-row layui-col-space8 main-box">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md6 main-box">
+                <div class="left-box #(busBa02.aaa995==1?'bus-bg45':'bus-bg44')" >
+                    <ul id="seatGrid" class="seatGrid">
+                    </ul>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md6 main-box">
+                <div class="right-box">
+                    <div class="layui-form-item layui-row">
+                        <label class="layui-form-label">车辆类型</label>
+                        <div class="layui-input-block">
+                            <select name="aba020" id="aba020" disabled readonly="true"  value="#(busBa02.aba020)"  lay-filter="educationSelect">
+                                #for(ba02:ba02s)
+                                <option value="#(busBa02.aba020)" #((ba02.aba020==busBa02.aba020)?'selected':'')>#(busBa02.aba002)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <!--<div class="layui-form-item layui-row">
+                        <label class="layui-form-label">车辆名称</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" id="aaa001" value="#(busAa01==null?'':busAa01.aaa001)">
+                            <input type="text" name="" value="#(busAa01==null?'':busAa01.aaa002)"
+                                   placeholder="" autocomplete="off" class="layui-input" readonly="true" disabled>
+                        </div>
+                    </div>-->
+                   <!-- <div class="layui-form-item layui-row">
+                        <label class="layui-form-label">车牌号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="" value="#(busAa01==null?'':busAa01.aaa005)"
+                                   placeholder="" autocomplete="off" class="layui-input" readonly="true" disabled>
+                        </div>
+                    </div>-->
+                    <div class="layui-form-item layui-row" style="height: 75%;">
+                        <!--<label class="layui-form-label">座位列表</label>-->
+                        <div class="layui-input-block seats-info-box margin-left10">
+                            <div class="seats-info-header">
+                                <span class="seat-num">座位号</span><span class="seat-position">坐标</span>
+                            </div>
+                            <ul class="seats-info">
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="margin-top: 7%;">
+                        <div class="layui-input-block margin-left10">
+                            #if(type!='view')
+                            <button class="layui-btn " id="saveBtn" lay-submit lay-filter="formBox" onmouseenter="showTipMessage('点击保存当前设置的座位图',this)" onmouseleave="hideTipMessage()">保存</button>
+                            <button type="reset" onclick="fnReset()" class="layui-btn layui-btn-primary"
+                                    onmouseenter="showTipMessage('点击清空当前设置的座位图',this)" onmouseleave="hideTipMessage()">清空</button>
+                            #end
+                            <a type="back" class="layui-btn  layui-btn-primary" onclick="returnPage()">返回</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+<script type="text/javascript" src="lp/static/js/bus/move.js"></script>
+<script>
+    var $,form ,element,laydate ;
+    layui.use(['form', 'laydate', 'upload','element'], function () {
+        form = layui.form,element=layui.element,laydate=layui.laydate,$ = layui.$;
+        $(function () {
+            init();
+            $("#seatGrid li").ontouchmove=function(e){
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+
+        form.on('submit(formBox)', function (data) {
+            var aba020=$("#aba020").val();
+            if(isNotEmpty(aba020)){
+                var seatPoints=[];
+                var othis;
+                $(".seats-info li").each(function () {
+                    othis=$(this);
+                    seatPoints.push({
+                        "aba041":othis.attr("default-num"),
+                        "aba042":$(othis.find("input")[0]).val(),
+                        "aba043":$(othis.find("input")[1]).val(),
+                        "aba045":$(othis.find("input")[2]).val(),
+                    });
+                });
+                if($(this).hasClass("layui-btn-disabled")){
+                    return false;
+                }else{
+                    $(this).addClass("layui-btn-disabled");
+                    var loadIndex=layer.load(
+                        2,
+                        {
+                            shade:0.4,
+                            content:"<p style='font-size: 24px;color:#F6F6F6; width: 200px;margin-left: 40px;'>保存中，请稍候...</p>"
+                        }
+                    );
+                    $.ajax({
+                        type:'post',
+                        url:'bus/saveBusBa04',
+                        data:{
+                            "aba020":aba020,
+                            "seatPoints":JSON.stringify(seatPoints),
+                        },
+                        success:function(res){
+                            if(res){
+                                layer.close(loadIndex);
+                                alertMsg("保存成功！","success");
+//                                returnPage();
+                            }else{
+                                alertMsg("系统繁忙，请稍候重试！","error");
+                            }
+
+                        },error:function(err){
+                            timeOut(err);
+                        }
+                    });
+                }
+            }else{
+                alertMsg("系统繁忙，请稍候重试！","error");
+                return false;
+            }
+            return false;
+        });
+    });
+
+    function init() {
+        var oUl_w=document.getElementById("seatGrid").clientWidth;
+        var oUl_h=document.getElementById("seatGrid").clientHeight;
+        var col=parseInt('#(busBa02.aba004)');
+        var row=parseInt('#(busBa02.aba005)');
+        var width=parseInt(oUl_w/col-oUl_w*0.055)+"px";
+        var height=parseInt(oUl_h/row-oUl_h*0.018-2)+'px';
+        //var length=(oUl_w/59.5)*row;
+        var seats=#(busBa02.aba003);
+        for(var i=0;i<(col*row);i++){
+            if((col*row-i)>seats){
+                $("#seatGrid").append('<li class="seat" grid-num="'+(i+1)+'"><i class="seat-icon1"></i></li>');
+            }else{
+                $("#seatGrid").append('<li class="seat" grid-num="'+(i+1)+'" default-num="'+(seats-(col*row-i)+1)+'"><i class="seat-icon">'+(seats-(col*row-i)+1)+'</i></li>');
+            }
+        }
+        $(".seatGrid li").css("width",width).css("height",height);
+        initSeats();
+        initSeatList(seats);
+    }
+
+    var oUl= document.getElementById("seatGrid");
+    var aLi = oUl.getElementsByTagName("li");
+    var disX = 0;
+    var disY = 0;
+    var minZindex = 1;
+    var aPos =[];
+    //初始化左侧座位图栅格
+    function initSeats() {
+        for(var i=0;i<aLi.length;i++){
+            var t = aLi[i].offsetTop;
+            var l = aLi[i].offsetLeft;
+            aLi[i].style.top = t+"px";
+            aLi[i].style.left = l+"px";
+            aPos[i] = {left:l,top:t};
+            aLi[i].index = i;
+        }
+        for(var i=0;i<aLi.length;i++){
+            aLi[i].style.position = "absolute";
+            aLi[i].style.margin = 0;
+            if($(aLi[i]).hasClass("seat")){
+                setDrag(aLi[i]);
+            }
+        }
+    }
+
+    //渲染座位图和座位列表
+    function initSeatList(seats) {
+        $.ajax({
+            type:'post',
+            url:'bus/busSeatList',
+            data:{
+                "aba020":'#(busBa02.aba020)',
+            },
+            success:function(res){
+                renderCanvas(res,seats);
+            },error:function(err){
+                timeOut(err);
+            }
+        });
+    }
+
+    //渲染座位图和座位列表
+    function renderCanvas(res,seats) {
+        if(res.length>0){//已有座位图数据
+            var grid_num=0;
+            for(var i=0;i<res.length;i++){
+                //渲染座位图
+                var oNear=$("#seatGrid li[grid-num="+(res[i].aba045)+"]")[0];
+                var obj=$("#seatGrid li[default-num="+(res[i].aba041)+"]")[0];
+                oNear.className = "";
+                oNear.style.zIndex = minZindex++;
+                obj.style.zIndex = minZindex++;
+                startMove(oNear,aPos[obj.index]);
+                startMove(obj,aPos[oNear.index]);
+                //1.交换index
+                oNear.index += obj.index;
+                obj.index = oNear.index - obj.index;
+                oNear.index = oNear.index - obj.index;
+                //2.交换grid-num
+                grid_num=$(oNear).attr("grid-num");
+                $(oNear).attr("grid-num",$(obj).attr("grid-num"));
+                $(obj).attr("grid-num",grid_num);
+                //渲染座位列表
+                $(".seats-info").append('<li default-num="'+(res[i].aba041)+'">' +
+                    '<span>'+(res[i].aba041)+'号</span>' +
+                    '<span><label>X：</label><input type="text" readonly value="'+(res[i].aba042)+'">' +
+                    '<label>Y：</label><input type="text" readonly value="'+(res[i].aba043)+'">' +
+                    '<input type="hidden" readonly value="'+(res[i].aba045)+'"></span></li>');
+            }
+        }else{//无座位图数据
+            var left=0;
+            var top=0;
+            var grid_num=0;
+            for(var i=0;i<seats;i++) {
+                left = $("#seatGrid li[default-num=" + (i + 1) + "]").css("left").replace("px", "");
+                top = $("#seatGrid li[default-num=" + (i + 1) + "]").css("top").replace("px", "");
+                grid_num = $("#seatGrid li[default-num=" + (i + 1) + "]").attr("grid-num");
+                $(".seats-info").append('<li default-num="' + (i + 1) + '">' +
+                    '<span>' + (i + 1) + '号</span><span>' +
+                    '<label>X：</label><input type="text" readonly value="' + left + '">' +
+                    '<label>Y：</label><input type="text" readonly value="' + top + '">' +
+                    '<input type="hidden" readonly value="' + grid_num + '"></span></li>');
+            }
+        }
+
+    }
+
+
+    //拖拽
+    function setDrag(obj){
+        var origin_obj={};//拖拽之前对象的位置
+        obj.onmouseover = function(){
+            obj.style.cursor = "move";
+        }
+        obj.onmousedown = function(event){
+            var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+            var scrollLeft = document.documentElement.scrollLeft||document.body.scrollLeft;
+            obj.style.zIndex = minZindex++,origin_obj={left:obj.style.left,top:obj.style.top};
+            //当鼠标按下时计算鼠标与拖拽对象的距离
+            disX = event.clientX +scrollLeft-obj.offsetLeft;
+            disY = event.clientY +scrollTop-obj.offsetTop;
+            document.onmousemove=function(event){
+                //当鼠标拖动时计算div的位置
+                var l = event.clientX -disX +scrollLeft;
+                var t = event.clientY -disY + scrollTop;
+                obj.style.left = l + "px";
+                obj.style.top = t + "px";
+                /*for(var i=0;i<aLi.length;i++){
+                    aLi[i].className = "";
+                    if(obj==aLi[i])continue;//如果是自己则跳过自己不加红色虚线
+                    if(colTest(obj,aLi[i])){
+                        aLi[i].className = "active";
+                    }
+                }*/
+                for(var i=0;i<aLi.length;i++){
+                    aLi[i].className = "";
+                }
+                var oNear = findMin(obj);
+                if(oNear){
+                    oNear.className = "active";
+                }
+            }
+            document.onmouseup = function(){
+                document.onmousemove = null;//当鼠标弹起时移出移动事件
+                document.onmouseup = null;//移出up事件，清空内存
+                //检测是否普碰上，在交换位置
+                var oNear = findMin(obj);
+                var grid_num=0;
+                if(oNear){
+                    oNear.className = "";
+                    oNear.style.zIndex = minZindex++;
+                    obj.style.zIndex = minZindex++;
+                    startMove(oNear,aPos[obj.index]);
+                    startMove(obj,aPos[oNear.index]);
+                    //交换index
+                    oNear.index += obj.index;
+                    obj.index = oNear.index - obj.index;
+                    oNear.index = oNear.index - obj.index;
+                    //交换grid-num
+                    grid_num=$(oNear).attr("grid-num");
+                    $(oNear).attr("grid-num",$(obj).attr("grid-num"));
+                    $(obj).attr("grid-num",grid_num);
+                    drawPoint(oNear,obj,origin_obj);
+                }else{
+                    startMove(obj,aPos[obj.index]);
+                    drawPoint(obj,obj);
+                }
+            }
+            clearInterval(obj.timer);
+            return false;//低版本出现禁止符号
+        }
+    }
+    //描点--座位坐标点
+    function drawPoint(oNear,obj,origin_obj) {
+        $($(".seats-info li[default-num='"+$(obj).attr("default-num")+"'] input")[0]).val($(oNear).css("left").replace("px",""));
+        $($(".seats-info li[default-num='"+$(obj).attr("default-num")+"'] input")[1]).val($(oNear).css("top").replace("px",""));
+        $($(".seats-info li[default-num='"+$(obj).attr("default-num")+"'] input")[2]).val($(obj).attr("grid-num"));
+        if(isNotEmpty(origin_obj)){
+            $($(".seats-info li[default-num='"+$(oNear).attr("default-num")+"'] input")[0]).val(origin_obj.left.replace("px",""));
+            $($(".seats-info li[default-num='"+$(oNear).attr("default-num")+"'] input")[1]).val(origin_obj.top.replace("px",""));
+            $($(".seats-info li[default-num='"+$(oNear).attr("default-num")+"'] input")[2]).val($(oNear).attr("grid-num"));
+        }
+
+    }
+
+    //碰撞检测
+    function colTest(obj1,obj2){
+        var t1 = obj1.offsetTop;
+        var r1 = obj1.offsetWidth+obj1.offsetLeft;
+        var b1 = obj1.offsetHeight+obj1.offsetTop;
+        var l1 = obj1.offsetLeft;
+
+        var t2 = obj2.offsetTop;
+        var r2 = obj2.offsetWidth+obj2.offsetLeft;
+        var b2 = obj2.offsetHeight+obj2.offsetTop;
+        var l2 = obj2.offsetLeft;
+
+        if(t1>b2||r1<l2||b1<t2||l1>r2){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    //勾股定理求距离
+    function getDis(obj1,obj2){
+        var a = obj1.offsetLeft-obj2.offsetLeft;
+        var b = obj1.offsetTop-obj2.offsetTop;
+        return Math.sqrt(Math.pow(a,2)+Math.pow(b,2));
+    }
+    //找到距离最近的
+    function findMin(obj){
+        var minDis = 999999999;
+        var minIndex = -1;
+        for(var i=0;i<aLi.length;i++){
+            if(obj==aLi[i])continue;
+            if(colTest(obj,aLi[i])){
+                var dis = getDis(obj,aLi[i]);
+                if(dis<minDis){
+                    minDis = dis;
+                    minIndex = i;
+                }
+            }
+        }
+        if(minIndex==-1){
+            return null;
+        }else{
+            return aLi[minIndex];
+        }
+    }
+
+
+    //重置
+    function fnReset() {
+        layer.confirm("确定要清空该座位图所有配置吗？", function(index){
+            $.ajax({
+                type:'post',
+                url:'bus/clearBusBa04',
+                data:{"aba020":$("#aba020").val()},
+                success:function (res) {
+                    if(res){
+                        window.location.reload();
+                    }else{
+                        alertMsg("系统繁忙，请稍候重试!","error");
+                    }
+                },error:function(){
+                    windowNewLocation('error');
+                }
+            });
+        });
+
+    }
+</script>
+#end
