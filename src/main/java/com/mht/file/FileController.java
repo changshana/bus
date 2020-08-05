@@ -1032,7 +1032,7 @@ public class FileController extends CommonController {
 
 
     /**
-     * 导出数据表格（复杂表格）：电子科技大学后勤保障部员工基本情况表
+     * 导出数据表格（复杂表格）：四川大学后勤保障部员工基本情况表
      *
      * @param dataList 动态数据
      * @param cond 参数 keys 显示字段
@@ -1040,7 +1040,7 @@ public class FileController extends CommonController {
     public static File exportEmployeesMonthStatisticsFile(List dataList, Kv cond) {
         String site_nature = cond.getStr("site_nature");
         String sheetName=site_nature.equals("1")?"独立法人":"非独立法人";
-        File newFile = new File("电子科技大学后勤保障部员工基本情况表("+sheetName+")"+ getYearToDateS() + ".xls");
+        File newFile = new File("四川大学后勤保障部员工基本情况表("+sheetName+")"+ getYearToDateS() + ".xls");
         try {
             WorkbookSettings ws = new WorkbookSettings();
             ws.setEncoding("iso-8859-1");

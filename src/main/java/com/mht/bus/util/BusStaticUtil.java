@@ -28,8 +28,8 @@ public class BusStaticUtil {
     public static final String SUCCESS="SUCCESS";//支付成功标识
     public static final String PAY_TITLE="BusPay";//支付订单号title
     public static final String REFUND_TITLE="BusRefund";//退款单号title
-    public static final String REFUND_STU="电子科技大学校车车票退款（个人发起退款）";
-    public static final String REFUND_CANCEL_BUS="电子科技大学校车车票退款（取消发车）";
+    public static final String REFUND_STU="四川大学校车车票退款（个人发起退款）";
+    public static final String REFUND_CANCEL_BUS="四川大学校车车票退款（取消发车）";
     public static final String RESULT_FAIL="FAIL";
     public static final String CALLBACK_OK="<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
     public static final String CALLBACK_FAIL="<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[报文校验不通过!]]></return_msg></xml>";

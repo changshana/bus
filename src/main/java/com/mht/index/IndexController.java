@@ -32,7 +32,8 @@ public class IndexController extends CommonController {
     public void index() {
         setOptionSession();
         setPathSession();
-        render("portal_1.html");
+        setSessionAttr("plat_id","9");
+        render("lpLogin.html");
 
     }
 
