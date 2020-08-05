@@ -31,6 +31,10 @@ public class BusOrderController extends CommonController {
     public static final BusCa03Service busCa03Service = BusCa03Service.me;
     public static final BusCa04Service busCa04Service = BusCa04Service.me;
     public static final BusOrderService busOrderService = BusOrderService.me;
+    public static final BusBa02Service busBa02Service = BusBa02Service.me;
+
+    public static String appid = "wxd80120cbfe499af5";
+    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
 
 
     /*车辆预约*/
@@ -183,16 +187,16 @@ public class BusOrderController extends CommonController {
     public void getAllBus() {
         Map<String, Object> result = new HashMap<>();
         Kv cond = getCond(getParaMap());
-        //查询所有班车信息
+        //查询总条数
         List<Record> count = busAa01Service.records(cond, "bus.getAllBus");
-        Page page = busAa01Service.paginate(Integer.parseInt(cond.getStr("page")), Integer.parseInt(cond.getStr("limit")), "bus.getAllBus");
+        //查询公车信息
+        Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), "bus.getAllBus");
         List<Record> records = page.getList();
-        //查询已被预约的班车
+        //添加公车预约状态
         cond.set("date", new Date());    //设置当前时间
-        List<Record> recordBookeds = busAa01Service.records(cond, "bus.getBookedBus");
+        List<Record> recordBookeds = busAa01Service.records(cond, "bus.getBookedBus");  //查询已被预约的公车
         for (Record record : records) {
             record.set("appointmentStatus", "未预约"); //增加预约状态
-
             Integer aaa001A = record.getInt("aaa001"); //班车的id
             for (Record recordBooked : recordBookeds) {
                 Integer aaa001B = recordBooked.getInt("aaa001");//班车的id
@@ -206,49 +210,18 @@ public class BusOrderController extends CommonController {
         renderJson(result);    //返回数据
     }
 
-
-    public static String appid = "wxd80120cbfe499af5";
-    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
+    /*返回所有车型*/
+    public void findAllBusType(){
+        Kv cond = getCond(getParaMap());
+        List<Record> records = busBa02Service.records(cond, "bus.findAllBusType");
+        renderJson(records);
+    }
 
     /*点击车辆进入预约 预约车辆 */
     public void orderBus() throws ParseException {
         Map<String, Object> result = new HashMap<>();
-        Kv cond = getCond(getParaMap());
-        String dateTime = cond.getStr("dateTime");  //时间
-        Integer carTypeId = cond.getInt("carType");   //车型id
-        Integer carId = cond.getInt("car");   //车辆id
-        Integer driverId = cond.getInt("driver");   //驾驶员id
-        String start = cond.getStr("start");  //出发地点+经纬度
-        String end = cond.getStr("end");  //终点+经纬度
-        String remarks = cond.getStr("remarks");  //备注
-        String code = cond.getStr("code");  //code  用来获取用户信息
-        String mileage = cond.getStr("mileage");  //里程
-        String personType = cond.getStr("personType");//人员类型
-        BusOrder busOrder = new BusOrder();
-        SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        busOrder.setAba032(slf.parse(dateTime));
-        busOrder.setAza207(carTypeId);
-        busOrder.setAza201(carId);
-        busOrder.setAza208(driverId);
-        busOrder.setAza204(start);
-        busOrder.setAza205(end);
-        busOrder.setAaa999(remarks);
-        BigDecimal decimal = new BigDecimal(mileage);
-        busOrder.setAza203(decimal);
-        if ("校内用户".equals(personType)) {
-            busOrder.setAca044(1);
-        }
-        if ("校外用户".equals(personType)) {
-            busOrder.setAca044(2);
-        }
-        if ("驾驶员".equals(personType)) {
-            busOrder.setAca044(3);
-        }
-        if ("管理员".equals(personType)) {
-            busOrder.setAca044(4);
-        }
-        //根据code得到用户注册信息
-        String openid = WxUtil.getOpenId(appid, secret, code);
+        BusOrder busOrder = getModel(BusOrder.class, "busOrder");
+        String openid = "oLao_5Wv2ob3SCQGn1o8I6DSvdCU"; //暂时默认为zhz的订单
         busOrder.setAca031(openid);
         BusCa04 busCa04 = busCa04Service.getBusCa04ByAca042(openid);
         busOrder.setAaa997(busCa04.getAca043());    //设置用户名字
@@ -257,7 +230,7 @@ public class BusOrderController extends CommonController {
         busOrder.setAca035(0);  //支付状态（0未支付，1已支付）
         busOrder.setOutTradeNo("");             /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
 
-        int estimatedCost = Integer.parseInt(mileage) / 4;    /*预估费用  这里的费用计算     待定*/
+        Double estimatedCost =  busOrder.getAza203().doubleValue() / 4;    /*预估费用  这里的费用计算     待定*/
         BigDecimal bigDecimal = new BigDecimal(estimatedCost);
         busOrder.setAza202(bigDecimal);
 

@@ -189,4 +189,19 @@ public abstract class BaseBusAa02<M extends BaseBusAa02<M>> extends Model<M> imp
 		return get("aaa998");
 	}
 
+	/**
+	*设置驾驶证级别 
+	*/
+	public M setAza021(java.lang.String aza021) {
+		set("aza021", aza021);
+		return (M)this;
+	}
+
+	/**
+	*获取驾驶证级别 
+	*/
+	public java.lang.String getAza021() {
+		return getStr("aza021");
+	}
+
 }

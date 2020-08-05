@@ -234,4 +234,34 @@ public abstract class BaseBusAa01<M extends BaseBusAa01<M>> extends Model<M> imp
 		return getStr("aaa009");
 	}
 
+	/**
+	*设置车辆每公里的单价（暂定） 
+	*/
+	public M setAza001(java.math.BigDecimal aza001) {
+		set("aza001", aza001);
+		return (M)this;
+	}
+
+	/**
+	*获取车辆每公里的单价（暂定） 
+	*/
+	public java.math.BigDecimal getAza001() {
+		return get("aza001");
+	}
+
+	/**
+	*设置开此车需要的驾驶证级别 
+	*/
+	public M setAza002(java.lang.String aza002) {
+		set("aza002", aza002);
+		return (M)this;
+	}
+
+	/**
+	*获取开此车需要的驾驶证级别 
+	*/
+	public java.lang.String getAza002() {
+		return getStr("aza002");
+	}
+
 }
