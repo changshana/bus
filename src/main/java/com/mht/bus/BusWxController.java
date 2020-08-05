@@ -315,11 +315,19 @@ public class BusWxController extends CommonController {
 //        String aca031 = cond.getStr("openid");
         String aza206 = cond.getStr("aza206"); //订单审核状态
         String aca030 = cond.getStr("aca030"); //订单id
-        String aza211 = cond.getStr("aza211"); //操作员id
+        String aza211 = cond.getStr("aza211"); //操作员id        网页端用这个
+        String openid = cond.getStr("openid"); //openid         小程序用这个
+        Integer operatorId = null;
+        if(aza211 == null){
+            operatorId = busCa04Service.findByOpenId1(openid).getAca040();
+        }
+        else {
+            operatorId = Integer.parseInt(aza211);
+        }
 //        BusOrder busOrder = busOrderService.findByOpenid(aca031);
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
         busOrder.setAza206(Integer.parseInt(aza206));
-        busOrder.setAza211(Integer.parseInt(aza211));
+        busOrder.setAza211(operatorId);
         busOrderService.update(busOrder);
         Integer checkCode = busOrder.getAza206();
         if (checkCode == 1) {
@@ -377,6 +385,18 @@ public class BusWxController extends CommonController {
         BusAa02 busAa02 = busAa02Service.findByAca046(aca046);  //通过身份证号查询驾驶员id 也就是表id
         cond.set("aza208", busAa02.getAaa020());
         List<Record> records = busOrderService.records(cond, "bus.findOrderByDriver");  //驾驶员待处理订单
+        renderJson(records);
+    }
+
+    /*驾驶员进行中的订单*/
+    public void findOrderProcess() {
+        Kv cond = getCond(getParaMap());
+        String openid = cond.getStr("openid");
+        BusCa04 busCa04 = busCa04Service.findByOpenId1(openid); //根据openid查询身份证号
+        String aca046 = busCa04.getAca046();    //身份证号
+        BusAa02 busAa02 = busAa02Service.findByAca046(aca046);  //通过身份证号查询驾驶员id 也就是表id
+        cond.set("aza208", busAa02.getAaa020());
+        List<Record> records = busOrderService.records(cond, "bus.findOrderProcess");  //驾驶员待处理订单
         renderJson(records);
     }
 
@@ -541,8 +561,8 @@ public class BusWxController extends CommonController {
         Map res = new HashMap();
         Kv cond = getCond(getParaMap());
         //拿到订单id  添加评价
-        Integer aca030 = cond.getInt("aca030"); //订单id
-        Integer aca032 = cond.getInt("aca032");//评价星级 1、2、3、4、5星  参考 美团订单
+        Integer aca030 = Integer.parseInt(cond.getStr("aca030")); //订单id
+        Integer aca032 = Integer.parseInt(cond.getStr("aca032"));//评价星级 1、2、3、4、5星  参考 美团订单
         Integer aca033 = null;  //评价类型  差评 星级小于3   1； 一般 3  2；  好评  大于3    3
         String aca034 = cond.getStr("aca034");  //评价备注
         BusOrder busOrder = busOrderService.findById(aca030);
@@ -553,7 +573,6 @@ public class BusWxController extends CommonController {
             aca033 = 2;
         } else {
             aca033 = 3;
-
         }
         busOrder.setAca033(aca033);
         busOrder.setAca034(aca034);

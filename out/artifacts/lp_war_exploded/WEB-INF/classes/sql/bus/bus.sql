@@ -1218,7 +1218,20 @@ select
 #end
 
 #sql("getAllBus")
-SELECT * FROM bus_aa01
+SELECT * FROM bus_aa01 where 1=1
+#if(aaa007)
+and aaa007 = #para(aaa007)
+#end
+#if(aba060)
+and aba060 = #para(aba060)
+#end
+#if(maxPrice)
+and aza001 <= #para(maxPrice)
+#end
+#if(minPrice)
+and aza001 >= #para(minPrice)
+#end
+
 #end
 
 #sql("getBookedBus")
@@ -1321,6 +1334,21 @@ and aca050 = 1
 and aza208=#para(aza208)
 #end
 and aaa996 = 0
+and aza206 = 1
+) bo LEFT
+JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+#end
+
+#sql("findOrderProcess")
+SELECT bo.*,ba01.aaa002 licensePlate,ba02.aaa002 driverName FROM (
+SELECT * FROM bus_order WHERE 1=1
+and aca050 = 1
+#if(aza208)
+and aza208=#para(aza208)
+#end
+and aaa996 = 1
+and aza206 = 1
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
 JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
