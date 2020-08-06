@@ -86,8 +86,6 @@ public class BusWxController extends CommonController {
     public void register() {
         Map res = new HashMap();
         Kv cond = getCond(getParaMap());
-        //1. 判断用户名称是否已经存在
-
         //2. 得到code
         String code = cond.getStr("code");
 //        String openid = cond.getStr("openid");
@@ -123,7 +121,7 @@ public class BusWxController extends CommonController {
     }
 
 
-    /*未分页的驾驶员列表  返回给微信端*/
+    /*未分页的驾驶员列表  返回给微信端 只返回该时段能用的驾驶员*/
     public void getBusAa02All() {
         Kv cond = getCond(getParaMap());
         List<Record> records = busAa02Service.records(cond, "bus.getBusAa02List");
