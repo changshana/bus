@@ -474,4 +474,49 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 		return getStr("aza215");
 	}
 
+	/**
+	*设置实际时长 
+	*/
+	public M setAza216(java.lang.Integer aza216) {
+		set("aza216", aza216);
+		return (M)this;
+	}
+
+	/**
+	*获取实际时长 
+	*/
+	public java.lang.Integer getAza216() {
+		return getInt("aza216");
+	}
+
+	/**
+	*设置实际费用 
+	*/
+	public M setAza217(java.math.BigDecimal aza217) {
+		set("aza217", aza217);
+		return (M)this;
+	}
+
+	/**
+	*获取实际费用 
+	*/
+	public java.math.BigDecimal getAza217() {
+		return get("aza217");
+	}
+
+	/**
+	*设置实际里程 
+	*/
+	public M setAza218(java.math.BigDecimal aza218) {
+		set("aza218", aza218);
+		return (M)this;
+	}
+
+	/**
+	*获取实际里程 
+	*/
+	public java.math.BigDecimal getAza218() {
+		return get("aza218");
+	}
+
 }

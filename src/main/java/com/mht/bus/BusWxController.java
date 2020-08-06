@@ -512,9 +512,9 @@ public class BusWxController extends CommonController {
 
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
         busOrder.setAca036(2);  //乘坐状态
-        busOrder.setAza202(new BigDecimal(actualMileage));   //实际里程
-        busOrder.setAza203(new BigDecimal(actualMileage/4));    //实际费用
-        busOrder.setAza209(aza209); //实际时长
+        busOrder.setAza218(new BigDecimal(actualMileage));   //实际里程
+        busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
+        busOrder.setAza216(aza209); //实际时长
         busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
 
         busOrderService.update(busOrder);
@@ -541,9 +541,9 @@ public class BusWxController extends CommonController {
 
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
         busOrder.setAaa996(2);  //发车状态
-        busOrder.setAza202(new BigDecimal(actualMileage));   //实际里程
-        busOrder.setAza203(new BigDecimal(actualMileage/4));    //实际费用
-        busOrder.setAza209(aza209); //实际时长
+        busOrder.setAza218(new BigDecimal(actualMileage));   //实际里程
+        busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
+        busOrder.setAza216(aza209); //实际时长
         busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
 
         busOrderService.update(busOrder);
