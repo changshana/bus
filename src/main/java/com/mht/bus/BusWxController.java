@@ -13,7 +13,6 @@ import com.mht.common.model.BusAa02;
 import com.mht.common.model.BusCa04;
 import com.mht.common.model.BusOrder;
 import com.mht.common.model.BusToken;
-import com.mht.common.utils.Format;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -45,7 +44,6 @@ public class BusWxController extends CommonController {
         Kv cond = getCond(getParaMap());
         //登录
         String code = cond.getStr("code");
-//        String openid = cond.getStr("openid");
         String openid = WxUtil.getOpenId(appid, secret, code);
         if (null == openid) {
             res.put("flag", Boolean.FALSE);
@@ -89,7 +87,6 @@ public class BusWxController extends CommonController {
         Kv cond = getCond(getParaMap());
         //2. 得到code
         String code = cond.getStr("code");
-//        String openid = cond.getStr("openid");
         //3. 得到openID
         String openid = WxUtil.getOpenId(appid, secret, code);  //aca042
         if (null == openid) {
@@ -125,7 +122,7 @@ public class BusWxController extends CommonController {
     /*未分页的驾驶员列表  返回给微信端 只返回该时段能用的驾驶员*/
     public void getBusAa02All() {
         Kv cond = getCond(getParaMap());
-        List<Record> records = busAa02Service.records(cond, "bus.getBusAa02List");
+        List<Record> records = busAa02Service.records(cond, "bus.getBusAa02List1");
         renderJson(records);
     }
 
@@ -262,6 +259,13 @@ public class BusWxController extends CommonController {
     }
 
     /*我的评价*/
+    public void  myEvaluate(){
+        Kv cond = getCond(getParaMap());
+        String openid = cond.getStr("openid");
+        cond.set("aca031",openid);
+        List<Record> records = busOrderService.records(cond, "bus.findMyEvaluate");
+        renderJson(records);
+    }
     /*我的收藏*/
     /*钱包*/
     /*个人资料*/

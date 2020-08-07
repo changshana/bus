@@ -1411,4 +1411,22 @@ SELECT aaa001,aaa002 FROM bus_aa01
 SELECT * from bus_ba02
 #end
 
+#sql("getBusAa02List1")
+SELECT * from bus_aa02
+#end
 
+
+#sql("findMyEvaluate")
+SELECT bo.aca032,bo.aca033,bo.aca034,ba01.aaa002 licensePlate,ba02.aaa002 driverName FROM (
+select * from bus_order where 1=1
+#if(aca031)
+and aca031=#para(aca031)
+#end
+and aza206 = 1
+and aca050 = 1
+and aca032 is not NULL
+order by aca036
+) bo LEFT
+JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+#end

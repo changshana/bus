@@ -6,19 +6,15 @@ import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.rest.API;
 import com.mht.bus.service.*;
-import com.mht.bus.util.WxUtil;
 import com.mht.common.CommonController;
 import com.mht.common.model.BusAa01;
-import com.mht.common.model.BusBa02;
 import com.mht.common.model.BusCa04;
 import com.mht.common.model.BusOrder;
 import com.mht.common.utils.Format;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +29,6 @@ public class BusOrderController extends CommonController {
     public static final BusCa04Service busCa04Service = BusCa04Service.me;
     public static final BusOrderService busOrderService = BusOrderService.me;
     public static final BusBa02Service busBa02Service = BusBa02Service.me;
-
-    public static String appid = "wxd80120cbfe499af5";
-    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
 
 
     /*车辆预约*/
@@ -74,7 +67,6 @@ public class BusOrderController extends CommonController {
         setAttr("busAa01", busAa01);
         render("busAaaManageDetail.html");
     }
-
 
     /*车辆表   保存信息到BusAa01 和 BusImg*/
     public void saveBusAa01() {

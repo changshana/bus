@@ -16,7 +16,6 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 
 	public static void mapping(ActiveRecordPlugin arp) {
-		arp.addMapping("alert_sms_info", "sms_info_id", AlertSmsInfo.class);
 		arp.addMapping("bus_aa01", "aaa001", BusAa01.class);
 		arp.addMapping("bus_aa02", "aaa020", BusAa02.class);
 		arp.addMapping("bus_aa03", "aaa030", BusAa03.class);
