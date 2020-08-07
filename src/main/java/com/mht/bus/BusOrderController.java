@@ -1,6 +1,7 @@
 package com.mht.bus;
 
 import cn.dreampie.ValidateKit;
+import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -75,7 +76,7 @@ public class BusOrderController extends CommonController {
     public void saveBusAa01() {
         Kv cond = getCond(getParaMap());
         BusAa01 busAa01 = getModel(BusAa01.class, "busAa01");
-        busAa01.setAaa009("http://192.168.1.152:8080/lp/upload/" + cond.getStr("fileName"));
+        busAa01.setAaa009(Constant.IMG_ADDRESS + cond.getStr("fileName"));
         if (ValidateKit.isNullOrEmpty(busAa01.getAaa001())) {
             busAa01.setAaa996(1);
             busAa01.setAaa997(getUserInfo().getUserName());

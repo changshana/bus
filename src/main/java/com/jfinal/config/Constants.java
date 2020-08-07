@@ -55,6 +55,7 @@ final public class Constants {
 
 	private Boolean restful = Const.DEFAULT_STD_RESTFUL;
 
+
 	/**
 	 * Set development mode.
 	 * @param devMode the development mode

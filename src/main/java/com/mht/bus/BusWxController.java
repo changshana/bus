@@ -1,5 +1,6 @@
 package com.mht.bus;
 
+import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Record;
 import com.mht.bus.service.BusAa02Service;
@@ -30,8 +31,8 @@ import java.util.*;
  * Modified By:
  */
 public class BusWxController extends CommonController {
-    public static String appid = "wxd80120cbfe499af5";
-    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
+    public static String appid = Constant.appid;
+    public static String secret = Constant.secret;
 
     public static final BusCa04Service busCa04Service = BusCa04Service.me;
     public static final BusTokenService busTokenService = BusTokenService.me;
@@ -86,8 +87,6 @@ public class BusWxController extends CommonController {
     public void register() {
         Map res = new HashMap();
         Kv cond = getCond(getParaMap());
-        //1. 判断用户名称是否已经存在
-
         //2. 得到code
         String code = cond.getStr("code");
 //        String openid = cond.getStr("openid");
@@ -123,7 +122,7 @@ public class BusWxController extends CommonController {
     }
 
 
-    /*未分页的驾驶员列表  返回给微信端*/
+    /*未分页的驾驶员列表  返回给微信端 只返回该时段能用的驾驶员*/
     public void getBusAa02All() {
         Kv cond = getCond(getParaMap());
         List<Record> records = busAa02Service.records(cond, "bus.getBusAa02List");
@@ -512,9 +511,9 @@ public class BusWxController extends CommonController {
 
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
         busOrder.setAca036(2);  //乘坐状态
-        busOrder.setAza202(new BigDecimal(actualMileage));   //实际里程
-        busOrder.setAza203(new BigDecimal(actualMileage/4));    //实际费用
-        busOrder.setAza209(aza209); //实际时长
+        busOrder.setAza218(new BigDecimal(actualMileage));   //实际里程
+        busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
+        busOrder.setAza216(aza209); //实际时长
         busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
 
         busOrderService.update(busOrder);
@@ -541,9 +540,9 @@ public class BusWxController extends CommonController {
 
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
         busOrder.setAaa996(2);  //发车状态
-        busOrder.setAza202(new BigDecimal(actualMileage));   //实际里程
-        busOrder.setAza203(new BigDecimal(actualMileage/4));    //实际费用
-        busOrder.setAza209(aza209); //实际时长
+        busOrder.setAza218(new BigDecimal(actualMileage));   //实际里程
+        busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
+        busOrder.setAza216(aza209); //实际时长
         busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
 
         busOrderService.update(busOrder);

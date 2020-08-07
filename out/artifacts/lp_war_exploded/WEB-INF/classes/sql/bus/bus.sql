@@ -1407,6 +1407,8 @@ SELECT aaa020,aaa002 FROM bus_aa02
 SELECT aaa001,aaa002 FROM bus_aa01
 #end
 
-
+#sql("findAllBusType")
+SELECT * from bus_ba02
+#end
 
 
