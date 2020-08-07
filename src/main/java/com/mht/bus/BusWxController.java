@@ -1,5 +1,6 @@
 package com.mht.bus;
 
+import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Record;
 import com.mht.bus.service.BusAa02Service;
@@ -30,8 +31,8 @@ import java.util.*;
  * Modified By:
  */
 public class BusWxController extends CommonController {
-    public static String appid = "wxd80120cbfe499af5";
-    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
+    public static String appid = Constant.appid;
+    public static String secret = Constant.secret;
 
     public static final BusCa04Service busCa04Service = BusCa04Service.me;
     public static final BusTokenService busTokenService = BusTokenService.me;
