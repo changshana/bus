@@ -5,19 +5,15 @@ import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.rest.API;
 import com.mht.bus.service.*;
-import com.mht.bus.util.WxUtil;
 import com.mht.common.CommonController;
 import com.mht.common.model.BusAa01;
-import com.mht.common.model.BusBa02;
 import com.mht.common.model.BusCa04;
 import com.mht.common.model.BusOrder;
 import com.mht.common.utils.Format;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -263,6 +259,11 @@ public class BusOrderController extends CommonController {
         ));
     }
 
+
+    /*跳往网页端下单*/
+    public void addOrder() {
+        render("addOrder.html");
+    }
 
 }
 

@@ -1,7 +1,7 @@
 package com.mht.common.model.base;
 
-import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.IBean;
+import com.jfinal.plugin.activerecord.Model;
 
 /**
  * bus_order:( do not modify this file.)
@@ -464,14 +464,59 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	*/
 	public M setAza215(java.lang.String aza215) {
 		set("aza215", aza215);
-		return (M)this;
+		return (M) this;
 	}
 
 	/**
-	*获取实际到达时间 
-	*/
+	 * 获取实际到达时间
+	 */
 	public java.lang.String getAza215() {
 		return getStr("aza215");
+	}
+
+	/**
+	 * 获取实际时长
+	 */
+	public java.lang.Integer getAza216() {
+		return getInt("aza216");
+	}
+
+	/**
+	 * 设置实际时长
+	 */
+	public M setAza216(java.lang.Integer aza216) {
+		set("aza216", aza216);
+		return (M) this;
+	}
+
+	/**
+	 * 获取实际费用
+	 */
+	public java.math.BigDecimal getAza217() {
+		return get("aza217");
+	}
+
+	/**
+	 * 设置实际费用
+	 */
+	public M setAza217(java.math.BigDecimal aza217) {
+		set("aza217", aza217);
+		return (M) this;
+	}
+
+	/**
+	 * 获取实际里程
+	 */
+	public java.math.BigDecimal getAza218() {
+		return get("aza218");
+	}
+
+	/**
+	 * 设置实际里程
+	 */
+	public M setAza218(java.math.BigDecimal aza218) {
+		set("aza218", aza218);
+		return (M) this;
 	}
 
 }

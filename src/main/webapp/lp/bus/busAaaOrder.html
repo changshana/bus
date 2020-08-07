@@ -65,7 +65,7 @@
         function renderProduct(page, limit) {
             $.ajax({
                 async: false,
-                url: '/lp/busOrder/getAllBus',
+                url: 'busOrder/getAllBus',
                 data: {"page": page, "limit": limit},
                 dataType: 'json',
                 success: function (result) {
