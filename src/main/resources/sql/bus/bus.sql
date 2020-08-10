@@ -1283,8 +1283,8 @@ select * from  bus_ca03
 
 #sql("getBusOrderList")
 select ba1.aaa005 ride,ba2.aaa005 pay,bo.* from  bus_order bo
-LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca036') ba1 ON bo.aca036 = ba1.aaa004
-LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca035') ba2 ON bo.aca036 = ba2.aaa004
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca036' and aaa996 = 1) ba1 ON bo.aca036 = ba1.aaa004
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca035' and aaa996 = 1) ba2 ON bo.aca035 = ba2.aaa004
 #if(aca035)
 and bo.aca035=#para(aca035)
 #end
