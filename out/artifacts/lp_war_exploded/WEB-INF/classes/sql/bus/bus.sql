@@ -1282,7 +1282,19 @@ select * from  bus_ca03
 #end
 
 #sql("getBusOrderList")
-select * from  bus_order
+select ba1.aaa005 ride,ba2.aaa005 pay,bo.* from  bus_order bo
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca036') ba1 ON bo.aca036 = ba1.aaa004
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca035') ba2 ON bo.aca036 = ba2.aaa004
+#if(aca035)
+and bo.aca035=#para(aca035)
+#end
+#if(aca036)
+and bo.aca036=#para(aca036)
+#end
+#if(search_param)
+and (bo.aaa997 like concat('%',#para(search_param),'%')
+#end
+ORDER BY bo.aba032
 #end
 
 #sql("getBusBa02All")
