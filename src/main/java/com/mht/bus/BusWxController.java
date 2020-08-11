@@ -533,7 +533,7 @@ public class BusWxController extends CommonController {
         Map res = new HashMap();
         String aca030 = cond.getStr("aca030");  //订单id
         BusOrder order = busOrderService.findById(Integer.parseInt(aca030));
-        BigDecimal aza212 = order.getAza212();  //起点里程
+        BigDecimal aza212 = order.getAza212();       //起点里程
         String aza213 = cond.getStr("aza213");  //终点里程   需要用户输入
         Double actualMileage = Double.parseDouble(aza213) - aza212.doubleValue(); //实际里程
         SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -543,14 +543,14 @@ public class BusWxController extends CommonController {
         Integer aza209 = Math.toIntExact((dateEnd.getTime() - dateStart.getTime()) / (1000 * 60));  //实际时长（分钟）
 
         BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
-        busOrder.setAaa996(2);  //发车状态
-        busOrder.setAza218(new BigDecimal(actualMileage));   //实际里程
+        busOrder.setAaa996(2);                                      //发车状态
+        busOrder.setAza218(new BigDecimal(actualMileage));          //实际里程
         busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
-        busOrder.setAza216(aza209); //实际时长
-        busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
+        busOrder.setAza216(aza209);                                  //实际时长
+        busOrder.setAza215(slf.format(dateEnd));                     //实际结束时间
 
         busOrderService.update(busOrder);
-        res.put("flag", Boolean.TRUE);
+        res.put( "flag", Boolean.TRUE);
         res.put("msg", "驾驶员确认行程结束");
         res.put("data", busOrder);
         renderJson(res);

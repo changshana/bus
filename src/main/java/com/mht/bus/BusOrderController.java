@@ -153,8 +153,7 @@ public class BusOrderController extends CommonController {
 
     /*车队主管管理*/
     /*订单管理*/
-    /*系统设置
-     *首页*/
+    /*首页*/
 
     /*订单列表*/
     public void getBusCa03List() {
