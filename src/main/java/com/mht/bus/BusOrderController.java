@@ -113,7 +113,6 @@ public class BusOrderController extends CommonController {
             Map<String, String[]> paraMap = getParaMap();
             Kv cond = getCond(paraMap);
             renderJson(Format.layuiPage(busAa01Service.paginate1(getParaToInt("page", 1), getParaToInt("limit", 30), cond)));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
