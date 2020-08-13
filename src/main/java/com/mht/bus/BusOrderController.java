@@ -77,7 +77,7 @@ public class BusOrderController extends CommonController {
         try {
             Kv cond = getCond(getParaMap());
             BusAa01 busAa01 = getModel(BusAa01.class, "busAa01");
-            busAa01.setAaa009(Constant.IMG_ADDRESS + cond.getStr("fileName"));
+            busAa01.setAaa009(cond.getStr("fileName"));
             if (ValidateKit.isNullOrEmpty(busAa01.getAaa001())) {
                 busAa01.setAaa996(1);
                 busAa01.setAaa997(getUserInfo().getUserName());
