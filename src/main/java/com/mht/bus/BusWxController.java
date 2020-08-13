@@ -90,7 +90,6 @@ public class BusWxController extends CommonController {
         //3. 得到openID
         String openid = WxUtil.getOpenId(appid, secret, code);  //aca042
         if (null == openid) {
-//            return RestResponse.fail(4, "获取微信OpenId失败");
             res.put("flag", Boolean.FALSE);
             res.put("msg", "获取微信OpenId失败！");
             renderJson(res);
@@ -408,7 +407,7 @@ public class BusWxController extends CommonController {
         Kv cond = getCond(getParaMap());
         String openid = cond.getStr("openid");
         BusCa04 busCa04 = busCa04Service.findByOpenId1(openid);
-        String aca046 = busCa04.getAca046();    //身份证号
+        String aca046 = busCa04.getAca046();    // 身份证号
         BusAa02 busAa02 = busAa02Service.findByAca046(aca046);
         cond.set("aza208", busAa02.getAaa020());
         List<Record> records = busOrderService.records(cond, "bus.findOrderOver");  //驾驶员已完成订单
@@ -519,8 +518,8 @@ public class BusWxController extends CommonController {
         busOrder.setAza217(new BigDecimal(actualMileage/4));    //实际费用
         busOrder.setAza216(aza209); //实际时长
         busOrder.setAza215(slf.format(dateEnd));    //实际结束时间
-
         busOrderService.update(busOrder);
+
         res.put("flag", Boolean.TRUE);
         res.put("msg", "用户确认行程结束");
         res.put("data", busOrder);
