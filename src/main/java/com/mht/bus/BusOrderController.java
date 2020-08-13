@@ -112,7 +112,14 @@ public class BusOrderController extends CommonController {
         try {
             Map<String, String[]> paraMap = getParaMap();
             Kv cond = getCond(paraMap);
-            renderJson(Format.layuiPage(busAa01Service.paginate1(getParaToInt("page", 1), getParaToInt("limit", 30), cond)));
+            Map<String, Object> map = Format.layuiPage(busAa01Service.paginate1(getParaToInt("page", 1),
+                    getParaToInt("limit", 30), cond));
+            List<BusAa01> data = (List<BusAa01>) map.get("data");
+            for (BusAa01 busAa01 : data) {
+                String aaa009 = busAa01.getAaa009();
+                busAa01.setAaa009(Constant.IMG_ADDRESS+aaa009);
+            }
+            renderJson(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,6 +198,8 @@ public class BusOrderController extends CommonController {
             cond.set("date", new Date());    //设置当前时间
             List<Record> recordBookeds = busAa01Service.records(cond, "bus.getBookedBus");  //查询已被预约的公车
             for (Record record : records) {
+                String aaa009 = record.getStr("aaa009");
+                record.set("aaa009",Constant.IMG_ADDRESS+aaa009);
                 record.set("appointmentStatus", "未预约"); //增加预约状态
                 Integer aaa001A = record.getInt("aaa001"); //班车的id
                 for (Record recordBooked : recordBookeds) {
