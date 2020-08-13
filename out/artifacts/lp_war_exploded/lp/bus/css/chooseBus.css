@@ -1,0 +1,158 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    background-color: #FBFBFB;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+}
+
+.content-box {
+    padding-top: 0px;
+}
+
+.main {
+    width: 98%;
+    height: 95%;
+    margin: 0 auto;
+}
+
+.condition-box .layui-form-item {
+    float: left;
+}
+
+.bus-box {
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-bottom: 4px dotted #1E9FFF;
+    height: 85%;
+}
+
+.bus-items {
+
+}
+
+.bus-items .item {
+    float: left;
+}
+
+.clear {
+    clear: both;
+}
+
+.item {
+    width: 400px;
+    height: auto;
+    margin: 10px 16px;
+    border: 2px solid #FFFFFF;
+    box-shadow: 1px 2px 5px #b9b2b2;
+    cursor: pointer;
+    position: relative;
+}
+
+.item-selected {
+    border: 2px solid #5FB878;
+    box-shadow: 1px 2px 5px #5FB878;
+}
+
+.img-selected {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: -4px;
+    right: -5px;
+}
+
+.img-box {
+    width: inherit;
+    height: 300px;
+    line-height: 300px;
+    position: relative;
+}
+
+.vehicle-img {
+    width: inherit;
+    height: inherit;
+}
+
+.img-shadow {
+    background-color: rgba(17, 19, 24, .55);
+    color: #FFFFFF;
+    height: 30px;
+    line-height: 30px;
+    position: absolute;
+    bottom: 135px;
+    width: inherit;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+.item-bottom {
+    width: inherit;
+    height: 35px;
+    line-height: 35px;
+    font-size: 14px;
+    color: #333;
+}
+
+.item-bottom > span {
+    display: inline-block;
+    text-align: center;
+}
+
+.bus-type {
+    background: url("lp/bus/img/icon/icon-vehicle.png") 10px center no-repeat;
+    background-size: 16px 16px;
+    text-indent: 20px;
+    width: 150px;
+}
+
+.bus-loaded-num {
+    background: url("lp/bus/img/icon/icon-person.png") 10px center no-repeat;
+    background-size: 16px 16px;
+    text-indent: 20px;
+    width: 150px;
+}
+
+.base-price {
+    color: #FF2E2E;
+    width: 90px;
+}
+
+.operation-box {
+    width: inherit;
+    height: 40px;
+    line-height: 50px;
+    text-align: right;
+}
+
+.btn {
+    height: 30px;
+    width: 98px;
+    margin: 0 15px;
+    font-size: 17px;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-confirm {
+    background-color: #1E9FFF;
+    color: #FFFFFF;
+    border: 1px solid #1E9FFF;
+}
+
+.btn-close {
+    border: 1px solid #C9C9C9;
+    color: #333;
+    background-color: #ffffff;
+}

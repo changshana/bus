@@ -1,0 +1,130 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    background-color: #FBFBFB;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+}
+
+.main {
+    width: 98%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.content-box {
+    padding-top: 0px;
+}
+
+.condition-box .layui-form-item {
+    float: left;
+}
+
+.person-box {
+    width: inherit;
+    height: 85%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-bottom: 4px dotted #1E9FFF;
+}
+
+.person-items {
+    width: inherit;
+    height: auto;
+}
+
+.item {
+    width: 400px;
+    height: 200px;
+    margin: 10px 10px;
+    border: 2px solid #FFFFFF;
+    box-shadow: 1px 2px 5px #b9b2b2;
+    cursor: pointer;
+    position: relative;
+    float: left;
+}
+
+.item > div {
+    float: left;
+    height: inherit;
+}
+
+.person-img {
+    width: 45%;
+    line-height: 200px;
+    text-align: center;
+}
+
+.person-img > img {
+    width: 90%;
+    height: auto;
+}
+
+.person-info {
+    width: 55%;
+    font-size: 16px;
+}
+
+.person-info .info {
+    height: 25%;
+    line-height: 50px;
+}
+
+.person-info span {
+
+}
+
+.img-selected {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: -4px;
+    right: -5px;
+}
+
+.item-selected {
+    border: 2px solid #5FB878;
+    box-shadow: 1px 2px 5px #5FB878;
+}
+
+.clear {
+    clear: both;
+}
+
+.operation-box {
+    width: inherit;
+    height: 40px;
+    line-height: 50px;
+    text-align: right;
+}
+
+.btn {
+    height: 30px;
+    width: 98px;
+    margin: 0 15px;
+    font-size: 17px;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-confirm {
+    background-color: #1E9FFF;
+    color: #FFFFFF;
+    border: 1px solid #1E9FFF;
+}
+
+.btn-close {
+    border: 1px solid #C9C9C9;
+    color: #333;
+    background-color: #ffffff;
+}

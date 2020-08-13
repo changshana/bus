@@ -1,0 +1,132 @@
+#@busCommon()
+#define main()
+#define css()
+<link href="lp/bus/css/chooseBus.css" media="all" rel="stylesheet"/>
+#end
+<div class="content">
+    <div class="main content-box">
+        <div class="layui-row">
+            <div class="layui-col-md12 condition-box">
+                <form action="" class="layui-form" name="cond-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">可容纳人数</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" id="seat_num" placeholder="请输入可容纳人数..." type="text"/>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">车辆类型</label>
+                            <div class="layui-input-block" id="aba060">
+                                <select id="aba020">
+                                    <option value="">全部</option>
+                                    #for(ba02:ba02List)
+                                    <option value="#(ba02.id)">#(ba02.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="layui-btn layui-btn-normal" id="search">搜索</a>
+                </form>
+            </div>
+        </div>
+        <div class="bus-box">
+            <ul class="bus-items">
+            </ul>
+        </div>
+        <div class="operation-box">
+            <button class="btn btn-confirm">确定</button>
+            <button class="btn btn-close">关闭</button>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer'], function () {
+        let $ = layui.$, layer = layui.layer;
+
+        //加载初始数据
+        initData();
+        //初始化li元素绑定事件
+        // initLiEvent();
+        //初始化确定按钮事件
+        initBtnConfirm();
+        //初始化关闭按钮事件
+        initBtnClose();
+        $("#search").bind('click', function () {
+            initData();
+        })
+    });
+
+    //加载初始数据
+    function initData() {
+        let loadLayer = layer.load(2, {shade: .5});
+        $.ajax({
+            url: 'busOrder/getAllBus'
+            , type: 'get'
+            , data: {
+                'page': 1
+                , 'limit': 1000
+                //,'aaa008':2
+                , 'seat_num': $('#seat_num').val()
+                , 'aba020': $('#aba020').val()
+            }
+            , success: function (res) {
+                assembleData(res.data);
+                layer.close(loadLayer);
+            }
+            , error: function (res) {
+                layer.close(loadLayer);
+            }
+        });
+    }
+
+    function assembleData(data) {
+        $(".bus-items").empty();
+        $.each(data, function (i, val) {
+            let html = '<li class="item" bus-no="' + val.aaa001 + '" >' +
+                '       <div class="img-box">' +
+                '           <img src="' + val.aaa009 + '" class="vehicle-img" />' +
+                '           <p class="img-shadow">' + val.aaa005 + '</p>' +
+                '       </div>' +
+                '       <p class="item-bottom">' +
+                '           <span class="bus-type">' + val.type_desc + '</span>' +
+                '           <span class="bus-loaded-num">人数：' + val.aaa007 + '人</span>' +
+                '           <span class="base-price">￥' + (isNotEmpty(val.aza001) ? val.aza001 : '0.00') + '</span>' +
+                '       </p>' +
+                '   </li>';
+            $(".bus-items").append(html);
+        });
+        $(".bus-items").append('<li class="clear"></li>');
+        initLiEvent();
+    }
+
+    //初始化li元素绑定事件
+    function initLiEvent() {
+        let img_selected = '<img src="lp/bus/img/icon/icon-selected.png" class="img-selected" />';
+        $(".bus-items .item").unbind();
+        $(".bus-items .item").bind('click', function () {
+            $(".bus-items .item").removeClass("item-selected");
+            $(".img-selected").remove();
+            $(this).addClass("item-selected");
+            $(this).append(img_selected);
+        });
+    }
+
+    //初始化确定按钮事件
+    function initBtnConfirm() {
+        $(".btn-confirm").bind('click', function () {
+            let bus_no = $($(".bus-items").find(".item-selected")[0]).attr('bus-no');
+            parent.window.setVehicleId(bus_no);
+            parent.layer.closeAll();
+        });
+    }
+
+    //初始化关闭按钮事件
+    function initBtnClose() {
+        $(".btn-close").bind('click', function () {
+            parent.layer.closeAll();
+        });
+    }
+</script>
+#end

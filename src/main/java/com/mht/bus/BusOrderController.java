@@ -192,7 +192,7 @@ public class BusOrderController extends CommonController {
             //查询总条数
             List<Record> count = busAa01Service.records(cond, "bus.getAllBus");
             //查询公车信息
-            Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), "bus.getAllBus");
+            Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), cond, "bus.getAllBus");
             List<Record> records = page.getList();
             //添加公车预约状态
             cond.set("date", new Date());    //设置当前时间
@@ -214,6 +214,27 @@ public class BusOrderController extends CommonController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Kv cond = getCond(getParaMap());
+        //查询总条数
+        List<Record> count = busAa01Service.records(cond, "bus.getAllBus");
+        //查询公车信息
+        Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), cond, "bus.getAllBus");
+        List<Record> records = page.getList();
+        //添加公车预约状态
+        cond.set("date", new Date());    //设置当前时间
+        List<Record> recordBookeds = busAa01Service.records(cond, "bus.getBookedBus");  //查询已被预约的公车
+        for (Record record : records) {
+            record.set("appointmentStatus", "未预约"); //增加预约状态
+            Integer aaa001A = record.getInt("aaa001"); //班车的id
+            for (Record recordBooked : recordBookeds) {
+                Integer aaa001B = recordBooked.getInt("aaa001");//班车的id
+                if (aaa001A.equals(aaa001B)) {
+                    record.set("appointmentStatus", "已预约"); //增加预约状态
+                }
+            }
+        }
+        result.put("count", count.size());
+        result.put("data", records);
         renderJson(result);    //返回数据
     }
 
@@ -231,6 +252,7 @@ public class BusOrderController extends CommonController {
     /*点击车辆进入预约 预约车辆 */
     public void orderBus() throws ParseException {
         Map<String, Object> result = new HashMap<>();
+        Kv cond = getCond(getParaMap());
         try {
             BusOrder busOrder = getModel(BusOrder.class, "busOrder");
             String openid = "oLao_5Wv2ob3SCQGn1o8I6DSvdCU"; //暂时默认为zhz的订单
@@ -292,6 +314,23 @@ public class BusOrderController extends CommonController {
         }
     }
 
+
+    /*跳往网页端下单*/
+    public void addOrder() {
+        render("addOrder.html");
+    }
+
+    /**
+     * 选择车辆
+     */
+    public void toBusChoose() {
+        setAttr("ba02List", Db.find("select aba020 as id , aba002 as  name from bus_ba02 where aaa996=1"));
+        render("chooseBus.html");
+    }
+
+    public void toDriverChoose() {
+        render("chooseDriver.html");
+    }
 
 }
 

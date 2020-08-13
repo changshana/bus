@@ -82,9 +82,9 @@ public class BusStaticUtil {
     public static final BusCa08Service ca08Service=BusCa08Service.me;
     public static final BusCa05Service ca05Service=BusCa05Service.me;
     public static final CommonService commonService=CommonService.me;
-    public static final BusCommonService busCommonService=BusCommonService.me;
+    public static final BusCommonService busCommonService = BusCommonService.me;
     //短信发送客户端
-    private static final SMSClient smsClient=new SMSClient();
+    private static final SMSClient smsClient = null;//new SMSClient();
 
     /**
      * @param driverId 驾驶员id
@@ -111,8 +111,8 @@ public class BusStaticUtil {
                             contentBuffer.append("的班车【已取消发车】，特此通知！");
                         }
                         String mobile=aa02.getAaa007();
-                        if(!ValidateKit.isNullOrEmpty(mobile) && mobile.length()==11){
-                            String res = smsClient.sendSMS(mobile, contentBuffer.toString(),"",MSG_SIGN);
+                        if (!ValidateKit.isNullOrEmpty(mobile) && mobile.length() == 11 && smsClient != null) {
+                            String res = smsClient.sendSMS(mobile, contentBuffer.toString(), "", MSG_SIGN);
                         }
                     }
                 }catch (Exception e){
@@ -142,8 +142,8 @@ public class BusStaticUtil {
                     content.append("】，");
                     content.append("的班次由于超过发车时间无人预约，已经由系统自动取消发车，特此通知！");
                     String mobile=info.get("mobile");
-                    if(!ValidateKit.isNullOrEmpty(mobile) && mobile.length()==11){
-                        String res = smsClient.sendSMS(mobile, content.toString(),"",MSG_SIGN);
+                    if (!ValidateKit.isNullOrEmpty(mobile) && mobile.length() == 11 && smsClient != null) {
+                        String res = smsClient.sendSMS(mobile, content.toString(), "", MSG_SIGN);
                     }
                 }
             }catch (Exception e){
