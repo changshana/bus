@@ -1,183 +1,7 @@
 #@busCommon()
 #define main()
 #define css()
-<style type="text/css">
-    html, body {
-        width: 100%;
-        height: 100%;
-        font-size: 14px;
-    }
-
-    #container {
-        width: 70%;
-        height: 100%;
-        float: left;
-    }
-
-    #container-none {
-        display: none;
-    }
-
-    * {
-        margin: 0px;
-        padding: 0px;
-    }
-
-    body, button, input, select, textarea {
-        font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
-    }
-
-    .left {
-        width: 28%;
-        height: 100%;
-        margin: 0 1%;
-        float: left;
-    }
-
-    .info-out {
-        width: 100%;
-        height: 90%;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .info {
-        width: 96%;
-        margin: 0 auto;
-        height: auto;
-    }
-
-    .info .search-input {
-        font-size: 16px;
-        width: 100%;
-        height: 35px;
-        margin: 10px 0;
-        border: 1px solid #aaaaaa;
-        border-radius: 4px;
-        line-height: 35px;
-        color: #333;
-        text-indent: 1em;
-    }
-
-    .btn {
-        font-size: 18px;
-        width: 100%;
-        height: 35px;
-        margin: 10px 0;
-        line-height: 35px;
-        border-radius: 4px;
-        text-align: center;
-        cursor: pointer;
-        display: inline-block;
-    }
-
-    .btn_yes {
-        color: #FFFFFF;
-        background-color: #FFB800;
-        border: 1px solid #FFB800;
-    }
-
-    .btn-choose {
-        color: #FFFFFF;
-        background-color: #01AAED;
-        border: 1px solid #01AAED;
-    }
-
-    .rout-box, .choose-box, .other-info {
-        width: 100%;
-        height: auto;
-    }
-
-    .vehicle-info-box {
-        width: 100%;
-        height: auto;
-    }
-
-    .vehicle-info-box .vehicle-img {
-        width: 100%;
-        height: auto;
-    }
-
-    .vehicle-info-box > p {
-        font-size: 16px;
-        color: #333;
-        height: 35px;
-        line-height: 35px;
-        width: 100%;
-    }
-
-    .vehicle-info-box > p > span {
-        color: #FFB800;
-        display: inline-block;
-        float: right;
-    }
-
-    .gap {
-        border-bottom: 1px solid #bbbbbb;
-        width: 96%;
-        height: 0;
-        margin: 8px auto;
-    }
-
-    .other-info > p {
-        width: 100%;
-        height: auto;
-        margin: 5px auto;
-    }
-
-    .other-info > P > span {
-        font-size: 16px;
-        color: #333;
-        width: auto;
-        margin: 10px auto;
-        display: inline-block;
-    }
-
-    .input-panel {
-        width: 100%;
-        border: 1px solid #f2f2f2;
-        background-color: #f2f2f2;
-        height: 35px;
-        line-height: 35px;
-        cursor: pointer;
-        caret-color: transparent;
-        text-align: center;
-    }
-
-    .textarea {
-        resize: none;
-        line-height: 18px;
-        font-size: 15px;
-        height: 120px;
-    }
-
-    .btn-box {
-        width: 98%;
-        height: 10%;
-        margin: 0 auto;
-        position: relative;
-    }
-
-    .btn-back {
-        width: 45%;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #2F4056;
-        color: #FFFFFF;
-        border: 1px solid #2F4056;
-    }
-
-    .btn-confirm {
-        width: 45%;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #01AAED;
-        color: #FFFFFF;
-        border: 1px solid #01AAED;
-    }
-</style>
+<link href="lp/bus/css/addOrder.css" media="all" rel="stylesheet"/>
 #end
 <div class="left">
     <div class="info-out">
@@ -198,26 +22,26 @@
                     <textarea class="layui-textarea textarea" maxlength="300"></textarea>
                 </p>
             </div>
-            <div class="choose-box">
+            <div class="choose-box" id="vehicle_box">
                 <a class="btn btn-choose" id="choose_bus">点击选择车辆</a>
-                <div class="vehicle-info-box">
+                <!--<div class="vehicle-info-box" id="vehicle" vehicle_id="">
                     <img class="vehicle-img" src="lp/bus/img/vehicle.jpg"/>
                     <p>车辆类型：<span>大巴车</span></p>
                     <p>荷载人数：<span>45人</span></p>
                     <p>车牌号：<span>川A 45V67</span></p>
                     <p>基础价格：<span>￥100.00元</span></p>
-                </div>
-                <div class="gap"></div>
+                    <div class="gap"></div>
+                </div>-->
             </div>
-            <div class="choose-box">
+            <div class="choose-box" id="driver-box">
                 <a class="btn btn-choose" id="choose_driver">点击选择驾驶员</a>
-                <div class="vehicle-info-box">
-                    <!--                <img src="lp/bus/img/vehicle.jpg" class="vehicle-img" />-->
+                <!--<div class="vehicle-info-box" id="dirver">
+                    &lt;!&ndash;                <img src="lp/bus/img/vehicle.jpg" class="vehicle-img" />&ndash;&gt;
                     <p>姓名：<span>驾驶员A</span></p>
                     <p>联系电话：<span>12345678910</span></p>
                     <p>服务星级：<span id="rate-panel">*****</span></p>
                     <div class="gap"></div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -236,6 +60,7 @@
 <script>
     let startPoiList = null, startIndex = null;
     let endPoiList = null, endIndex = null;
+    let vehicle_id, driver_id;
     layui.use(['layer', 'rate', 'laydate'], function () {
         let layer = layui.layer;
         let rate = layui.rate;
@@ -305,6 +130,61 @@
         //显示线路 里程和大致时间
         displayRout();
     });
+
+    //设置被选择的车辆ID
+    function setVehicleId(id) {
+        let loadLayer = layer.load(2, {shade: .5});
+        $("#vehicle").remove();
+        //$("#vehicle").siblings('.gap').remove();
+        $.ajax({
+            url: 'busOrder/getAllBus'
+            , type: 'get'
+            , data: {'aaa001': id}
+            , success: function (res) {
+                let data = res.data[0];
+                let html =
+                    '<div class="vehicle-info-box" id="vehicle" vehicle_id="' + data.aaa001 + '">' +
+                    '    <img class="vehicle-img" src="' + data.aaa009 + '"/>' +
+                    '    <p>车辆类型：<span>' + data.type_desc + '</span></p>' +
+                    '    <p>荷载人数：<span>' + data.aaa007 + '人</span></p>' +
+                    '    <p>车牌号：<span>' + data.aaa005 + '</span></p>' +
+                    '    <p>基础价格：<span>￥' + (isNotEmpty(data.aza001) ? data.aza001 : '0.00') + '元</span></p>' +
+                    '    <div class="gap"></div>' +
+                    '</div>';
+                $("#vehicle_box").append(html);
+                layer.close(loadLayer);
+            }
+            , error: function (res) {
+                layer.close(loadLayer);
+            }
+        });
+    }
+
+    //设置被选择的司机ID
+    function setDriverId(id) {
+        let loadLayer = layer.load(2, {shade: .5});
+        $("#driver").remove();
+        $.ajax({
+            url: 'busWx/getBusAa02All'
+            , type: 'get'
+            , data: {'aaa020': id}
+            , success: function (res) {
+                let data = res[0];
+                let html =
+                    '<div class="vehicle-info-box" id="driver">' +
+                    '    <p>姓名：<span>' + data.aaa002 + '</span></p>' +
+                    '    <p>联系电话：<span>' + data.aaa007 + '</span></p>' +
+                    '    <p>服务星级：<span id="rate-panel">*****</span></p>' +
+                    '    <div class="gap"></div>' +
+                    '</div>';
+                $("#driver-box").append(html);
+                layer.close(loadLayer);
+            }
+            , error: function (res) {
+                layer.close(loadLayer);
+            }
+        });
+    }
 
 </script>
 #end

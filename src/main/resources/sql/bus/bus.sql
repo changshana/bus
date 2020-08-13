@@ -1237,8 +1237,14 @@ and a.aza001 >= #para(minPrice)
 #if(seat_num)
 and a.aaa007>=#para(seat_num)
 #end
+#if(aba020)
+and a.aba020=#para(aba020)
+#end
 #if(aaa008)
 and a.aaa008=#para(aaa008)
+#end
+#if(aaa001)
+and a.aaa001=#para(aaa001)
 #end
 #end
 
@@ -1433,6 +1439,16 @@ SELECT * from bus_ba02
 
 #sql("getBusAa02List1")
 SELECT * from bus_aa02
+where aaa996=1
+#if(name)
+ and aaa002 like concat('%',#para(name),'%')
+#end
+#if(tel)
+ and aaa007 like concat('%',#para(tel),'%')
+#end
+#if(aaa020)
+ and aaa020=#para(aaa020)
+#end
 #end
 
 
