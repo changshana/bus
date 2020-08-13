@@ -1,16 +1,9 @@
+let center, map, tmap;
 var init = function () {
-    center = new qq.maps.LatLng(30.630319, 104.083767);
-    map = new qq.maps.Map(document.getElementById('container'), {
-        center: center,
-        zoom: 13
+    tmap = new TMap.Map('container', {
+        center: new TMap.LatLng(30.630319, 104.083767),//地图显示中心点
+        zoom: 12	//缩放级别
     });
-    var infoWin = new qq.maps.InfoWindow({
-        map: map
-    });
-    infoWin.open();
-    infoWin.setContent('四川省成都市武侯区一环路南一段24号');
-    infoWin.setPosition(map.getCenter());
-
     registerStartService();
     registerEndService();
 }
@@ -26,20 +19,7 @@ function registerStartService() {
                 searchService_s.search(keyword);
                 return;
             }
-            var pois = results.detail.pois;
             startPoiList = results.detail.pois;
-            var latlngBounds = new qq.maps.LatLngBounds();
-            for (var i = 0, l = pois.length; i < l; i++) {
-                var poi = pois[i];
-                latlngBounds.extend(poi.latLng);
-                var marker = new qq.maps.Marker({
-                    map: map,
-                    position: poi.latLng
-                });
-
-                marker.setTitle(poi.name);
-            }
-            map.fitBounds(latlngBounds);
         }
     });
     //添加监听事件
@@ -60,20 +40,7 @@ function registerEndService() {
                 searchService_e.search(keyword_end);
                 return;
             }
-            var pois = results.detail.pois;
             endPoiList = results.detail.pois;
-            var latlngBounds = new qq.maps.LatLngBounds();
-            for (var i = 0, l = pois.length; i < l; i++) {
-                var poi = pois[i];
-                latlngBounds.extend(poi.latLng);
-                var marker = new qq.maps.Marker({
-                    map: map,
-                    position: poi.latLng
-                });
-
-                marker.setTitle(poi.name);
-            }
-            map.fitBounds(latlngBounds);
         }
     });
     //添加监听事件
@@ -92,7 +59,7 @@ function displayRout() {
     url += "&to=" + to.lat + "," + to.lng;  //终点坐标
     url += "&output=jsonp&callback=cb";  //指定JSONP回调函数名，本例为cb
     url += "&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR"; //开发key，可在控制台自助创建
-    url += "&refer=cEbWPlpNof4ZPAyqU1N8bmNkduUrREOV";
+    //url += "&refer=cEbWPlpNof4ZPAyqU1N8bmNkduUrREOV";
 
     jsonp_request(url);
 }
@@ -106,45 +73,123 @@ function jsonp_request(url) {
 
 //定义请求回调函数
 function cb(ret) {
-    console.log(ret);
     //从结果中取出路线坐标串
-    var coors = ret.result.routes[0].polyline, pl = [];
+    var coords = ret.result.routes[0].polyline, pl = [];
     //坐标解压（返回的点串坐标，通过前向差分进行压缩，因此需要解压）
     var kr = 1000000;
-    for (var i = 2; i < coors.length; i++) {
-        coors[i] = Number(coors[i - 2]) + Number(coors[i]) / kr;
+    for (var i = 2; i < coords.length; i++) {
+        coords[i] = Number(coords[i - 2]) + Number(coords[i]) / kr;
     }
     //将解压后的坐标生成LatLng数组
-    for (var i = 0; i < coors.length; i += 2) {
-        pl.push(new TMap.LatLng(coors[i], coors[i + 1]));
+    //将解压后的坐标放入点串数组pl中
+    for (var i = 0; i < coords.length; i += 2) {
+        pl.push(new TMap.LatLng(coords[i], coords[i + 1]));
     }
     display_polyline(pl)//显示路线
+    handle(ret.result.routes[0].distance, ret.result.routes[0].duration);//显示预估时间和距离
 }
 
+function handle(distance, duration) {
+    $("#distance").parent().remove();
+    $("#duration").parent().remove();
+    var html =
+        '<p>' +
+        '   <span>预估距离</span>' +
+        '   <input class="input-panel" value="' + (distance / 1000) + '千米" id="distance" readonly/>' +
+        '</p>' +
+        '<p>' +
+        '   <span>预估时间</span>' +
+        '   <input class="input-panel" value="' + (duration) + '分钟" id="duration" readonly/>' +
+        ' </p>';
+    $(".other-info").prepend(html);
+}
+
+let polylineLayer;
+
 function display_polyline(pl) {
+    //创建起点和终点
+    addMarker()
     //创建 MultiPolyline显示折线
-    var polylineLayer = new TMap.MultiPolyline({
-        id: 'polyline-layer', //图层唯一标识
-        map: map,//绘制到目标地图
-        //折线样式定义
-        styles: {
-            'style_blue': new TMap.PolylineStyle({
-                'color': '#3777FF', //线填充色
-                'width': 6, //折线宽度
-                'borderWidth': 5, //边线宽度
-                'borderColor': '#FFF', //边线颜色
-                'lineCap': 'round' //线端头方式
-            })
-        },
-        //折线数据定义
-        geometries: [
+    if (isEmpty(polylineLayer)) {
+        polylineLayer = new TMap.MultiPolyline({
+            id: 'polyline-layer-t', //图层唯一标识
+            map: tmap,//绘制到目标地图
+            //折线样式定义
+            styles: {
+                'style_blue': new TMap.PolylineStyle({
+                    'color': '#3777FF', //线填充色
+                    'width': 8, //折线宽度
+                    'borderWidth': 5, //边线宽度
+                    'borderColor': '#FFF', //边线颜色
+                    'lineCap': 'round', //线端头方式
+                })
+            },
+            //折线数据定义
+            geometries: [
+                {
+                    'id': 'pl_1',//折线唯一标识，删除时使用
+                    'styleId': 'style_blue',//绑定样式名
+                    'paths': pl
+                }
+            ]
+        });
+    } else {
+        var geom = [
             {
                 'id': 'pl_1',//折线唯一标识，删除时使用
                 'styleId': 'style_blue',//绑定样式名
                 'paths': pl
             }
-        ]
-    });
+        ];
+        polylineLayer.setGeometries(geom);
+    }
+}
+
+let marker_layer;
+
+function addMarker() {
+    var from = startPoiList[startIndex].latLng;
+    var to = endPoiList[endIndex].latLng;
+    if (isEmpty(polylineLayer)) {
+        marker_layer = new TMap.MultiMarker({
+            id: 'marker-layer',
+            map: tmap,
+            styles: {
+                "start": new TMap.MarkerStyle({
+                    "width": 25,
+                    "height": 35,
+                    "anchor": {x: 16, y: 32},
+                    "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/start.png'
+                }),
+                "end": new TMap.MarkerStyle({
+                    "width": 25,
+                    "height": 35,
+                    "anchor": {x: 16, y: 32},
+                    "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/end.png'
+                })
+            },
+            geometries: [{
+                "id": 'start',
+                "styleId": 'start',
+                "position": new TMap.LatLng(from.lat, from.lng)
+            }, {
+                "id": 'end',
+                "styleId": 'end',
+                "position": new TMap.LatLng(to.lat, to.lng)
+            }]
+        });
+    } else {
+        var geom = [{
+            "id": 'start',
+            "styleId": 'start',
+            "position": new TMap.LatLng(from.lat, from.lng)
+        }, {
+            "id": 'end',
+            "styleId": 'end',
+            "position": new TMap.LatLng(to.lat, to.lng)
+        }];
+        marker_layer.setGeometries(geom);
+    }
 }
 
 function isEmpty(obj) {

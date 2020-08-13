@@ -266,6 +266,18 @@ public class BusOrderController extends CommonController {
         render("addOrder.html");
     }
 
+    /**
+     * 选择车辆
+     */
+    public void toBusChoose() {
+        setAttr("ba02List", Db.find("select aba020 as id , aba002 as  name from bus_ba02 where aaa996=1"));
+        render("chooseBus.html");
+    }
+
+    public void toDriverChoose() {
+        render("chooseDriver.html");
+    }
+
 }
 
 

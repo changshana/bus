@@ -1218,20 +1218,28 @@ select
 #end
 
 #sql("getAllBus")
-SELECT * FROM bus_aa01 where 1=1
+SELECT a.*
+,(select aba002 from bus_ba02 where aaa996=1 and aba020=a.aba020) as type_desc
+FROM bus_aa01 a
+where aaa996=1
 #if(aaa007)
-and aaa007 = #para(aaa007)
+and a.aaa007 = #para(aaa007)
 #end
 #if(aba060)
-and aba060 = #para(aba060)
+and a.aba060 = #para(aba060)
 #end
 #if(maxPrice)
-and aza001 <= #para(maxPrice)
+and a.aza001 <= #para(maxPrice)
 #end
 #if(minPrice)
-and aza001 >= #para(minPrice)
+and a.aza001 >= #para(minPrice)
 #end
-
+#if(seat_num)
+and a.aaa007>=#para(seat_num)
+#end
+#if(aaa008)
+and a.aaa008=#para(aaa008)
+#end
 #end
 
 #sql("getBookedBus")

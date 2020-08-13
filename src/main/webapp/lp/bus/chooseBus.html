@@ -1,0 +1,268 @@
+#@busCommon()
+#define main()
+#define css()
+<style type="text/css">
+    html, body {
+        width: 100%;
+        height: 100%;
+        font-size: 14px;
+        background-color: #FBFBFB;
+    }
+
+    * {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .content {
+        width: 100%;
+        height: 100%;
+    }
+
+    .main {
+        width: 98%;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .condition-box .layui-form-item {
+        float: left;
+    }
+
+    .bus-box {
+        /*border: 1px solid red;*/
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-bottom: 4px dotted #1E9FFF;
+        height: 714px;
+    }
+
+    .bus-items {
+
+    }
+
+    .bus-items .item {
+        float: left;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    .item {
+        width: 400px;
+        height: auto;
+        margin: 10px 16px;
+        border: 2px solid #FFFFFF;
+        box-shadow: 1px 2px 5px #b9b2b2;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .item-selected {
+        border: 2px solid #5FB878;
+        box-shadow: 1px 2px 5px #5FB878;
+    }
+
+    .img-selected {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: -4px;
+        right: -5px;
+    }
+
+    .img-box {
+        width: inherit;
+        height: 300px;
+        line-height: 300px;
+        position: relative;
+    }
+
+    .vehicle-img {
+        width: inherit;
+        height: auto;
+    }
+
+    .img-shadow {
+        background-color: rgba(17, 19, 24, .55);
+        color: #FFFFFF;
+        height: 30px;
+        line-height: 30px;
+        position: absolute;
+        bottom: 135px;
+        width: inherit;
+        text-align: center;
+        font-size: 18px;
+        letter-spacing: 3px;
+    }
+
+    .item-bottom {
+        width: inherit;
+        height: 35px;
+        line-height: 35px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .item-bottom > span {
+        display: inline-block;
+        text-align: center;
+    }
+
+    .bus-type {
+        background: url("lp/bus/img/icon/icon-vehicle.png") 10px center no-repeat;
+        background-size: 16px 16px;
+        text-indent: 20px;
+        width: 150px;
+    }
+
+    .bus-loaded-num {
+        background: url("lp/bus/img/icon/icon-person.png") 10px center no-repeat;
+        background-size: 16px 16px;
+        text-indent: 20px;
+        width: 150px;
+    }
+
+    .base-price {
+        color: #FF2E2E;
+        width: 90px;
+    }
+
+    .operation-box {
+        width: inherit;
+        height: 40px;
+        line-height: 50px;
+        text-align: right;
+    }
+
+    .btn {
+        height: 30px;
+        width: 98px;
+        margin: 0 15px;
+        font-size: 17px;
+        color: #333;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .btn-confirm {
+        background-color: #1E9FFF;
+        color: #FFFFFF;
+        border: 1px solid #1E9FFF;
+    }
+
+    .btn-close {
+        border: 1px solid #C9C9C9;
+        color: #333;
+        background-color: #ffffff;
+    }
+</style>
+#end
+<div class="content">
+    <div class="main content-box">
+        <div class="layui-row">
+            <div class="layui-col-md12 condition-box">
+                <form action="" class="layui-form" name="cond-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">可容纳人数</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" id="seat_num" placeholder="请输入可容纳人数..." type="text"/>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">车辆类型</label>
+                            <div class="layui-input-block" id="aba060">
+                                <select>
+                                    #for(ba02:ba02List)
+                                    <option value="#(ba02.id)">#(ba02.name)</option>
+                                    #end
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-normal">搜索</button>
+                </form>
+            </div>
+        </div>
+        <div class="bus-box">
+            <ul class="bus-items">
+
+                <li class="clear"></li>
+            </ul>
+        </div>
+        <div class="operation-box">
+            <button class="btn btn-confirm">确定</button>
+            <button class="btn btn-close">关闭</button>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer'], function () {
+        let $ = layui.$, layer = layui.layer;
+
+        //加载初始数据
+        initData();
+        //初始化li元素绑定事件
+        initLiEvent();
+        //初始化确定按钮事件
+        initBtnConfirm();
+        //初始化关闭按钮事件
+        initBtnClose();
+    });
+
+    //加载初始数据
+    function initData() {
+        let loadLayer = layer.load(2, {shade: .5});
+        $.ajax({
+            url: 'busOrder/getAllBus'
+            , type: 'get'
+            , data: {
+                'page': 1
+                , 'limit': 1000
+                , 'aaa008': 2
+                , 'seat_num': $('#seat_num').val()
+                , 'aba060': $('#seat_num').val()
+            }
+            , success: function (res) {
+                console.log(res);
+                layer.close(loadLayer);
+            }
+            , error: function (res) {
+                layer.close(loadLayer);
+            }
+        });
+    }
+
+    function assembleData(data) {
+        let html = '';
+    }
+
+    //初始化li元素绑定事件
+    function initLiEvent() {
+        let img_selected = '<img src="lp/bus/img/icon/icon-selected.png" class="img-selected" />';
+        $(".bus-items .item").unbind();
+        $(".bus-items .item").bind('click', function () {
+            $(".bus-items .item").removeClass("item-selected");
+            $(".img-selected").remove();
+            $(this).addClass("item-selected");
+            $(this).append(img_selected);
+        });
+    }
+
+    //初始化确定按钮事件
+    function initBtnConfirm() {
+        $(".btn-confirm").bind('click', function () {
+            //TODO 确定按钮逻辑
+        });
+    }
+
+    //初始化关闭按钮事件
+    function initBtnClose() {
+        $(".btn-close").bind('click', function () {
+            parent.layer.closeAll();
+        });
+    }
+</script>
+#end
