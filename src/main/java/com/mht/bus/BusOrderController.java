@@ -30,9 +30,6 @@ public class BusOrderController extends CommonController {
     public static final BusOrderService busOrderService = BusOrderService.me;
     public static final BusBa02Service busBa02Service = BusBa02Service.me;
 
-    public static String appid = "wxd80120cbfe499af5";
-    public static String secret = "80375d057fce3c824a0c5b13ed42d52f";
-
 
     /*车辆预约*/
     public void busOrder() {
@@ -70,7 +67,6 @@ public class BusOrderController extends CommonController {
         setAttr("busAa01", busAa01);
         render("busAaaManageDetail.html");
     }
-
 
     /*车辆表   保存信息到BusAa01 和 BusImg*/
     public void saveBusAa01() {
@@ -157,8 +153,7 @@ public class BusOrderController extends CommonController {
 
     /*车队主管管理*/
     /*订单管理*/
-    /*系统设置
-     *首页*/
+    /*首页*/
 
     /*订单列表*/
     public void getBusCa03List() {

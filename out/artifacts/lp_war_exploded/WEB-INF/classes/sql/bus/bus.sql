@@ -1282,7 +1282,19 @@ select * from  bus_ca03
 #end
 
 #sql("getBusOrderList")
-select * from  bus_order
+select ba1.aaa005 ride,ba2.aaa005 pay,bo.* from  bus_order bo
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca036' and aaa996 = 1) ba1 ON bo.aca036 = ba1.aaa004
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca035' and aaa996 = 1) ba2 ON bo.aca035 = ba2.aaa004
+#if(aca035)
+and bo.aca035=#para(aca035)
+#end
+#if(aca036)
+and bo.aca036=#para(aca036)
+#end
+#if(search_param)
+and (bo.aaa997 like concat('%',#para(search_param),'%')
+#end
+ORDER BY bo.aba032
 #end
 
 #sql("getBusBa02All")
@@ -1411,4 +1423,22 @@ SELECT aaa001,aaa002 FROM bus_aa01
 SELECT * from bus_ba02
 #end
 
+#sql("getBusAa02List1")
+SELECT * from bus_aa02
+#end
 
+
+#sql("findMyEvaluate")
+SELECT bo.aca032,bo.aca033,bo.aca034,ba01.aaa002 licensePlate,ba02.aaa002 driverName FROM (
+select * from bus_order where 1=1
+#if(aca031)
+and aca031=#para(aca031)
+#end
+and aza206 = 1
+and aca050 = 1
+and aca032 is not NULL
+order by aca036
+) bo LEFT
+JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+#end
