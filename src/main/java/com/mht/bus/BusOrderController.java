@@ -192,7 +192,7 @@ public class BusOrderController extends CommonController {
             //查询总条数
             List<Record> count = busAa01Service.records(cond, "bus.getAllBus");
             //查询公车信息
-            Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), "bus.getAllBus");
+            Page page = busAa01Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), cond, "bus.getAllBus");
             List<Record> records = page.getList();
             //添加公车预约状态
             cond.set("date", new Date());    //设置当前时间
