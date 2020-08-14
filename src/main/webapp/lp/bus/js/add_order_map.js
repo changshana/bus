@@ -4,8 +4,10 @@ var init = function () {
         center: new TMap.LatLng(30.630319, 104.083767),//地图显示中心点
         zoom: 12	//缩放级别
     });
+    let loadIndex = layer.load(0, {content: '初始化地图组件中...', shade: 0.8});
     registerStartService();
     registerEndService();
+    layer.close(loadIndex)
 }
 
 function registerStartService() {
@@ -60,7 +62,8 @@ function displayRout() {
     url += "&output=jsonp&callback=cb";  //指定JSONP回调函数名，本例为cb
     url += "&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR"; //开发key，可在控制台自助创建
     //url += "&refer=cEbWPlpNof4ZPAyqU1N8bmNkduUrREOV";
-
+    $("#start_pos").attr("lat", from.lat).attr('lng', from.lng);
+    $("#end_pos").attr("lat", to.lat).attr('lng', to.lng);
     jsonp_request(url);
 }
 

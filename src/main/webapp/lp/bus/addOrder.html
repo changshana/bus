@@ -8,7 +8,9 @@
         <div class="info">
             <div class="rout-box">
                 <input class="search-input" id="start" placeholder="请输入起点..." value=""/>
+                <input id="start_pos" type="hidden">
                 <input class="search-input" id="endPoint" placeholder="请输入终点..." value=""/>
+                <input id="end_pos" type="hidden">
                 <a class="btn btn_yes" id="confirm_point">确定</a>
                 <div class="gap"></div>
             </div>
@@ -61,8 +63,9 @@
     let startPoiList = null, startIndex = null;
     let endPoiList = null, endIndex = null;
     let vehicle_id, driver_id;
+    let layer;
     layui.use(['layer', 'rate', 'laydate'], function () {
-        let layer = layui.layer;
+        layer = layui.layer;
         let rate = layui.rate;
         let laydate = layui.laydate;
         init();
