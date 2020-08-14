@@ -6,19 +6,20 @@ import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.upload.UploadFile;
 import com.mht.bus.service.*;
+import com.mht.bus.util.BusStaticUtil;
 import com.mht.common.CommonController;
 import com.mht.common.model.BusAa01;
 import com.mht.common.model.BusCa04;
 import com.mht.common.model.BusOrder;
 import com.mht.common.utils.Format;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 public class BusOrderController extends CommonController {
@@ -77,9 +78,8 @@ public class BusOrderController extends CommonController {
         try {
             Kv cond = getCond(getParaMap());
             BusAa01 busAa01 = getModel(BusAa01.class, "busAa01");
-            busAa01.setAaa009(cond.getStr("fileName"));
             if (ValidateKit.isNullOrEmpty(busAa01.getAaa001())) {
-                busAa01.setAaa996(1);
+                busAa01.setAaa996(BusStaticUtil.VALID);
                 busAa01.setAaa997(getUserInfo().getUserName());
                 busAa01.setAaa998(getNowTimeStamp());
 //            busAa01.setAaa008((long) 2);   //公车
@@ -114,11 +114,6 @@ public class BusOrderController extends CommonController {
             Kv cond = getCond(paraMap);
             Map<String, Object> map = Format.layuiPage(busAa01Service.paginate1(getParaToInt("page", 1),
                     getParaToInt("limit", 30), cond));
-            List<BusAa01> data = (List<BusAa01>) map.get("data");
-            for (BusAa01 busAa01 : data) {
-                String aaa009 = busAa01.getAaa009();
-                busAa01.setAaa009(Constant.IMG_ADDRESS+aaa009);
-            }
             renderJson(map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,6 +327,36 @@ public class BusOrderController extends CommonController {
         render("chooseDriver.html");
     }
 
+    public void uploadImg() {
+        Map res = new HashMap();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+            String dateStr = sdf.format(Calendar.getInstance().getTime());
+            UploadFile uploadFile = getFile("file", "/bus/" + dateStr);
+            String fileName = uploadFile.getFileName();
+            String storeName = "bus" + System.currentTimeMillis() + fileName.substring(fileName.lastIndexOf("."));
+            String filePath = uploadFile.getFile().getParent();
+            String storePath = "upload/bus/" + dateStr + "/" + storeName;
+            File newFile = new File(filePath + File.separator + storeName);
+            uploadFile.getFile().renameTo(newFile);
+            if (newFile.exists()) {
+                res.put("flag", Boolean.TRUE);
+                //数据库存储路径
+                res.put("storePath", storePath);
+                //文件名
+                res.put("fileName", fileName);
+                res.put("msg", "图片上传成功！");
+            } else {
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "图片上传失败！");
+            }
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "上传失败，请稍后重试！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
 }
 
 

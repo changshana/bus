@@ -38,19 +38,6 @@
            lay-data="{cellMinWidth:60,url:'busOrder/getBusOrderAa01List', page:true,dataId:'aaa001',limit:10, id:'busAa01List',height: 'full-120'}"
            lay-filter="busAa01List">
         <thead>
-        <!--        <tr>
-                    <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
-                    <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
-                    <th lay-data="{field:'aaa002'}">名称</th>
-                    <th lay-data="{field:'aaa003'}">编号</th>
-                    <th lay-data="{field:'aaa004'}">品牌</th>
-                    <th lay-data="{field:'aaa005'}">车牌</th>
-                    <th lay-data="{field:'aaa006'}">生产厂商</th>
-                    <th lay-data="{field:'aba002'}">车辆类型</th>
-                    <th lay-data="{field:'aaa007'}">核载人数</th>
-                    <th lay-data="{field:'aba002',templet:'#seatInfo'}">车辆座次类型</th>
-                    <th lay-data="{field:'aaa999'}">备注</th>
-                </tr>-->
         <tr>
             <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
             <th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>
@@ -73,7 +60,9 @@
         ]]#
     </script>
     <script type="text/html" id="img">
-        {{d.aaa009!=null?'<img style="width: 30px;height: 50px;" lay-event="userIcon" class="userIcon" src="'+d.aaa009+'">':''}}
+        {{d.aaa009!=null?'
+        <button lay-event="userIcon" class="layui-btn layui-btn-xs layui-btn-radius layui-btn-normal">查看大图</button>':'
+        <button class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">暂无图片</button>'}}
     </script>
 </div>
 <script type="text/javascript">
