@@ -3,23 +3,24 @@
 #define css()
 <link href="lp/bus/css/addOrder.css" media="all" rel="stylesheet"/>
 #end
+<form class="layui-form addForm content-box" action="busOrder/orderBus" method="post">
 <div class="left">
     <div class="info-out">
         <div class="info">
             <div class="rout-box">
-                <input class="search-input" id="start" placeholder="请输入起点..." value=""/>
-                <input class="search-input" id="endPoint" placeholder="请输入终点..." value=""/>
+                <input class="search-input" id="start" name="aza204" placeholder="请输入起点..." value=""/>
+                <input class="search-input" id="endPoint" name="aza205" placeholder="请输入终点..." value=""/>
                 <a class="btn btn_yes" id="confirm_point">确定</a>
                 <div class="gap"></div>
             </div>
             <div class="other-info">
                 <p>
                     <span>出发时间</span>
-                    <input class="input-panel" id="time" readonly/>
+                    <input class="input-panel" id="time" name="aba032" readonly/>
                 </p>
                 <p>
                     <span>备注信息</span>
-                    <textarea class="layui-textarea textarea" maxlength="300"></textarea>
+                    <textarea class="layui-textarea textarea" name="aaa999" maxlength="300"></textarea>
                 </p>
             </div>
             <div class="choose-box" id="vehicle_box">
@@ -52,7 +53,7 @@
 </div>
 <div id="container-none"></div>
 <div id="container"></div>
-
+</form>
 <script charset="utf-8"
         src="https://map.qq.com/api/js?v=2.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR&libraries=place,tools"></script>
 <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR"></script>
