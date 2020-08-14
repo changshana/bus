@@ -97,12 +97,12 @@ function handle(distance, duration) {
     $("#duration").parent().remove();
     var html =
         '<p>' +
-        '   <span>预估距离</span>' +
-        '   <input class="input-panel" value="' + (distance / 1000) + '千米" id="distance" readonly/>' +
+        '   <span>预估距离(千米)</span>' +
+        '   <input class="input-panel" value="' + (distance / 1000) + '" id="distance" readonly/>' +
         '</p>' +
         '<p>' +
-        '   <span>预估时间</span>' +
-        '   <input class="input-panel" value="' + (duration) + '分钟" id="duration" readonly/>' +
+        '   <span>预估时间(分钟)</span>' +
+        '   <input class="input-panel" value="' + (duration) + '" id="duration" readonly/>' +
         ' </p>';
     $(".other-info").prepend(html);
 }
