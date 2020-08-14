@@ -1,0 +1,42 @@
+#@common()
+#define css()
+#end
+#define main()
+<div class="content-box">
+    <div  class="layui-btn-container" >
+        <button class="layui-btn" demo-type="treeTable">treeTable</button>
+        <button class="layui-btn layui-btn-normal" demo-type="tableList">tableList</button>
+        <button class="layui-btn layui-btn-warm" demo-type="inputTags">inputTags</button>
+        <button class="layui-btn layui-btn-danger" demo-type="formSelects">formSelects</button>
+        <button class="layui-btn" demo-type="cascader">cascader</button>
+        <button class="layui-btn" demo-type="tableSelect">tableSelect</button>
+    </div>
+    <div class="tags" id="tags">
+        <input type="text" name="" id="inputTags" placeholder="回车生成标签" autocomplete="off">
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['inputTags'],function(){
+        var inputTags = layui.inputTags;
+        inputTags.render({
+            elem:'#inputTags',
+            content: ['标题一','标题二'],
+            aldaBtn: true,
+            done: function(value) {
+                console.log("aaa" + value)
+            }
+        })
+
+    });
+
+
+    $(function(){
+        $('button[demo-type]').click(function(){
+            windowNewLocation('common/extendDemo?demoType='+$(this).attr('demo-type'));
+        });
+    });
+
+</script>
+
+
+#end

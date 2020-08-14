@@ -1,0 +1,61 @@
+#@common()
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md8">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refreshTable"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</button>
+            </div>
+        </div>
+    </div>
+
+    <table class="layui-table" lay-data="{cellMinWidth:60,url:'system/getUserList', page:true, id:'userList',height: 'full-100'}" lay-skin="line" lay-filter="userTable">
+        <thead>
+            <tr>
+                <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+                <th lay-data="{field:'login_name'}">登录名</th>
+                <th lay-data="{field:'mobile'}">手机号</th>
+                <th lay-data="{field:'user_name'}">用户名</th>
+                <th lay-data="{field:'create_time'}">创建时间</th>
+                <th lay-data="{field:'status',templet: '#switchStatus', unresize: true}">状态</th>
+            </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="switchStatus">
+        <input type="checkbox" name="status" lay-skin="switch" value="{{d.status}}" disabled="true" {{ d.status == 1 ? 'checked' : '' }}>
+    </script>
+</div>
+
+<script type="text/javascript">
+layui.use('table', function(){
+    var table = layui.table;
+
+    var $ = layui.$, active = {
+        refreshTable: function(){ //刷新
+            $('#search_param').val('');
+            reloadTable(table,'userList');
+
+        }
+    };
+
+    function reloadTable(table,id){
+        table.reload(id, {
+            page: {curr: 1 //重新从第 1 页开始
+            }
+            ,where: {
+                search_param:$('#search_param').val()
+            }
+        });
+    }
+
+    $('.layui-btn').on('click', function(){
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+});
+
+
+</script>
+
+#end

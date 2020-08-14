@@ -1,0 +1,176 @@
+@font-face {
+    font-family: SiYuanHeiTi;
+    src: url('./css/font/NotoSansHans-Medium.otf');
+    src: url('./css/font/NotoSansHans-Regular.otf');
+}
+body {
+    moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #f3fbf9;
+    font-family: SiYuanHeiTi !important;
+}
+
+.layui-title {
+    height: 100px;
+    background-color: #fff;
+    border-top: 6px solid #e6ebea;
+    box-shadow: 0px 2px 4px #e8e4e4;
+    position: relative;
+    z-index: 111;
+}
+
+.layui-nav-title {
+    height: 64px;
+    padding-left: 40px;
+    padding-top: 36px;
+    position: relative;
+}
+
+.layui-nav-title:after {
+    content: "";
+    width: 6px;
+    height: 50px;
+    background-color: #009686;
+    position: absolute;
+    bottom: 12px;
+    left: 0px;
+}
+
+.layui-nav-title>li {
+    float: left;
+    margin: 0px 10px;
+    position: relative;
+}
+
+.layui-circles {
+    border-radius: 100%!important;
+}
+
+.layui-Btn {
+    display: inline-block;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 15px;
+    background-color: #e6ebec;
+    color: #333;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    margin: 0px 10px;
+    -webkit-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+
+.layui-Btn:hover {
+    background-color: #009688;
+    color: #fff;
+}
+
+.activeBtn {
+    background-color: #009688;
+    color: #fff;
+}
+
+.inputSearch {
+    border-radius: 20px;
+    padding-left: 30px;
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+    width: 260px;
+}
+
+.inputSearch:hover {
+    border: 1px solid #009688!important;
+}
+
+.search {
+    position: absolute;
+    top: 11px;
+    left: 6px;
+    color: #009688;
+}
+
+.addDelete {
+    padding-top: 7px;
+    margin-left: 30px!important;
+}
+
+.add,
+.delete {
+    background-color: transparent;
+    color: #009688;
+    border: none;
+    cursor: pointer;
+    margin: 0px 20px;
+    position: relative;
+}
+
+.add:before {
+    width: 16px;
+    height: 16px;
+    content: "";
+    background: url(/img/icon-add.svg);
+    position: absolute;
+    background-repeat: no-repeat;
+    top: 2px;
+    background-size: 100%;
+    left: -18px;
+}
+
+.delete:before {
+    width: 16px;
+    height: 16px;
+    content: "";
+    background: url(/img/icon-delete.svg);
+    position: absolute;
+    background-repeat: no-repeat;
+    top: 2px;
+    background-size: 100%;
+    left: -18px;
+}
+
+#messageBox {
+    padding: 10px 30px;
+    background: #fff;
+    min-height: 500px;
+}
+
+.layui-table tbody tr:hover,
+.layui-table thead tr,
+.layui-table-click,
+.layui-table-header,
+.layui-table-hover,
+.layui-table-mend,
+.layui-table-patch,
+.layui-table-tool,
+.layui-table[lay-even] tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.layui-table td,
+.layui-table th,
+.layui-table-fixed-r,
+.layui-table-header,
+.layui-table-page,
+.layui-table-tips-main,
+.layui-table-tool,
+.layui-table-view,
+.layui-table[lay-skin=line],
+.layui-table[lay-skin=row] {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #eaf2f5;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}

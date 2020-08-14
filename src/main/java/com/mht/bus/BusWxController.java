@@ -660,7 +660,6 @@ public class BusWxController extends CommonController {
     public void driverEnd() throws ParseException {
         Map res = new HashMap();
         try {
-
             Kv cond = getCond(getParaMap());
             String aca030 = cond.getStr("aca030");  //订单id
             BusOrder order = busOrderService.findById(Integer.parseInt(aca030));

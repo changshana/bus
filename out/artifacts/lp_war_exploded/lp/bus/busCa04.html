@@ -1,0 +1,247 @@
+#@busCommon()
+<style>
+    .layui-form-label {
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 60px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right;
+    }
+    .layui-form-item .layui-input-inline {
+        float: left;
+        width: 160px;
+        margin-right: 10px;
+    }
+</style>
+#define main()
+<div class="content-box">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <div class="layui-btn-container" >
+                <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+                <button class="layui-btn" data-type="check"><i class="layui-icon layui-icon-website"></i>清理毕业生数据</button>
+                <button class="layui-btn" data-type="updateBindInfo"><i class="layui-icon layui-icon-slider"></i>更新人员绑定数据</button>
+            </div>
+        </div>
+        <div class="layui-col-md6 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">人员类型</label>
+                        <div class="layui-input-inline">
+                            <select id="aca044" name="aca044" lay-filter="aca044">
+                                <option value="">请选择</option>
+                                #for(p:pTypeList)
+                                <option value="#(p.id)">#(p.name)</option>
+                                #end
+                            </select>
+                        </div>
+                        <label class="layui-form-label">锁定状态</label>
+                        <div class="layui-input-inline">
+                            <select id="aca049" name="aca049" lay-filter="aca049">
+                                <option value="">请选择</option>
+                                <option value="no">未锁定</option>
+                                <option value="yes">已锁定</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">是否有效</label>
+                        <div class="layui-input-inline">
+                            <select id="aaa996" name="aaa996" lay-filter="aaa996">
+                                <option value="">请选择</option>
+                                #for(e:effective)
+                                <option value="#(e.id)">#(e.name)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md2">
+            <div class="search-box">
+                <div class="layui-inline">
+                    <input class="layui-input" name="search_param" id="search_param" autocomplete="off" onfocus="fnShowSearchTip('请输入【绑定账号】、【姓名】进行搜索',this)" onblur="hideTipMessage()">
+                </div>
+                <button class="layui-btn" data-type="reloadData">搜索</button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-table" lay-data="{cellMinWidth:60,url:'bus/getBusCa04List', page:true,limit:100,dataId:'aca040', id:'busCa04List',height: 'full-100'}" lay-filter="busCa04List">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{width:160,toolbar: '#unLockBar'}">账号解锁</th>
+            <th lay-data="{width:160,field:'aca041'}">绑定账号</th>
+            <!--<th lay-data="{field:'aca042'}">微信openID</th>-->
+            <th lay-data="{width:120,field:'aca043'}">姓名</th>
+            <th lay-data="{width:100,field:'aca044_desc'}">人员类型</th>
+            <th lay-data="{width:100,field:'aca045'}">证件类型</th>
+            <th lay-data="{width:300,field:'aca046'}">证件号</th>
+            <th lay-data="{width:150,field:'aca047'}">电话号码</th>
+            <th lay-data="{width:150,field:'aca048',width:200}">单位名称/所在班号</th>
+            <th lay-data="{width:150,field:'aaa995'}">信息更新时间</th>
+            <th lay-data="{field:'aca996_desc'}">状态</th>
+            <!--<th lay-data="{field:'aaa997'}">创建用户</th>
+            <th lay-data="{field:'aaa998'}">创建时间</th>-->
+            <!--<th lay-data="{field:'aaa999'}">备注</th>-->
+        </tr>
+        </thead>
+    </table>
+    <script type="text/html" id="editBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon layui-icon-edit"></i></a>
+    </script>
+    <script type="text/html" id="unLockBar">
+        <a class="layui-btn layui-btn-xs" lay-event="toUnlock"><i class="layui-icon layui-icon-password"></i>账号解锁（{{d.aca049}}）</a>
+    </script>
+</div>
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table,form=layui.form,layer=layui.layer,$=layui.$;
+        table.on('tool(busCa04List)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'toEdit'){
+                windowNewLocation("bus/addOrUpdateBusCa04?aca040="+data.aca040);
+            }
+            if(obj.event==='toUnlock'){
+                layer.confirm('是否解锁该账号?', {icon: 3, title:'提示'}, function(index){
+                    layer.close(index);
+                    let loadIndex=layer.load(2,{shade:.5});
+                    $.ajax({
+                        url:'bus/unLockBusCa04'
+                        ,type:'post'
+                        ,data:{'aca040':data.aca040}
+                        ,success:function (res) {
+                            if(res.flag){
+                                layer.msg(res.msg,{icon:6});
+                            }else{
+                                layer.msg(res.msg,{icon:5});
+                            }
+                            layer.close(loadIndex);
+                            reloadData();
+                        }
+                        ,error:function (res) {
+                            layer.msg('网络错误，稍后再试！',{icon:5});
+                            layer.close(loadIndex);
+                            reloadData();
+                        }
+                    });
+                });
+            }
+        });
+        form.on('select(aca044)',function(obj){
+            reloadData();
+        });
+        form.on('select(aaa996)',function(obj){
+            reloadData();
+        });
+        form.on('select(aca049)',function(obj){
+            reloadData();
+        });
+        function reloadData(){
+            table.reload('busCa04List', {
+                where: {
+                    search_param:$("#search_param").val()
+                    ,aca044:$("#aca044").val()
+                    ,aaa996:$("#aaa996").val()
+                    ,aca049:$("#aca049").val()
+                }
+            });
+        }
+        var $ = layui.$, active = {
+            refresh:function(){
+                //todo 清空条件
+                $("#search_param").val('');
+                $("#aca044").val('');
+                $("#aaa996").val('');
+                table.reload('busCa04List', {
+                    where: {
+                        search_param:''
+                    }
+                });
+            },
+            reloadData:function(){
+                reloadData();
+            },
+            add:function(){
+                windowNewLocation("bus/addOrUpdateBusCa04");
+            },
+            check:function(){
+                var loadIndex=layer.load(2,{
+                    shade:.5
+                });
+                $.ajax({
+                    url:'bus/checkData'
+                    ,type:'post'
+                    ,data:{}
+                    ,success:function(res){
+                        layer.close(loadIndex);
+                        if(res.flag){
+                            alertMsg(res.msg,'success');
+                        }else{
+                            alertMsg(res.msg,'error');
+                        }
+                        reloadData();
+                    }
+                    ,error:function(res){
+                        layer.close(loadIndex);
+                        alertMsg("服务器繁忙，稍后再试！",'error');
+                    }
+                });
+            },
+            updateBindInfo:function(){
+                let loadIndex=layer.load(2,{
+                    shade:.5
+                });
+                $.ajax({
+                    url:'bus/updateBindInfo'
+                    ,type:'post'
+                    ,data:{"type":"all"}
+                    ,success:function(res){
+                        layer.close(loadIndex);
+                        if(res.flag){
+                            alertMsg(res.msg+"数据清理总条数"+res.total,'success');
+                        }else{
+                            alertMsg(res.msg,'error');
+                        }
+                    }
+                    ,error:function(res){
+                        layer.close(loadIndex);
+                        alertMsg("服务器繁忙，稍后再试！",'error');
+                    }
+                });
+            },
+            delete:function(){
+                var checkStatus = table.checkStatus('busCa04List'),data = checkStatus.data;
+                if(data.length==0){
+                    layer.alert('请先选中您要删除的数据行！');
+                }else{
+                    var ids="";
+                    $.each(data,function(i,obj){
+                        ids+=obj.aca040+',';
+                    });
+                    layer.confirm("确定要删除你所选中的所有数据行？", function(index){
+                        $.ajax({
+                            type:'post',
+                            url:'bus/deleteBusCa04',
+                            data:{"ids":ids},
+                            success:function (res) {
+                                layer.close(index);
+                                reloadData();
+                            },error:function(){
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            }
+        };
+        $('.layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+#end

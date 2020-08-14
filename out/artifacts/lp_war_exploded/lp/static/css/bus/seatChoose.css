@@ -1,0 +1,207 @@
+body{margin: 0;padding: 0;}
+.addForm{background: url("../../images/bus/BG@3x.jpg") no-repeat; background-size: 100% 100%!important;}
+.main-box{height: 100%;}
+.left-box44{width: 50%;height: 80%;margin-top: 10%;margin-right: 10%;float: right;background: url("../../images/bus/bus_planform_bg_44.png") no-repeat;background-size: 100% 100%;/*background-color: #fbfbfb;*/}
+.left-box45{width: 50%;height: 80%;margin-top: 10%;margin-right: 10%;float: right;background: url("../../images/bus/bus_planform_bg_45.png") no-repeat;background-size: 100% 100%;user-select: none;/*background-color: #fbfbfb;*/}
+.seatGrid {width:85%;height: 94%; position:relative;margin: 8% auto; }
+.seatGrid li {width:14%;height: 6%; display: table; float:left; list-style:none; cursor: pointer;}
+.seatGrid li .seat {width:100%;height: 100%; display: table;}
+.seatHidden {width:100%;height: 100%; visibility: hidden;}
+.seatGrid li i.seat-icon{width:100%; height:100%;display:table-cell; vertical-align:middle;background: url("../../images/bus/seat_uncheck.png") no-repeat;background-size: 100% 100%;text-align: center;font-style: normal;font-size: 12px; }
+.seat-icon-selected{
+    width:100%; height:100%;display:table-cell; vertical-align:middle;
+    background: url("../../images/bus/icon-seat-blue.png") no-repeat;
+    background-size: 100% 100%;
+    text-align: center;font-style: normal;
+    font-size: 12px;
+}
+.seat-icon-chose{
+    width:100%; height:100%;display:table-cell; vertical-align:middle;
+    background: url("../../images/bus/icon-seat-red.png") no-repeat;
+    background-size: 100% 100%;
+    text-align: center;font-style: normal;
+    font-size: 12px;
+}
+.seat-icon-locked{
+    width:100%; height:100%;display:table-cell; vertical-align:middle;
+    background: url("../../images/bus/icon-seat-cyan.png") no-repeat;
+    background-size: 100% 100%;
+    text-align: center;font-style: normal;
+    font-size: 12px;
+}
+.right-box .icon-title .sample .red{
+    width: 20%;
+    height: auto;
+    display: inline-block;
+    background: url("../../images/bus/icon-seat-red.png") no-repeat;
+    background-size: 100% 100%;
+}
+.right-box .icon-title .sample .gray{
+    width: 20%;
+    height: auto;
+    display: inline-block;
+    background: url("../../images/bus/icon-seat-gray.png") no-repeat;
+    background-size: 100% 100%;
+}
+.right-box .icon-title .sample .blue{
+    width: 20%;
+    height: auto;
+    display: inline-block;
+    background: url("../../images/bus/icon-seat-blue.png") no-repeat;
+    background-size: 100% 100%;
+}
+.right-box .icon-title .sample .cyan{
+    width: 20%;
+    height: auto;
+    display: inline-block;
+    background: url("../../images/bus/icon-seat-cyan.png") no-repeat;
+    background-size: 100% 100%;
+}
+
+.seats-info-box{height: 100%;}
+.right-box{margin-top: 10%;width: 80%;height: 80%;background-color: #fff;box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.25);}
+.right-box .icon-title{
+    width: 96%;
+    margin: 0 2%;
+    height: 10%;
+    border-bottom: 2px solid #D3D8DB;
+}
+.right-box .icon-title .sample{
+    display: inline-block;
+    height: 100%;
+    width: 20%;
+    margin: 0 2%;
+    text-align: center;
+}
+.right-box .icon-title .sample img{
+    display: inline-block;
+    width: 30%;
+    margin-right: 15%;
+}
+
+.right-box .calendar{
+    width: 92%;
+    margin: 1% 4% 0 4%;
+    height: 50%;
+}
+.right-box .busInfo{
+    width: 92%;
+    margin: 2% 4% 0 4%;
+    height: 42%;
+    /*border: 1px solid red;*/
+}
+.layui-laydate-main .layui-laydate-content{
+    height: 80%;
+}
+.layui-laydate-content td{
+    border-radius: 50%;
+}
+.layui-laydate .layui-this{
+    border-radius: 50%;
+}
+.layui-laydate-static{
+    width: 100%;
+    height: 100%;
+}
+.laydate-set-ym{
+    font-size: 16px;
+}
+.layui-laydate-main{
+    width: 100%!important;
+    height: 100%;
+}
+.layui-laydate-content table{
+    width: 100%;
+    height: 100%;
+}
+.layui-laydate-content table thead tr{
+    background-color: #F5F9FA;
+    color: #49505A;
+}
+.layui-laydate-footer{
+    display: none;
+}
+.busInfo li{
+    height: 25%;
+    font-size: 16px;
+}
+.busInfo .btnContainer{
+    height: 15%;
+    font-size: 16px;
+}
+.busInfo li label{
+    display: inline-block;
+    width: auto;
+}
+.busInfo li span{
+    width:auto;
+    margin-left: 2%;
+    display: inline-block;
+}
+.busInfo .left{
+    width: 48%;
+    margin-left: 0px;
+    display: inline-block;
+    /*width: auto;*/
+}
+.busInfo .btn-left{
+    width: 31%;
+    margin-left: 0px;
+    display: inline-block;
+}
+.busInfo .btn-middle{
+    width: 31%;
+    margin-left: 1%;
+    display: inline-block;
+}
+.busInfo .btn-right{
+    width: 31%;
+    margin-left: 1%;
+    display: inline-block;
+}
+.busInfo .right{
+    width: 48%;
+    margin-left: 2%;
+    display: inline-block;
+    /*width: auto;*/
+}
+.busInfo .total{
+    width: 100%;
+    display: inline-block;
+}
+.busInfo .btn-left .confirm{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    text-align: center;
+    border-radius: 5px;
+    color: #FFFFFF;
+    background-color: #6C77F7;
+    border: 2px solid #6C77F7;
+    cursor: pointer;
+}
+.busInfo .btn-middle .cancel{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    text-align: center;
+    border-radius: 5px;
+    color: #5C96EA;
+    background-color: #FFFFFF;
+    border: 2px solid #5C96EA;
+    cursor: pointer;
+}
+.busInfo .btn-right .refresh{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    text-align: center;
+    border-radius: 5px;
+    color: #5C96EA;
+    background-color: #FFFFFF;
+    border: 2px solid #5C96EA;
+    cursor: pointer;
+}
+.psgInfo{
+  color: #01AAED;;
+}

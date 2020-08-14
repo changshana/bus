@@ -1,0 +1,305 @@
+body{
+    background-color: #F5F6FA;
+}
+.content-box{
+    font-size: 16px;
+}
+.item-left{
+    float: left;
+    width: 23%;
+    height: 105%;
+    margin-top:1%;
+    margin-left:1%;
+    background-color: #FFFFFF;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 5px;
+    border: 1px solid #ECEDEF;
+}
+.title{
+    width: 90%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    margin: 5px auto;
+    color: #333;
+    border-top: 1px solid #E6E9EE;
+}
+.title1{
+    width: 96%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+    margin: 5px auto;
+    color: #333;
+}
+.rout-list{
+    width: 90%;
+    margin: 10px auto;
+    height: auto;
+}
+.rout-list .rout{
+    width: 100%;
+    height: 55px;
+    line-height: 55px;
+    margin: 10px auto;
+    text-align: center;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #F7F7F7;
+    border: 1px solid #E5E5E5;
+    color: #333;
+
+}
+.checked{
+    background-color: #379C94!important;
+    border: 1px solid #379C94!important;
+    color: #ffffff!important;
+}
+.date-panel{
+    width: 90%;
+    height: auto;
+    margin: 20px auto;
+    text-align: center;
+}
+.item-right{
+    width: 75%;
+    margin-top: 1%;
+    margin-left: 5px;
+    float: left;
+    height: 105%;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    border: 1px solid #ECEDEF;
+}
+.schedule-list{
+    width: 100%;
+    height: 65%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.schedule{
+    width: 98%;
+    height: auto;
+    margin: 0 auto;
+}
+.schedule-title{
+    font-size: 18px;
+    height: 60px;
+    line-height: 60px;
+    text-indent: 2em;
+    width: 100%;
+    background-color: #ECEDEF;
+}
+.bus{
+    float: left;
+    width: 22%;
+    margin: 1%;
+    height: auto;
+    border: 1px solid #ECEDEF;
+}
+.number{
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background-color: #CCE6E3;
+    color: #333333;
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+.bus-info{
+    width: 100%;
+    background-color: #F0F9F8;
+}
+.info-title{
+    display: inline-block;
+    width: 45%;
+    height:50px;
+    line-height: 50px;
+    margin-left: 5%;
+    font-size: 16px;
+    text-align: left;
+    border-radius: 20px;
+}
+.info-value{
+    display: inline-block;
+    width: 42%;
+    height:50px;
+    line-height: 50px;
+    font-size: 16px;
+    text-align: right;
+}
+.info-remark{
+    display: inline-block;
+    margin-left: 5%;
+    color: #ff5722;
+    line-height: 30px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.btnEdit{
+    border-radius: 3px;
+    border: 1px solid #379C94;
+    background-color: #379C94;
+    color: #fff;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.btnDelete{
+    border-radius: 3px;
+    border: 1px solid #379C94;
+    color: #333;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar
+{
+    width: 5px;  /*滚动条宽度*/
+    height: 16px;  /*滚动条高度*/
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;  /*滚动条的背景区域的圆角*/
+    background-color: #FFFFFF;/*滚动条的背景颜色*/
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;  /*滚动条的圆角*/
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #D1D4D9;  /*滚动条的背景颜色*/
+}
+.clear{
+    clear: both;
+}
+.time-container{
+    width: 100%;
+    height: auto;
+    border-bottom: 5px solid #F5F6FA;
+}
+.time-list{
+    width: 98%;
+    height: auto;
+    margin: 8px auto;
+}
+.time{
+    width: auto;
+    padding: 0 50px;
+    margin: 10px 1%;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 5px;
+    background: url("../../images/bus/circle-dot.png")no-repeat;
+    background-position-y: center;
+    background-position-x:10%;
+    background-size: 16px;
+    font-size: 24px;
+    display: inline-block;
+    border: 1px solid #379C96;
+    letter-spacing: 3px;
+    cursor: pointer;
+}
+.time-checked{
+    background: url("../../images/bus/circle-dot-white.png")no-repeat;
+    background-position-y: center;
+    background-position-x:10%;
+    background-size: 16px;
+    background-color: #379C96;
+    color: #ffffff;
+}
+.layui-form-switch{
+    margin-top: 0px!important;
+}
+body .layui-laydate .layui-this {
+    background-color: #269CF4!important;
+    color: #fff!important;
+    border-radius: 50%;
+}
+.btn-add{
+    background-color: #379C94;
+    color: #ffffff;
+    border: 3px solid #229c91;
+    height: 35px;
+    text-align: center;
+    letter-spacing: 2px;
+    font-size: 14px;
+    padding: 0 10px;
+    border-radius: 3px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+body .mylayer{ border-radius: 5px;}
+body .mylayer .layui-layer-title{background:#F0F3F8; color:#333; border: none; border-radius: 5px 5px 0 0; font-size: 16px;height: 60px;line-height: 60px;}
+body .mylayer .layui-layer-btn{
+    padding: 10px 0;
+    text-align: center;
+    background-color: #F0F3F8;
+}
+body .mylayer .layui-layer-btn a{
+    width: 45%;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #379C94;
+    color: #FFFDFE;
+    font-size: 16px;
+    border-radius: 3px;
+    border: 1px solid #379C94;
+    display: inline-block;
+    padding: 0;
+}
+.not-audit{
+    background-color: #ffffff;
+    color: #333;
+}
+.no-item{
+    width: 50%;
+    height: auto;
+    margin: 50px auto;
+    text-align: center;
+    font-size: 24px;
+}
+.no-item img{
+    width: 60%;
+}
+.no-item p{
+    margin-top: 10px;
+    letter-spacing: 5px;
+}
+.selector{
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+}
+.selector>span{
+    display: inline-block;
+    width: 45%;
+    margin:0 1%;
+    height: inherit;
+    line-height: inherit;
+    border: 1px solid #379C94;
+    color: #333333;
+    border-radius: 5px;
+}
+.selector .checked{
+    background-color: #379C94;
+    color: #FFFFFF;
+}

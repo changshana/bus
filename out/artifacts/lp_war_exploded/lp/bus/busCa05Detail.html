@@ -1,0 +1,298 @@
+#@common()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+<style>
+    .form-container{
+        width: 94%;
+        height: auto;
+        margin: 0 auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-size: 14px;
+        padding-bottom: 70px;
+    }
+    .form-item{
+        width: 100%;
+        height: auto;
+        line-height: 40px;
+        margin: 8px 0;
+        padding-bottom: 10px;
+    }
+    .item-title{
+        background-color:#fff;
+        color: #333;
+        border-radius: 3px;
+        text-indent: 1em;
+    }
+    .item-content{
+        width: 100%;
+    }
+    .item-content li{
+        float: left;
+        border: 1px solid #379C96;
+        border-radius: 3px;
+        cursor: pointer;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        width: 45%;
+        margin:8px 8px;
+        color: #333;
+    }
+    .li-checked{
+        background-color: #379C94!important;
+        border: 1px solid #379C94!important;
+        color: #ffffff!important;
+    }
+    .switch-box{
+        width: 100%;
+        background-color:#fff;
+        color: #333;
+        text-indent: 1em;
+        margin: 8px 0;
+        height: 50px;
+        line-height: 50px;
+        position: relative;
+    }
+    .switch-box .layui-form-switch {
+        position: absolute;
+        right: 3em;
+        padding: 0 7px;
+    }
+    .switch-box span{
+        text-indent: 1em;
+        display: inline-block;
+        width: 30%;
+    }
+    .border-bottom{
+        border-bottom:1px solid #bcbdbe;
+    }
+    .btn-box{
+        width: 100%;
+        padding: 10px 0;
+        position: fixed;
+        bottom: 0;
+        margin: 0 auto;
+        background-color: #ffffff;
+    }
+    .btn-box a{
+        width: 42%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        letter-spacing: 3px;
+        border-radius: 3px;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .submitBtn{
+        background-color: #009688;
+        border: 1px solid #009688;
+        color: #FFFFFF;
+        margin-left: 3%;
+    }
+    .cancelBtn{
+        border: 1px solid #009688;
+        background-color: #ffffff;
+        margin-left: 10%;
+    }
+    .submitBtn:hover{
+        color: #FFFFFF;
+    }
+    .clear{
+        clear: both;
+    }
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar
+    {
+        width: 5px;  /*滚动条宽度*/
+        height: 16px;  /*滚动条高度*/
+    }
+
+    /*定义滚动条轨道 内阴影+圆角*/
+    ::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;  /*滚动条的背景区域的圆角*/
+        background-color: #FFFFFF;/*滚动条的背景颜色*/
+    }
+
+    /*定义滑块 内阴影+圆角*/
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;  /*滚动条的圆角*/
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #D1D4D9;  /*滚动条的背景颜色*/
+    }
+    .btn-select{
+        background-color: #379C94;
+        color: #ffffff;
+        border: 3px solid #229c91;
+        height: 28px;
+        text-align: center;
+        letter-spacing: 2px;
+        font-size: 14px;
+        padding: 0 10px;
+        border-radius: 3px;
+        margin-left: 50px;
+        cursor: pointer;
+    }
+    .hidden{
+        display: none;
+    }
+</style>
+#end
+#define main()
+<form class="form-container" id="formBox">
+    <input id="aca050" value="#(busCa05.aca050)" type="hidden">
+    <input id="aba050" value="#(busCa05.aba050)" type="hidden">
+    <input id="aca051" value="#(busCa05.aca051)" type="hidden">
+    <div class="form-item border-bottom">
+        <p class="item-title">请选择驾驶员</p>
+        <ul class="item-content driverList">
+            #for(aa02:aa02List)
+            #if(aa02.id==busCa05.aaa020)
+            <li class="li-checked" busId="#(aa02.busId)" aaa020='#(aa02.id)'>#(aa02.name)</li>
+            #else
+            <li aaa020='#(aa02.id)' busId="#(aa02.busId)">#(aa02.name)</li>
+            #end
+            #end
+            <p class="clear"></p>
+        </ul>
+    </div>
+    <div class="form-item border-bottom">
+        <p class="item-title">驾驶车辆<button class="btn-select">显示全部车辆</button></p>
+        <ul class="item-content busList">
+            #for(aa01:aa01List)
+            #if(aa01.aaa001==busCa05.aaa001)
+            <li aaa001='#(aa01.aaa001)' class="li-checked">#(aa01.aaa002)（#(aa01.aaa005) #(aa01.aaa007)座#(aa01.aba060_desc)）</li>
+            #else
+            <li class="hidden" aaa001='#(aa01.aaa001)'>#(aa01.aaa002)（#(aa01.aaa005) #(aa01.aaa007)座#(aa01.aba060_desc)）</li>
+            #end
+            #end
+            <p class="clear"></p>
+        </ul>
+    </div>
+    <div class="form-item layui-form" >
+        <!--<p class="switch-box border-bottom">
+            <span>允许学生预约</span>
+            <input type="hidden" id="aca052" value="#(busCa05.aca052==null || busCa05.aca052==1?'1':'0')">
+            <input type="checkbox" lay-text="是|否" #(busCa05.aca052==null || busCa05.aca052==1?'checked':'')  lay-skin="switch" value="1" lay-filter="aca052">
+        </p>-->
+        <p class="switch-box">
+            <span>是否滚动</span>
+            <input type="hidden" id="aca053" value="#(busCa05.aca053==null || busCa05.aca053==0?'0':'1')">
+            <input type="checkbox" lay-text="是|否" #(busCa05.aca053==null || busCa05.aca053==0?'':'checked') lay-skin="switch" value="1" lay-filter="aca053">
+        </p>
+    </div>
+</form>
+<div class="btn-box">
+    <a class="submitBtn">确定</a>
+    <a class="cancelBtn">取消</a>
+</div>
+<script>
+    layui.use(['form','laydate','upload'], function(){
+        var layer=layui.layer,$=layui.$,form=layui.form;
+        let update=isNotEmpty('#(busCa05.aca050)');//是否是更新
+        $(".driverList li").click(function(){
+            var busId=$(this).attr("busId");
+            let $li=$($(".busList").find("li[aaa001='"+busId+"']"));
+            if(update){
+                $(".driverList li").removeClass("li-checked");
+                $(this).addClass("li-checked");
+                $(".busList li").removeClass("li-checked").hide();
+                $li.addClass("li-checked").show();
+            }else{
+                if(isNotEmpty(busId)){
+                    $(this).toggleClass('li-checked');
+                    if($li.hasClass("li-checked")){
+                        $li.removeClass("li-checked").hide();
+                    }else{
+                        $li.addClass('li-checked').show();
+                    }
+                }else{
+                    alertMsg("该驾驶员尚未绑定车辆，请先绑定车辆信息后操作！","warn");
+                }
+            }
+        });
+        $(".busList li").click(function(){
+            let aaa001=$(this).attr("aaa001");
+            let li=$(".driverList").find("li[busId='"+aaa001+"']");
+            if(update){
+                $(".busList li").removeClass("li-checked");
+                $(this).addClass('li-checked');
+                $(".driverList li").removeClass("li-checked");
+                $(li).addClass("li-checked");
+            }else{
+                if($(this).hasClass("li-checked")){
+                    $(this).removeClass("li-checked").hide();
+                }else{
+                    $(this).addClass('li-checked').show();
+                }
+                if(isNotEmpty(li)){
+                    $(li).toggleClass("li-checked");
+                }else{
+                    alertMsg("该车辆尚未绑定驾驶员，请先绑定车辆信息后操作！","warn");
+                }
+            }
+        });
+        $(".btn-select").click(function(){
+            $(".busList li").show();
+            return false;
+        });
+        /*form.on('switch(aca052)', function(data){
+            $("#aca052").val(data.elem.checked?1:0);
+        });*/
+        form.on('switch(aca053)', function(data){
+            $("#aca053").val(data.elem.checked?1:0);
+        });
+        var detailLayer;
+        $(".btn-box .cancelBtn").click(function(){
+            parent.layer.closeAll('iframe');
+        });
+        $(".submitBtn").click(function(){
+            var aba050=$("#aba050").val();//时刻表ID
+            /*var aca052=$("#aca052").val();//学生预约*/
+            var aca053=$("#aca053").val();//是否滚动
+            var aca051=$("#aca051").val();//日期
+            var aaa001='';//车辆
+            var aaa020='';//驾驶员ID
+            $.each($(".driverList .li-checked"),function(i,val){
+                aaa001=aaa001+$(val).attr("busId")+",";
+                aaa020=aaa020+$(val).attr("aaa020")+",";
+            });
+            if(!isNotEmpty(aba050)){
+                layer.msg("请先选择发车时间");
+                return false;
+            }
+            if(!isNotEmpty(aaa020) || !isNotEmpty(aaa001)){
+                layer.msg("请先选择驾驶员");
+                return false;
+            }
+            $.ajax({
+                type:'post'
+                ,url:'bus/saveBusCa05'
+                ,data:{
+                    'busCa05.aca050':$("#aca050").val()
+                    ,'busCa05.aba050':aba050
+                    ,'busCa05.aca051':aca051
+                    ,'aaa020':aaa020
+                    ,'aaa001':aaa001
+                    ,'busCa05.aca053':aca053
+                }
+                ,success:function(res){
+                    parent.layer.closeAll('iframe');
+                    if(res.flag==true){
+                        layer.msg(res.msg);
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+                ,error:function(res){
+                    layer.msg("服务器出错了，稍后再试！");
+                }
+            });
+        });
+    });
+</script>
+#end

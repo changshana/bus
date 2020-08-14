@@ -252,6 +252,7 @@ public class BusOrderController extends CommonController {
     /*点击车辆进入预约 预约车辆 */
     public void orderBus() throws ParseException {
         Map<String, Object> result = new HashMap<>();
+        Kv cond = getCond(getParaMap());
         try {
             BusOrder busOrder = getModel(BusOrder.class, "busOrder");
             String openid = "oLao_5Wv2ob3SCQGn1o8I6DSvdCU"; //暂时默认为zhz的订单

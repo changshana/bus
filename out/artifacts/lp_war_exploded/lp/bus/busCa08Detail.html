@@ -1,0 +1,70 @@
+#@busCommon()
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="bus/saveBusCa08" method="post">
+    <input type="hidden" name="busCa08.aca080" value="#(busCa08.aca080)">
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="busCa08.aca082" required  value="#(busCa08.aca082)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">登录账号</label>
+        <div class="layui-input-block">
+            <input type="text" name="busCa08.aca081" required  value="#(busCa08.aca081)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">证件号码</label>
+        <div class="layui-input-block">
+            <input type="text" name="busCa08.aca084" required value="#(busCa08.aca084)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">手机号码</label>
+        <div class="layui-input-block">
+            <input type="text" name="busCa08.aca083"  value="#(busCa08.aca083)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">人员类型</label>
+        <div class="layui-input-block">
+            <select name="busCa08.aca044" required id="aca044" class="layui-select" lay-filter="aca044"></select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="busCa08.aaa996" id="aaa996" value="#(busCa08.aaa996==null || busCa08.aaa996==1?'1':'0')">
+            <input type="checkbox" lay-text="有效|无效" #(busCa08.aaa996==null || busCa08.aaa996==1?'checked':'')  lay-skin="switch" value="1" lay-filter="aaa996">
+        </div>
+    </div>
+    <input type="hidden" name="busCa08.aaa997" value="#(busCa08.aaa997)">
+    <input type="hidden" name="busCa08.aaa998" value="#(busCa08.aaa998)">
+    <div class="layui-form-item layui-col-md5">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+			<textarea name="busCa08.aaa999"  class="layui-textarea">#(busCa08.aaa999)</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md5">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laydate','upload'], function(){
+        var form=layui.form;
+        fnGetCode("bus_aa99","aca044","请选择",'#(busCa08.aca044)',"aca044","4,5,6");
+        form.on('switch(aaa996)', function(data){
+            $("#aaa996").val(data.elem.checked?1:0);
+        });
+    });
+</script>
+#end

@@ -1,0 +1,46 @@
+#define sysCommon()
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="#(base_path)/" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>四川大学后勤保障部</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="lib/layui2.4.1/css/#(session.theme).css" media="all">
+    <link rel="stylesheet" href="lib/dist/style/admin_#(session.theme).css" media="all">
+    <link rel="stylesheet" href="css/common.css" media="all">
+    <script src="js/jquery-1.4.4.min.js" charset="utf-8"></script>
+    <script>
+        var Base={
+            ftpBasePath:'#(session.staticPath)',
+            BasePath:"#(session.basePath)",
+            extendPath:"lib/layui2.4.1/extend"
+        };
+    </script>
+    <script src="lp/static/js/common.js" charset="utf-8"></script>
+    <script src="lp/static/js/base64.js" charset="utf-8"></script>
+    <script src="lp/static/js/systemCommon.js" charset="utf-8"></script>
+    <script src="lib/layui2.4.1/layui.js" charset="utf-8"></script>
+    <script src="js/ajaxfileupload.js" charset="utf-8"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    #@css?()
+</head>
+<body class="layui-layout-body">
+#@main()
+
+#@javascript?()
+</body>
+</html>
+
+#end

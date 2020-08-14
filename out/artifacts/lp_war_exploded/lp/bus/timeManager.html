@@ -1,0 +1,205 @@
+#@carCommon()
+#define css()
+<style type="text/css">
+    .handleBtn{color: #0ea779;cursor: pointer;margin: 0 5px;}
+    .handleBtn:hover{text-decoration: underline;color: #FF5722;}
+</style>
+#end
+#define main()
+<div class="content-box">
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-md4">
+                <blockquote class="layui-elem-quote">时刻发车信息</blockquote>
+                <form class="layui-form addForm" action="" method="post">
+                    <input type="hidden" name="busBa05.aba030" id="aba030" value="#(aba030)">
+                    <input type="hidden" name="busBa05.aba050" id="aba050" value="#(aba050)" default-data>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发车时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" id="aba051" placeholder="HH:mm" default-data>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">预计到达</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" id="aba052" placeholder="HH:mm" default-data>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">车辆类型</label>
+                        <div class="layui-input-block">
+                            <select name="busBa05.aba007" default-data lay-filter="pointSelect" lay-search id="aba020" lay-verify="required">
+                                <option value="">——请选择——</option>
+                                #for(ba07:busBa07)
+                                    <option value="#(ba07.aba070)">#(ba07.aba071)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择车辆</label>
+                        <div class="layui-input-block">
+                            <select name="busBa05.aba007" default-data lay-filter="pointSelect" lay-search >
+                                <option value="">——请选择——</option>
+                                #for(ba07:busBa07)
+                                    <option value="#(ba07.aba070)">#(ba07.aba071)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">选择司机</label>
+                        <div class="layui-input-block">
+                            <select name="busBa05.aba007" default-data lay-filter="pointSelect" lay-search >
+                                <option value="">——请选择——</option>
+                                #for(ba07:busBa07)
+                                    <option value="#(ba07.aba070)">#(ba07.aba071)</option>
+                                #end
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发车说明</label>
+                        <div class="layui-input-block">
+                            <textarea class="layui-textarea" default-data name="busBa05.aaa999" id="aaa999"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否预约</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" id="" name="busBa05.aaa996" lay-skin="switch" value="1" checked>
+                            <p style="color: #f2680e">设置学生是否可以在线预约该时刻车辆</p>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">有效状态</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" id="aaa996" name="busBa05.aaa996" lay-skin="switch" value="1" checked>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+                            <a class="layui-btn layui-btn-primary" onclick="fnReset()">清空</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-col-md8">
+                <blockquote class="layui-elem-quote">时刻表总览</blockquote>
+                <table class="layui-table" lay-data="{cellMinWidth:60,url:'bus/getBusBa05ListNew?aba030=#(aba030)', id:'busBa05List',height: 'full-100'}" lay-filter="busBa05List">
+                    <thead>
+                    <tr>
+                        <th lay-data="{width:120,toolbar: '#handleBar'}">操作</th>
+                        <th lay-data="{field:'aba051'}">发车时间</th>
+                        <th lay-data="{}">车辆类型</th>
+                        <th lay-data="{width:150}">是否预约</th>
+                        <th lay-data="{field:'aaa996',templet: '#switchStatus',width:100}">有效状态</th>
+                    </tr>
+                    </thead>
+                </table>
+                <script type="text/html" id="handleBar">
+                    <a class="handleBtn" lay-event="toEdit">更新</a>
+                    <a class="handleBtn" lay-event="toDelete">删除</a>
+                </script>
+                <script type="text/html" id="switchStatus">
+                    <input type="checkbox" name="{{d.aba030}}" lay-skin="switch" value="{{d.aaa996}}" {{d.aaa996==1?'checked':''}} lay-filter="changeStatus">
+                </script>
+                <script type="text/html" id="pass">
+                    #[[
+                    <a class="layui-btn layui-btn-xs" lay-event="toPass">途径点({{d.count}})</a>
+                    ]]#
+                </script>
+            </div>
+        </div>
+</div>
+<script type="text/javascript">
+    var form;
+    layui.use(['table','form','laydate'], function () {
+        var table = layui.table;
+        form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({elem: '#aba051',type: 'time',format:'HH:mm'});
+        laydate.render({elem: '#aba052',type: 'time',format:'HH:mm'});
+        table.on('tool(busBa05List)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'toEdit') {
+                $('[default-data]').each(function(i,o){
+                    $(this).val(data[$(this).attr('id')]);
+                });
+                form.render();
+            }if (obj.event === 'toDelete') {
+                layer.confirm("确定要删除这条路线？请慎重！", function (index) {
+                    $.ajax({
+                        type: 'post',
+                        url: 'bus/deleteBusBa03',
+                        data: {"ids": data.aba030},
+                        success: function (res) {
+                            layer.close(index);
+                            table.reload('busBa05List');
+                        }, error: function () {
+                            windowNewLocation('error');
+                        }
+                    });
+                });
+            }
+            if (obj.event === 'toPass') {
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,
+                    title: '申请清单'
+                    ,
+                    area: ['80%', '90%']
+                    ,
+                    shade: 0.5
+                    ,
+                    maxmin: true
+                    ,
+                    content: "bus/busBa01?aba030=" + data.aba030
+                    ,
+                    btn: ['关闭']
+                    ,
+                    yes: function () {
+                        layer.closeAll();
+                    }
+                    ,
+                    zIndex: layer.zIndex //重点1
+                    ,
+                    success: function (layero) {
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            }
+        });
+
+        form.on('select(conditionSelect)', function (data) {
+            table.reload('busBa05List', {
+                where: {
+                    type_id: $("#type_id").val(),
+                }
+            });
+        });
+
+        form.on('switch(changeStatus)', function (obj) {
+            change996(obj, 'bus_ba03', 'aba030', this.name);
+        });
+        form.on('submit(formBox)', function (data) {
+            $.ajax({
+                type:'post',
+                url:'bus/saveBusBa03New',
+                data:data.field,
+                success:function(res){
+                    fnReset();
+                    table.reload('busBa05List');
+                }
+            });
+            return false;
+        });
+    });
+
+    function fnReset(){
+        $('[default-data]').val('');
+        form.render();
+    }
+</script>
+#end

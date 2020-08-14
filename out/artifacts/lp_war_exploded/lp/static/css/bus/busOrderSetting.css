@@ -1,0 +1,30 @@
+body{margin: 0;padding: 0;}
+/*.layui-form-label{width: auto}
+.layui-input-block{margin-left: 24%;}*/
+.addForm{background: url("../../images/bus/BG@3x.jpg") no-repeat; background-size: 100% 100%!important;}
+.main-box{height: 100%;}
+.left-box{width: 60%;height: 89%;margin-top: 5%;float: right;background: url("../../images/bus/bus1.png") no-repeat;background-size: 100% 100%;/*background-color: #fbfbfb;*/}
+.bus-bg44{background: url("../../images/bus/bus2.png") no-repeat;background-size: 100% 100%;}
+.bus-bg45{background: url("../../images/bus/bus1.png") no-repeat;background-size: 100% 100%;}
+.right-box{padding: 2% 2% 0 0;margin-top: 5%;width: 60%;height: 87%;background-color: #fff;box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.25);border-radius: 1.5%;}
+.seatGrid {width:85%;height: 95%; position:relative;margin: 6% auto; }
+.seatGrid li {width:14%;height: 6%; display: table; float:left; list-style:none; margin:1.8% 3% 1.8% 2.5%;    /*border: 1px dotted;*/}
+.seatGrid li .seat {width:100%;height: 100%; display: table;}
+
+.seatGrid li i.seat-icon{width:100%; height:100%;display:table-cell; vertical-align:middle;background: url("../../images/bus/seat_uncheck.png") no-repeat;background-size: 100% 100%;text-align: center;font-style: normal;font-size: 12px; }
+.seatGrid li:hover{ border-color: #9a9fa4; box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.85);}
+.seatGrid .active{ border:1px dashed red;}
+.margin-left10{
+    margin-left: 10px;
+}
+.seats-info-box{height: 100%;}
+.right-box .seats-info-header span{display: inline-block;height: 40px;line-height: 40px;padding: 0 0 0 5%;background-color: #ccc;}
+.right-box .seats-info-header span.seat-num{width: 40%;}
+.right-box .seats-info-header span.seat-position{width: 50%;}
+.right-box ul.seats-info{height:93%;overflow-y: auto;border: 1px solid #ccc;}
+.right-box ul.seats-info li:last-child{border-bottom: 0px solid #ccc;}
+.right-box ul.seats-info li{border-bottom: 1px dotted;border-right: 1px solid #ccc;}
+.right-box ul.seats-info li span{width: 70%;display: inline-block;height: 30px;line-height: 30px;padding: 0 0 0 5%;font-size: 12px;}
+.right-box ul li span:nth-child(1){width: 20%;}
+.right-box ul.seats-info li span label{height: 30px;line-height: 30px;padding-left: 6px;}
+.right-box ul.seats-info li span input{width: 15%;display: inline-block;border: 1px solid #f0f0f0;padding: 0 3px;}

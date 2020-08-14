@@ -1,0 +1,95 @@
+#@common()
+#define css()
+<link rel="stylesheet" href="css/login.css" media="all">
+#end
+#define main()
+    <div class="bg">
+        <div class="bg-shadow">
+            <div class="layui-container">
+                <div class="layui-row">
+                    <div class="loginBox" style="">
+                        <div class="login-Logo">
+                            <img src="img/logo_login.png" alt="">
+                        </div>
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <img src="img/username.svg" class="icon" alt="">
+                                <input type="text" name="username" lay-verify="username" placeholder=" 输入用户名登录 " autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-item">
+                                <img src="img/password.svg" class="icon" alt="">
+                                <input type="password" name="password" lay-verify="password" placeholder="输入密码" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-item">
+                                <input type="radio" name="sex" value="男" title="管理员">
+                                <input type="radio" name="sex" value="女" title="用户">
+                            </div>
+                            <div class="layui-form-item">
+                                <button class="layui-btn loginBtn" lay-submit lay-filter="FormLogin"> 登 录 </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--         <div style="width: 100%;height: 50%;background-color: rgba(255,255,255,.001)"></div> -->
+    </div>
+
+
+    <script>
+    $(function() {
+        var Height = $(window).height();
+        var Width = $(window).width();
+        $(".loginBox").css({
+            top: Height / 2 - 200,
+            left: Width / 2 - 180,
+        });
+
+
+        layui.use('form', function() {
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(FormLogin)', function(data) {
+                var form_data=data.field,flag=true;
+                if(!isNotEmpty(form_data.username)){
+                    flag=false;
+                    layer.alert("用户名不能为空");
+                }
+                if(!isNotEmpty(form_data.password)){
+                    flag=false;
+                    layer.alert("密码不能为空");
+                }
+                if(flag){
+                    $.ajax({
+                        type:'post',
+                        url:'checkLogin',
+                        data:form_data,
+                        success:function(res){
+                            if(res.flag){
+                                windowNewLocation("");
+                            }else{
+                                layer.alert(res.msg);
+                            }
+                        }
+                    });
+                }
+                return false;
+            });
+            form.verify({
+                username: function(value, item) {
+                    if (value == "") {
+                        return "请输入账号！";
+                    }
+                },
+                password: function(value, item) {
+                    if (value == "") {
+                        return "请输入密码！";
+                    }
+                }
+            });
+
+        });
+    })
+    </script>
+#end

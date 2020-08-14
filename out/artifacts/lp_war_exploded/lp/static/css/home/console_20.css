@@ -1,0 +1,118 @@
+body {
+    background: url("../../images/home/bg_4.png") center no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+}
+.flow_box {
+    width: 95%;
+}
+
+.flow_pie,.flow_tag {
+    width: 100%;
+    clear: both;
+}
+body {
+    background: url("../../images/home/bg_4.png") center no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+}
+.flow_pie > span {
+    display: block;
+    float: left;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    background-color: #ffffff;
+    margin: 5px 0px 5px 0px;
+    text-align: center;
+}
+
+.flow_pie > span > i {
+    line-height: 80px;
+    font-size: 35px;
+    color: #192a4c;
+}
+
+.flow_pie > i {
+    margin: 10px 0px 10px 0px;
+    display: block;
+    float: left;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 30px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.flow_tag > span, .flow_tag > i {
+    height: 20px !important;
+    line-height: 20px !important;
+    background-color: transparent;
+    font-size: 14px;
+    color: #aaaaaa;
+}
+
+
+.myChart1{width: 95%;height: 280px;}
+.myChart2{width: 95%;height: 220px;}
+
+
+
+
+
+.to_do_business{color: #eeeeee;min-height: 200px;}
+.to_do_business li{
+    padding-left: 10px;
+    line-height: 30px;
+}
+.to_do_business li>i{
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+
+
+
+
+.message_box {
+    width: 100%;
+}
+.line-class li{
+    width: 100%!important;
+}
+.message_box li {
+    list-style: none;
+    width: 49%;
+    height: 30px;
+    line-height: 30px;
+    color: #eeeeee;
+    display: inline-block;
+    float: left;
+}
+
+.message_box li:nth-child(2n+1) {
+    margin-right: 2%;
+}
+
+.message_box li > span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.message_text {
+    width: 80%;
+    cursor: pointer;
+    float: left
+}
+
+.message_time {
+    width: 16%;
+    float: right
+}
+
+.message_box li:hover {
+    color: #01AAED;
+}

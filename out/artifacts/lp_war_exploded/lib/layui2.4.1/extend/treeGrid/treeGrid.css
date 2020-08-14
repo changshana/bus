@@ -1,0 +1,4 @@
+.layui-tree-head{
+    cursor: pointer;
+}
+.layui-table-cell div+P{text-align: left!important;}

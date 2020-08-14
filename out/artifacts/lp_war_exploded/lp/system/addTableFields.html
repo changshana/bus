@@ -1,0 +1,343 @@
+#@sysCommon()
+#define css()
+<script type="text/javascript" src="lp/static/js/fieldModule.js"></script>
+#end
+#define main()
+<form class="layui-form addForm content-box" action="system/addPmFiedSave" method="post">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>数据库表字段信息</legend>
+    </fieldset>
+    <input type="hidden" name="pmField.table_id" id="table_id" value="#(table_id)">
+    <input type="hidden"  id="module_id" value="#(module_id)">
+    <input type="hidden"  id="table_name" value="#(table_name)">
+    <input type="hidden" name="pmField.field_id" id="field_id" value="#(pmField==null?'':pmField.field_id)">
+    <div class="layui-form-item field_module_list" hidden>
+        <label class="layui-form-label">字段模板</label>
+        <div class="layui-input-block">
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="id" data-type="fieldModule">ID</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="lid" data-type="fieldModule">LID</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="name" data-type="fieldModule">名称</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="code" data-type="fieldModule">代码</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="title" data-type="fieldModule">标题</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="content" data-type="fieldModule">内容</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="status" data-type="fieldModule">状态</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="remark" data-type="fieldModule">备注</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="order_code" data-type="fieldModule">排序</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="birthday" data-type="fieldModule">生日</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="the_time" data-type="fieldModule">时间</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="create_time" data-type="fieldModule">创建时间</a>
+            <a class="layui-btn layui-btn-radius layui-btn-sm" default-module="creator" data-type="fieldModule">创建用户</a>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">字段名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.field_name" id="field_name" value="#(pmField==null?'':pmField.field_name)" required    autocomplete="off" class="layui-input" onblur="fnCheckFieldName()">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">别名</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.field_alias" id="field_alias" value="#(pmField==null?'':pmField.field_alias)" required   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">字段类型</label>
+            <div class="layui-input-block">
+                <select name="pmField.field_type" id="field_type" value="#(pmField==null?'':pmField.field_type)" required  >
+                    <option value="">——请选择——</option>
+                    <option value="varchar">字符串</option>
+                    <option value="int">整数</option>
+                    <option value="bigint">长整数</option>
+                    <option value="tinyint">短整数</option>
+                    <option value="datetime">时间戳</option>
+                    <option value="date">日期</option>
+                    <option value="boolean">布尔</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md8">
+            <label class="layui-form-label">是否主键</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="pmField.field_iskey"  id="field_iskey" value="1" lay-skin="primary" title="是主键" #((pmField!=null&&pmField.field_iskey==1)?'checked':'')>
+                <input type="checkbox" name="pmField.db_auto_increment" id="db_auto_increment" value="1" lay-skin="primary" title="DB自增" #((pmField!=null&&pmField.db_auto_increment==1)?'checked':'')>
+                <input type="checkbox" name="pmField.field_auto_increment" id="field_auto_increment" value="1" lay-skin="primary" title="SEQ自增" #((pmField!=null&&pmField.field_auto_increment==1)?'checked':'')>
+                <input type="checkbox" name="pmField.field_unique" id="field_unique" value="1" lay-skin="primary" title="值唯一" #((pmField!=null&&pmField.field_unique==1)?'checked':'')>
+                <input type="checkbox" name="pmField.field_isnullable" id="field_isnullable" value="1" lay-skin="primary" title="允许为空" #((pmField!=null&&pmField.field_isnullable==1)?'checked':'')>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">启用状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="pmField.status" id="status" value="1" lay-skin="switch" #((pmField==null||pmField.status==1)?'checked':'')>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">最大长度</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.field_max_length" id="field_max_length" value="#(pmField==null?'':pmField.field_max_length)" required autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">最小长度</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.field_min_length" id="field_min_length" value="#(pmField==null?'':pmField.field_alias)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">默认值</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.default_value" id="default_value" value="#(pmField==null?'':pmField.default_value)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">最大数值</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.field_max" id="field_max" value="#(pmField==null?'':pmField.field_max)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">最小数值</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.field_min" id="field_min"  value="#(pmField==null?'':pmField.field_min)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">小数位数</label>
+            <div class="layui-input-block">
+                <input type="number" name="pmField.field_decimal_length" id="field_decimal_length"  value="#(pmField==null?'':pmField.field_decimal_length)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>属性页（prop）控制</legend>
+    </fieldset>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">输入类型</label>
+            <div class="layui-input-block">
+                <select name="pmField.input_type" id="input_type" value="#(pmField==null?'':pmField.input_type)" required>
+                    <option value="">——请选择——</option>
+                    <option value="text">文本框</option>
+                    <option value="select">下拉框</option>
+                    <option value="checkbox">复选框</option>
+                    <option value="textarea">大文本框</option>
+                    <option value="date">日期</option>
+                    <option value="hidden">隐藏</option>
+                    <option value="file_upload">文件上传</option>
+                    <option value="img_upload">图片上传</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">控件属性</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.input_attr"  value="#(pmField==null?'':pmField.input_attr)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">输入默认值</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.default_value"  value="#(pmField==null?'':pmField.default_value)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">输入提示</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.input_tip" value="#(pmField==null?'':pmField.input_tip)" autocomplete="off" class="layui-input"></input>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">列表数据</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.list_data"  value="#(pmField==null?'':pmField.list_data)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">数据源</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.data_source"  value="#(pmField==null?'':pmField.data_source)"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>列表页（list）控制</legend>
+    </fieldset>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">搜索方式</label>
+            <div class="layui-input-block">
+                <select name="pmField.field_search" id="field_search" value="#(pmField==null?'':pmField.field_search)" >
+                    <option value="">——请选择——</option>
+                    <option value="left">左匹配</option>
+                    <option value="right">右匹配</option>
+                    <option value="all">左右匹配</option>
+                    <option value="equals">全匹配</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">过滤方式</label>
+            <div class="layui-input-block">
+                <select name="pmField.field_filter" id="field_filter" value="#(pmField==null?'':pmField.field_filter)" >
+                    <option value="">——请选择——</option>
+                    <option value="select">下拉框</option>
+                    <option value="checkbox">复选框</option>
+                    <option value="date">日期框</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">列表页显示</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="pmField.list_page_show" value="1" lay-skin="switch" #((pmField==null||pmField.list_page_show==1)?'checked':'')>
+            </div>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>导入（import）控制</legend>
+    </fieldset>
+    <div class="layui-form-item layui-row">
+        <div class="layui-col-md4">
+            <label class="layui-form-label">字段类型</label>
+            <div class="layui-input-block">
+                <select name="pmField.source_type" id="source_type" value="#(pmField==null?'':pmField.source_type)" >
+                    <option value="">——请选择——</option>
+                    <option value="1">文本</option>
+                    <option value="2">数据源</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <label class="layui-form-label">数据范围</label>
+            <div class="layui-input-block">
+                <input type="text" name="pmField.field_range" value="#(pmField==null?'':pmField.field_range)" autocomplete="off" class="layui-input"></input>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">字段备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="pmField.remark"  value="#(pmField==null?'':pmField.remark)"  autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button id="submitBtn" class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="windowNewLocation('system/tableFields?module_id=#(module_id)&table_id=#(table_id)')">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    var fieldModule='';
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formBox)', function(data){
+            //验证数据
+        });
+        var $ = layui.$;
+        $(function(){
+            $('#field_type').val($('#field_type').attr('value'));
+            $('#input_type').val($('#input_type').attr('value'));
+            $('#field_search').val($('#field_search').attr('value'));
+            $('#field_filter').val($('#field_filter').attr('value'));
+            $('#source_type').val($('#source_type').attr('value'));
+            form.render('select');
+            if(!isNotEmpty($('#field_id').val())){
+                $('.field_module_list').show();
+            }
+        });
+
+        var active = {
+            fieldModule:function(){
+                fnSetMsgWithFieldModule(fieldModule);
+            }
+        }
+
+        $('.layui-btn').on('click', function(){
+            fieldModule=$(this).attr('default-module');
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        function fnSetMsgWithFieldModule(field_module_name){
+            var module_msg=field_module[field_module_name].module_msg;
+            $.each(keys,function(i,o){
+                if(o=='field_name'&&module_msg[o].indexOf('_')==0){
+                    $('#'+o).val($('#table_name').val().substring($('#table_name').val().indexOf('_')+1)+module_msg[o]);
+                }else{
+                    $('#'+o).val(module_msg[o]);
+                }
+                if(module_msg[o]==1){
+                    $('#'+o).prop('checked',true);
+                }else{
+                    $('#'+o).prop('checked',false);
+                }
+            });
+            form.render('select');
+            form.render('checkbox');
+            $('#field_name').blur();
+        }
+
+
+        form.verify({
+            requiredAndUnique: function(value){
+                if(isNotEmpty(value)){
+                    $.ajax({
+                        type:'post',
+                        data:{'field_name':value,'table_id':$('#table_id').val()},
+                        url:'system/checkFieldName',
+                        success:function(res){
+                            if(!res){
+                                $('#field_name').val('');
+                                return '表中已经存在该字段请重新命名';
+                            }
+                        }
+                    });
+                }else{
+                    return "必填项不能为空";
+                }
+            }
+        });
+
+    });
+
+
+
+    function fnCheckFieldName(){
+        var field_name=$('#field_name').val();
+        if(isNotEmpty(field_name)){
+            $.ajax({
+                type:'post',
+                data:{'field_name':field_name,'table_id':$('#table_id').val(),'field_id':$('#field_id').val()},
+                url:'system/checkFieldName',
+                success:function(res){
+                    if(!res){
+                        layer.alert("表中已经存在该字段，请重新命名！");
+                        $('#submitBtn').addClass('layui-btn-disabled').attr('disabled','disabled');
+                    }else{
+                        $('#submitBtn').removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+        }
+    }
+
+
+
+</script>
+
+#end
