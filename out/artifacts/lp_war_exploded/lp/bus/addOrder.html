@@ -3,56 +3,58 @@
 #define css()
 <link href="lp/bus/css/addOrder.css" media="all" rel="stylesheet"/>
 #end
-<form class="layui-form addForm content-box" action="busOrder/orderBus" method="post">
-<div class="left">
-    <div class="info-out">
-        <div class="info">
-            <div class="rout-box">
-                <input class="search-input" id="start" name="aza204" placeholder="请输入起点..." value=""/>
-                <input class="search-input" id="endPoint" name="aza205" placeholder="请输入终点..." value=""/>
-                <a class="btn btn_yes" id="confirm_point">确定</a>
-                <div class="gap"></div>
-            </div>
-            <div class="other-info">
-                <p>
-                    <span>出发时间</span>
-                    <input class="input-panel" id="time" name="aba032" readonly/>
-                </p>
-                <p>
-                    <span>备注信息</span>
-                    <textarea class="layui-textarea textarea" name="aaa999" maxlength="300"></textarea>
-                </p>
-            </div>
-            <div class="choose-box" id="vehicle_box">
-                <a class="btn btn-choose" id="choose_bus">点击选择车辆</a>
-                <!--<div class="vehicle-info-box" id="vehicle" vehicle_id="">
-                    <img class="vehicle-img" src="lp/bus/img/vehicle.jpg"/>
-                    <p>车辆类型：<span>大巴车</span></p>
-                    <p>荷载人数：<span>45人</span></p>
-                    <p>车牌号：<span>川A 45V67</span></p>
-                    <p>基础价格：<span>￥100.00元</span></p>
+<form class="layui-form addForm content-box" method="post">
+    <div class="left">
+        <div class="info-out">
+            <div class="info">
+                <div class="rout-box">
+                    <input class="search-input" id="start"  placeholder="请输入起点..." value=""/>
+                    <input id="start_pos" type="hidden">
+                    <input class="search-input" id="endPoint"  placeholder="请输入终点..." value=""/>
+                    <input id="end_pos" type="hidden">
+                    <a class="btn btn_yes" id="confirm_point">确定</a>
                     <div class="gap"></div>
-                </div>-->
-            </div>
-            <div class="choose-box" id="driver-box">
-                <a class="btn btn-choose" id="choose_driver">点击选择驾驶员</a>
-                <!--<div class="vehicle-info-box" id="dirver">
-                    &lt;!&ndash;                <img src="lp/bus/img/vehicle.jpg" class="vehicle-img" />&ndash;&gt;
-                    <p>姓名：<span>驾驶员A</span></p>
-                    <p>联系电话：<span>12345678910</span></p>
-                    <p>服务星级：<span id="rate-panel">*****</span></p>
-                    <div class="gap"></div>
-                </div>-->
+                </div>
+                <div class="other-info">
+                    <p>
+                        <span>出发时间</span>
+                        <input class="input-panel" id="time"  readonly/>
+                    </p>
+                    <p>
+                        <span>备注信息</span>
+                        <textarea class="layui-textarea textarea" id="aaa999"  maxlength="300"></textarea>
+                    </p>
+                </div>
+                <div class="choose-box" id="vehicle_box">
+                    <a class="btn btn-choose" id="choose_bus">点击选择车辆</a>
+                    <!--<div class="vehicle-info-box" id="vehicle" vehicle_id="">
+                        <img class="vehicle-img" src="lp/bus/img/vehicle.jpg"/>
+                        <p>车辆类型：<span>大巴车</span></p>
+                        <p>荷载人数：<span>45人</span></p>
+                        <p>车牌号：<span>川A 45V67</span></p>
+                        <p>基础价格：<span>￥100.00元</span></p>
+                        <div class="gap"></div>
+                    </div>-->
+                </div>
+                <div class="choose-box" id="driver-box">
+                    <a class="btn btn-choose" id="choose_driver">点击选择驾驶员</a>
+                    <!--<div class="vehicle-info-box" id="dirver">
+                        &lt;!&ndash;                <img src="lp/bus/img/vehicle.jpg" class="vehicle-img" />&ndash;&gt;
+                        <p>姓名：<span>驾驶员A</span></p>
+                        <p>联系电话：<span>12345678910</span></p>
+                        <p>服务星级：<span id="rate-panel">*****</span></p>
+                        <div class="gap"></div>
+                    </div>-->
+                </div>
             </div>
         </div>
+        <div class="btn-box">
+            <a class="btn btn-confirm">确定</a>
+            <button class="btn btn-back">返回</button>
+        </div>
     </div>
-    <div class="btn-box">
-        <button class="btn btn-confirm">确定</button>
-        <button class="btn btn-back">返回</button>
-    </div>
-</div>
-<div id="container-none"></div>
-<div id="container"></div>
+    <div id="container-none"></div>
+    <div id="container"></div>
 </form>
 <script charset="utf-8"
         src="https://map.qq.com/api/js?v=2.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR&libraries=place,tools"></script>
@@ -62,8 +64,9 @@
     let startPoiList = null, startIndex = null;
     let endPoiList = null, endIndex = null;
     let vehicle_id, driver_id;
+    let layer;
     layui.use(['layer', 'rate', 'laydate'], function () {
-        let layer = layui.layer;
+        layer = layui.layer;
         let rate = layui.rate;
         let laydate = layui.laydate;
         init();
@@ -111,6 +114,36 @@
         });
         $(".btn-confirm").bind('click', function () {
             //TODO 提交申请
+            var startLat = $("#start_pos").attr("lat");
+            var startLng = $("#start_pos").attr("lng");
+            var endLat = $("#end_pos").attr("lat");
+            var endLng = $("#end_pos").attr("lng");
+            var aaa001 = $("#vehicle").attr("vehicle_id");
+            var aaa020 = $("#driver").attr("driver_id");
+            // var aaa001 = aaa001;
+            var mileage = $("#distance").attr("value");
+            var minute = $("#duration").attr("value");
+            $.ajax({
+                url: 'busOrder/orderBus'
+                , type: 'post'
+                , data: {
+                    'aza204':$("#start").val(),    //起点
+                    'aza205':$("#endPoint").val(),    //终点
+                    'aba032':$("#time").val(),    //发车时间
+                    'aaa999':$("#aaa999").val(),    //备注
+                    'startLat': startLat,   //起点经度
+                    'startLng': startLng,   //起点纬度
+                    'endLat': endLat,   //终点经度
+                    'endLng': endLng,   //终点纬度
+                    'aaa020': aaa020,   //驾驶员id
+                    'aaa001': aaa001,   //车辆id
+                    'mileage': mileage,   //距离（千米）
+                    'minute': minute,   //分钟
+                }
+                , success: function (res) {
+                    windowNewLocation("busOrder/busOrderManage")
+                }
+            })
         });
     });
     $(".btn_yes").bind('click', function () {
@@ -172,7 +205,7 @@
             , success: function (res) {
                 let data = res[0];
                 let html =
-                    '<div class="vehicle-info-box" id="driver">' +
+                    '<div class="vehicle-info-box" id="driver" driver_id="' + data.aaa020 + '">' +
                     '    <p>姓名：<span>' + data.aaa002 + '</span></p>' +
                     '    <p>联系电话：<span>' + data.aaa007 + '</span></p>' +
                     '    <p>服务星级：<span id="rate-panel">*****</span></p>' +

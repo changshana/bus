@@ -194,7 +194,7 @@ public class BusOrderController extends CommonController {
             List<Record> recordBookeds = busAa01Service.records(cond, "bus.getBookedBus");  //查询已被预约的公车
             for (Record record : records) {
                 String aaa009 = record.getStr("aaa009");
-                record.set("aaa009",Constant.IMG_ADDRESS+aaa009);
+                record.set("aaa009", Constant.IMG_ADDRESS + aaa009);
                 record.set("appointmentStatus", "未预约"); //增加预约状态
                 Integer aaa001A = record.getInt("aaa001"); //班车的id
                 for (Record recordBooked : recordBookeds) {
@@ -249,7 +249,26 @@ public class BusOrderController extends CommonController {
         Map<String, Object> result = new HashMap<>();
         Kv cond = getCond(getParaMap());
         try {
-            BusOrder busOrder = getModel(BusOrder.class, "busOrder");
+            String aza204 = cond.getStr("aza204");
+            String aza205 = cond.getStr("aza205");
+            String aba032 = cond.getStr("aba032");
+            String aaa999 = cond.getStr("aaa999");
+            String startLat = cond.getStr("startLat");
+            String startLng = cond.getStr("startLng");
+            String endLat = cond.getStr("endLat");
+            String endLng = cond.getStr("endLng");
+            Integer aaa020 = Integer.parseInt(cond.getStr("aaa020"));
+            Integer aaa001 = Integer.parseInt(cond.getStr("aaa001"));
+            String mileage = cond.getStr("mileage");    //预估距离
+            Integer aza209 = Integer.parseInt(cond.getStr("minute"));  //预估分钟
+            BusOrder busOrder = new BusOrder();
+            busOrder.setAza204(aza204 + " " + startLat + " " + startLng);
+            busOrder.setAza205(aza205 + " " + endLat + " " + endLng);
+            SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            busOrder.setAba032(slf.parse(aba032.toString()));
+            busOrder.setAaa999(aaa999);
+            busOrder.setAza208(aaa020);
+            busOrder.setAza201(aaa001);
             String openid = "oLao_5Wv2ob3SCQGn1o8I6DSvdCU"; //暂时默认为zhz的订单
             busOrder.setAca031(openid);
             BusCa04 busCa04 = busCa04Service.getBusCa04ByAca042(openid);
@@ -258,9 +277,12 @@ public class BusOrderController extends CommonController {
             busOrder.setAaa998(new Date());             //设置创建时间
             busOrder.setAca035(0);  //支付状态（0未支付，1已支付）
             busOrder.setOutTradeNo("");             /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
-
-            Double estimatedCost = busOrder.getAza203().doubleValue() / 4;    /*预估费用  这里的费用计算     待定*/
-            BigDecimal bigDecimal = new BigDecimal(estimatedCost);
+            busOrder.setAza209(aza209);
+            busOrder.setAza203(new BigDecimal(mileage));    //设置预估里程
+            busOrder.setAca044(1);  //设置人员类型，需要更改
+            busOrder.setAca050(1);  //订单是否被取消的状态
+            //int estimatedCost = Integer.parseInt(mileage) / 4;    /*预估费用  这里的费用计算     待定*/
+            BigDecimal bigDecimal = new BigDecimal(mileage);
             busOrder.setAza202(bigDecimal);
 
             busOrder.setAaa996(0);  //开车状态（0为等待发车，1为正在行驶，2为行程结束）
