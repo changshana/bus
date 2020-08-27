@@ -11,10 +11,7 @@ import com.jfinal.plugin.activerecord.DbKit;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
 import com.jfinal.template.source.ClassPathSourceFactory;
-import com.mht.bus.BusAPIController;
-import com.mht.bus.BusController;
-import com.mht.bus.BusOrderController;
-import com.mht.bus.BusWxController;
+import com.mht.bus.*;
 import com.mht.bus.util.BusScheduleUtil;
 import com.mht.bus.util.BusStaticUtil;
 import com.mht.common.interceptor.ParameterInterceptor;
@@ -84,7 +81,8 @@ public class AppConfig extends JFinalConfig {
         me.add("/bus", BusController.class,"bus");
         me.add("/busAPI", BusAPIController.class,"bus");
         me.add("/busOrder", BusOrderController.class,"bus");
-        me.add("/busWx", BusWxController.class,"bus");
+        me.add("/busWx", BusWxController.class, "bus");
+        me.add("/bus/statistics", BusStatistics.class, "bus/statistics");
     }
 
     public void configEngine(Engine me) {

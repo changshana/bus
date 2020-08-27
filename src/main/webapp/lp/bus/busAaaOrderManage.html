@@ -41,7 +41,7 @@
 
         <tr>
             <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
-            <!--<th lay-data="{width:80,toolbar: '#editBar'}">编辑</th>-->
+            <th lay-data="{width:80,toolbar: '#editBar'}">详情</th>
             <th lay-data="{field:'aba032'}">订单日期</th>
             <!--<th lay-data="{field:'aaa005'}">评价星级</th>-->
             <!--<th lay-data="{field:'aaa005'}">评价类型</th>-->
@@ -62,7 +62,7 @@
         </thead>
     </table>
     <script type="text/html" id="editBar">
-        <a class="layui-btn layui-btn-xs" lay-event="toEdit"><i class="layui-icon"></i></a>
+        <a class="layui-btn layui-btn-xs" lay-event="toDetail"><i class="layui-icon layui-icon-file-b"></i></a>
     </script>
     <script type="text/html" id="seatInfo">
         #[[
@@ -83,10 +83,10 @@
         $(function () {
             fnGetCode('bus_aa99', 'aba060', null, null, 'aba060');
         });
-        table.on('tool(busAa01List)', function (obj) {
+        table.on('tool(busOrderList)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'toEdit') {
-                windowNewLocation("busOrder/addOrUpdateBus?aaa001=" + data.aaa001);   //改为车辆管理详情
+            if (obj.event === 'toDetail') {
+                windowNewLocation("busOrder/busOrderDetail?order_id=" + data.aca030);   //改为车辆管理详情
             }
             if (obj.event === 'view') {
                 windowNewLocation("bus/addOrUpdateBusBa04?aba020=" + data.aba020 + "&type=view");
@@ -112,7 +112,7 @@
         });
 
         function reloadData() {
-            table.reload('busAa01List', {
+            table.reload('busOrderList', {
                 where: {
                     search_param: $('#search_param').val(),
                     aba060: $("#aba060").val()

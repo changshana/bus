@@ -1,0 +1,191 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #F4F4F4;
+}
+
+.main {
+    width: 100%;
+    height: 100%;
+    overflow: hidden auto;
+}
+
+.content {
+    width: 100%;
+    height: auto;
+}
+
+.title {
+    height: auto;
+    width: 100%;
+    background-image: linear-gradient(to right, #8D9AFF, #7182FF);
+    text-align: center;
+    position: relative;
+}
+
+.title-txt {
+    color: #FFFCFF;
+    font-size: 18px;
+    line-height: 60px;
+    height: 60px;
+    width: auto;
+    letter-spacing: 1px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.date-panel {
+    border: 1px solid #FFFFFF;
+    height: 40px;
+    line-height: 40px;
+    color: #6B6B6B;
+    position: absolute;
+    right: 5%;
+    top: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.container {
+    width: 96%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.info-list {
+    width: 100%;
+    margin: 15px 0;
+}
+
+.info {
+    width: 30%;
+    height: 200px;
+    float: left;
+    color: #F3F5FE;
+}
+
+.info:nth-child(1) {
+    margin-right: 5%;
+    background: url("../../bus/img/icon/icon-order-num.png") no-repeat;
+    background-size: 100% 100%;
+}
+
+.info:nth-child(2) {
+    margin-right: 5%;
+    background: url("../../bus/img/icon/icon-charge-num.png") no-repeat;
+    background-size: 100% 100%;
+}
+
+.info:nth-child(3) {
+    background: url("../../bus/img/icon/icon-vehicle-num.png") no-repeat;
+    background-size: 100% 100%;
+}
+
+.clear {
+    clear: both;
+}
+
+.info .info-title {
+    height: 50px;
+    margin-top: 60px;
+    line-height: 50px;
+    font-size: 28px;
+    text-indent: 22%;
+}
+
+.info .info-value {
+    height: 40px;
+    line-height: 40px;
+    font-size: 26px;
+    text-indent: 65%;
+}
+
+.chart-list {
+    width: 100%;
+    height: auto;
+}
+
+.chart-list .chart {
+    width: 49%;
+    height: 400px;
+    margin: 15px 0;
+    box-sizing: border-box;
+    border: 1px solid #EBEBEB;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+}
+
+.chart-list .chart:nth-child(even) {
+    float: right;
+}
+
+.chart-list .chart:nth-child(odd) {
+    float: left;
+}
+
+.chart-title {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-indent: 3%;
+    color: #333333;
+    font-size: 16px;
+}
+
+.chart-container {
+    width: 100%;
+    height: 360px;
+    box-sizing: border-box;
+}
+
+.rate-container {
+    padding-top: 40px;
+}
+
+.rate {
+    background-color: #FFF2DD;
+    border-radius: 30px;
+    border: 1px solid #FFF2DD;
+    width: 80%;
+    height: 40px;
+    line-height: 60px;
+    margin: 15px auto;
+    text-indent: 20px;
+    position: relative;
+}
+
+.rate > span {
+    display: inline-block;
+}
+
+.rate .star {
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    margin: 6px 15px
+}
+
+.rate .type1 {
+    background: url("../../bus/img/icon/icon-star-type1.png");
+    background-size: 100% 100%;
+}
+
+.rate .type2 {
+    background: url("../../bus/img/icon/icon-star-type2.png");
+    background-size: 100% 100%;
+}
+
+.rate .text {
+    width: auto;
+    height: 26px;
+    line-height: 26px;
+    text-align: left;
+    font-size: 17px;
+    margin: 6px 25px;
+    color: #453c37;
+    position: absolute;
+}
