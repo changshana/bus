@@ -261,7 +261,14 @@ public class BusOrderController extends CommonController {
             Integer aaa001 = Integer.parseInt(cond.getStr("aaa001"));
             String mileage = cond.getStr("mileage");    //预估距离
             Integer aza209 = Integer.parseInt(cond.getStr("minute"));  //预估分钟
+
+            //个人用车还是公家用车
+//            Integer aza219 = Integer.parseInt(cond.getStr("aza219"));
+
             BusOrder busOrder = new BusOrder();
+
+            busOrder.setAza219(1);  //应取上面的aza219的值 待修改
+
             busOrder.setAza204(aza204 + " " + startLat + " " + startLng);
             busOrder.setAza205(aza205 + " " + endLat + " " + endLng);
             SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -288,6 +295,7 @@ public class BusOrderController extends CommonController {
             busOrder.setAaa996(0);  //开车状态（0为等待发车，1为正在行驶，2为行程结束）
             busOrder.setAca036(0);  //乘坐状态（0为未乘坐，1为正在乘坐，2为乘坐结束）
             busOrder.setAza206(0);  //订单状态（0为待审核，1为审核通过，2为不通过）
+            busOrder.setAza210(0);  //默认驾驶员未确认订单收到（0未收到，1收到）
             busOrderService.save(busOrder);
             result.put("msg", "预约成功！");
             result.put("flag", Boolean.TRUE);
@@ -379,6 +387,120 @@ public class BusOrderController extends CommonController {
         }
         renderJson(res);
     }
+
+    /*********************************统计分析***************************************/
+    /*个人用车  字段az219*/
+    public void personalCar(){
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+        List<Record> records = busOrderService.records(cond, "bus.personalCar");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "每天个人用车单数！");
+            res.put("data",records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /*部门用车*/
+    public void departmentCar(){
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> records = busOrderService.records(cond, "bus.departmentCar");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "每天部门用车单数！");
+            res.put("data",records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /*收费统计 暂时按天统计收入*/
+    public void chargeStatistical(){
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> records = busOrderService.records(cond, "bus.chargeStatistical");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "每天的收费总计！");
+            res.put("data",records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /*车辆行驶的里程数*/
+    public void milesByBus(){
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> records = busOrderService.records(cond, "bus.milesByBus");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "车辆行驶的里程数！");
+            res.put("data",records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /*司机驾驶里程数*/
+    public void milesByDriver(){
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> records = busOrderService.records(cond, "bus.milesByDriver");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "司机驾驶里程数！");
+            res.put("data",records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /*价格管理*/
+    public void priceManage(){
+
+    }
+
+
+    /*订单重现 返回最新的订单信息*/
+    public void orderReappear(){
+        Kv cond = getCond(getParaMap());    //需要参数下单人的姓名或者id   暂定为姓名
+//        BusOrder busOrder = busOrderService.findFirst();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

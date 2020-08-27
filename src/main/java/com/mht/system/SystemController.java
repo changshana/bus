@@ -122,6 +122,7 @@ public class SystemController extends CommonController {
         if (ValidateKit.isNullOrEmpty(sysUser.getStatus())) {
             sysUser.setStatus(0);
         }
+
         sysUser.setPassword(AESUtil.AESEncode(sysUser.getPassword()));
         if (ValidateKit.isNullOrEmpty(sysUser.getUserId())) {
             sysUser.setCreateTime(getNowDate());

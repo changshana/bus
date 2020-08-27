@@ -117,4 +117,14 @@ public class SysUserService extends CommonService {
             return userDao.find("select a.* FROM `sys_user` a,sys_user_role b where a.user_id=b.user_id and a.status=1 and b.role_id= "+roleId);
         }
     }
+
+    public SysUser checkName(String aca043) {
+        SysUser sysUser = userDao.findFirst("select * from sys_user where login_name = ?" , aca043);
+        return sysUser;
+    }
+
+    public int findByName(String aca043) {
+        SysUser sysUser = userDao.findFirst("select * from sys_user where login_name = ?" , aca043);
+        return sysUser.getUserId();
+    }
 }

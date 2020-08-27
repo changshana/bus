@@ -295,7 +295,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置预估费用（订单未结束前是预估费用，结束后是实际费用） 
+	*设置预估费用（单位为元） 
 	*/
 	public M setAza202(java.math.BigDecimal aza202) {
 		set("aza202", aza202);
@@ -303,14 +303,14 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取预估费用（订单未结束前是预估费用，结束后是实际费用） 
+	*获取预估费用（单位为元） 
 	*/
 	public java.math.BigDecimal getAza202() {
 		return get("aza202");
 	}
 
 	/**
-	*设置里程（单位为公里，可精确到小数点后两位）订单未结束前是预估里程，结束后是实际里程 
+	*设置里程（单位为公里，可精确到小数点后两位 
 	*/
 	public M setAza203(java.math.BigDecimal aza203) {
 		set("aza203", aza203);
@@ -318,7 +318,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取里程（单位为公里，可精确到小数点后两位）订单未结束前是预估里程，结束后是实际里程 
+	*获取里程（单位为公里，可精确到小数点后两位 
 	*/
 	public java.math.BigDecimal getAza203() {
 		return get("aza203");
@@ -370,7 +370,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置预估时长（单位为分钟，订单结束后改为真实时长） 
+	*设置预估时长（单位为分钟） 
 	*/
 	public M setAza209(java.lang.Integer aza209) {
 		set("aza209", aza209);
@@ -378,7 +378,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取预估时长（单位为分钟，订单结束后改为真实时长） 
+	*获取预估时长（单位为分钟） 
 	*/
 	public java.lang.Integer getAza209() {
 		return getInt("aza209");
@@ -517,6 +517,21 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	*/
 	public java.math.BigDecimal getAza218() {
 		return get("aza218");
+	}
+
+	/**
+	*设置0为个人用车，1为公车 
+	*/
+	public M setAza219(java.lang.Integer aza219) {
+		set("aza219", aza219);
+		return (M)this;
+	}
+
+	/**
+	*获取0为个人用车，1为公车 
+	*/
+	public java.lang.Integer getAza219() {
+		return getInt("aza219");
 	}
 
 }
