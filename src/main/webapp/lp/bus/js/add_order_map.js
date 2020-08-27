@@ -52,10 +52,8 @@ function registerEndService() {
     });
 }
 
-function displayRout() {
+function displayRout(from, to) {
     //WebServiceAPI请求URL（驾车路线规划默认会参考实时路况进行计算）
-    var from = startPoiList[startIndex].latLng;
-    var to = endPoiList[endIndex].latLng;
     var url = "https://apis.map.qq.com/ws/direction/v1/driving/"; //请求路径
     url += "?from=" + from.lat + "," + from.lng;  //起点坐标
     url += "&to=" + to.lat + "," + to.lng;  //终点坐标
@@ -151,6 +149,9 @@ function display_polyline(pl) {
 let marker_layer;
 
 function addMarker() {
+    if (startPoiList == null || endPoiList == null) {
+        return false;
+    }
     var from = startPoiList[startIndex].latLng;
     var to = endPoiList[endIndex].latLng;
     if (isEmpty(polylineLayer)) {
