@@ -1,6 +1,7 @@
 package com.mht.bus;
 
 import cn.dreampie.ValidateKit;
+import com.alibaba.fastjson.JSON;
 import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
@@ -342,6 +343,16 @@ public class BusOrderController extends CommonController {
 
     /*跳往网页端下单*/
     public void addOrder() {
+        render("addOrder.html");
+    }
+
+    //订单详情
+    public void busOrderDetail() {
+        String order_id = getPara("order_id");
+        if (!ValidateKit.isNullOrEmpty(order_id)) {
+            setAttr("order", JSON.toJSON(busOrderService.findById(Integer.parseInt(order_id))));
+        }
+        setAttr("type", getPara("type"));
         render("addOrder.html");
     }
 

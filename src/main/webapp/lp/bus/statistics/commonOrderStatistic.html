@@ -1,0 +1,198 @@
+#@busCommon()
+#define css()
+<link href="lp/bus/css/commonOrderStatistic.css" media="all" rel="stylesheet"/>
+#end
+#define main()
+<div class="main">
+    <div class="content">
+        <div class="title">
+            <p class="title-txt">领导视图</p>
+            <input class="date-panel" id="date-panel" readonly>
+        </div>
+        <div class="container">
+            <ul class="info-list">
+                <li class="info">
+                    <p class="info-title">订单总数</p>
+                    <p class="info-value">2673</p>
+                </li>
+                <li class="info">
+                    <p class="info-title">收费总金额</p>
+                    <p class="info-value">2673</p>
+                </li>
+                <li class="info">
+                    <p class="info-title">总车辆</p>
+                    <p class="info-value">80</p>
+                </li>
+                <li class="clear"></li>
+            </ul>
+            <div class="chart-list">
+                <div class="chart">
+                    <p class="chart-title">订单统计</p>
+                    <div class="chart-container" id="chart1"></div>
+                </div>
+                <div class="chart">
+                    <p class="chart-title">收费统计</p>
+                    <div class="chart-container" id="chart2"></div>
+                </div>
+                <div class="chart">
+                    <p class="chart-title">驾驶员信息</p>
+                    <div class="chart-container">
+                        <table class="layui-table"
+                               lay-data="{cellMinWidth:60,url:'bus/getBusAa02List', page:true,dataId:'person_id',limit:50, id:'driverList',height: '360px'}"
+                               lay-filter="busAa02List">
+                            <thead>
+                            <tr>
+                                <th lay-data="{field:'aaa002'}">姓名</th>
+                                <th lay-data="{field:'aaa003'}">性别</th>
+                                <th lay-data="{field:'aaa007'}">电话号码</th>
+                                <th lay-data="{field:'aaa004'}">身份证</th>
+                                <th lay-data="{field:'busNo'}">驾驶车辆</th>
+                                <th lay-data="{field:'A'}">驾驶证级别</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="chart">
+                    <p class="chart-title">评分详情</p>
+                    <div class="chart-container rate-container">
+                        <p class="rate">
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="text">五星：120/60%</span>
+                        </p>
+                        <p class="rate">
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type2"></span>
+                            <span class="text">四星：120/60%</span>
+                        </p>
+                        <p class="rate">
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="text">三星：120/60%</span>
+                        </p>
+                        <p class="rate">
+                            <span class="star type1"></span>
+                            <span class="star type1"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="text">二星：120/60%</span>
+                        </p>
+                        <p class="rate">
+                            <span class="star type1"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="star type2"></span>
+                            <span class="text">一星：120/60%</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['layer', 'rate', 'laydate', 'table'], function () {
+        let layer = layui.layer;
+        let rate = layui.rate;
+        let laydate = layui.laydate;
+        let table = layui.table;
+        table.on('row(driverList)', function (obj) {
+            let row = obj.data;
+
+        });
+        laydate.render({
+            elem: '#date-panel'
+            , range: '~'
+            , format: 'yyyy-MM'
+            , btns: ['confirm']
+            , theme: '#7F8EFF'
+            , done: function (value) {
+                let start = value.substr(0, value.indexOf(" ")).trim();
+                let end = value.substr(value.indexOf("~") + 1).trim();
+                initData(start, end);
+            }
+        });
+        initChart1();
+        initChart2();
+    });
+
+    function initData(start, end) {
+        //TODO 加载数据
+    }
+
+    function initChart1() {
+        let myChart = echarts.init(document.getElementById('chart1'));
+        let option = {
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06', '2020-07']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [220, 132, 101, 134, 190, 133, 132],
+                type: 'line',
+                areaStyle: {}
+            }],
+            color: '#8F9CFF'
+        };
+        myChart.setOption(option);
+    }
+
+    function initChart2() {
+        let myChart = echarts.init(document.getElementById('chart2'));
+        let option = {
+            color: ['#95A1FD'],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06', '2020-07'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '收费金额',
+                    type: 'bar',
+                    barWidth: '20%',
+                    data: [1025, 5202, 2010, 1334, 4390, 2330, 3220]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    }
+</script>
+#end

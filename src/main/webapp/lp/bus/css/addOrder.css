@@ -164,6 +164,11 @@ body, button, input, select, textarea {
     border: 1px solid #2F4056;
 }
 
+.back {
+    width: 90% !important;
+}
+
+
 .btn-confirm {
     width: 45%;
     position: absolute;
