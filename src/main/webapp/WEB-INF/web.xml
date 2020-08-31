@@ -19,4 +19,26 @@
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>
+
+    <!--用户获取accessToken-->
+    <servlet>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <servlet-class>com.mht.bus.util.wxToken.AccessTokenServlet</servlet-class>
+        <init-param>
+            <param-name>appid</param-name>
+            <param-value>APPID</param-value>
+        </init-param>
+        <init-param>
+            <param-name>appsecret</param-name>
+            <param-value>APPSECRET</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AccessTokenServlet</servlet-name>
+        <url-pattern>/accesstokenservlet</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>

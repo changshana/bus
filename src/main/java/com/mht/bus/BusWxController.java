@@ -9,6 +9,7 @@ import com.mht.bus.service.BusCa04Service;
 import com.mht.bus.service.BusOrderService;
 import com.mht.bus.service.BusTokenService;
 import com.mht.bus.util.WxUtil;
+import com.mht.bus.util.wxToken.TokenThread;
 import com.mht.common.CommonController;
 import com.mht.common.model.*;
 import com.mht.common.utils.AESUtil;
@@ -235,8 +236,16 @@ public class BusWxController extends CommonController {
             busOrder.setAca050(1);
 
             busOrderService.save(busOrder);
+
+            /*得到所有管理员的openid*/
+            List<Record> records = busOrderService.records(cond, "bus.getAllManageOpenid");
+            /*得到accessToken*/
+            String accessToken = getAccessToken();
             res.put("msg", "下单成功，订单正在审核，请等待！");
             res.put("flag", Boolean.TRUE);
+            res.put("openids",records);
+            res.put("accessToken",accessToken);
+            res.put("busOrder",busOrder);
         } catch (Exception e) {
             res.put("msg", "下单失败，请联系管理员！");
             res.put("flag", Boolean.FALSE);
@@ -756,5 +765,11 @@ public class BusWxController extends CommonController {
             e.printStackTrace();
         }
         renderJson(res);
+    }
+
+    /*获取accessToken*/
+    public static String getAccessToken(){
+        String jstoken = TokenThread.accessToken.getAccessToken();
+        return jstoken;
     }
 }

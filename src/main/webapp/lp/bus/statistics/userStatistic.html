@@ -5,6 +5,7 @@
 #end
 <div class="main">
     <div class="content">
+
         <div class="top">
             <div class="top-item">
                 <p class="title">概览</p>
@@ -24,7 +25,7 @@
                     </div>
                     <div class="info">
                         <p class="info-title">订单总数</p>
-                        <p class="info-value">10</p>
+                        <p class="info-value" id="amount"></p>
                     </div>
                 </div>
                 <div class="item mileage">
@@ -34,7 +35,7 @@
                     </div>
                     <div class="info">
                         <p class="info-title">里程数(km)</p>
-                        <p class="info-value">1000</p>
+                        <p class="info-value" id="mileage"></p>
                     </div>
                 </div>
                 <div class="item total-amount">
@@ -44,54 +45,19 @@
                     </div>
                     <div class="info">
                         <p class="info-title">总金额(￥)</p>
-                        <p class="info-value">2673.00</p>
+                        <p class="info-value" id="charge"></p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="middle">
             <ul class="left">
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
-                </li>
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
-                </li>
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
-                </li>
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
-                </li>
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
-                </li>
-                <li class="order">
-                    <p class="info icon-start">起点：四川大学江安校区</p>
-                    <p class="info icon-end">终点：四川大学望江校区</p>
-                    <p class="info icon-driver">驾驶员：王阳春</p>
-                    <p class="info icon-vehicle">车辆：川A 6876Q</p>
-                    <p class="info icon-money">总金额：156.00元</p>
+                <li class="order" order_id="">
+                    <p class="info icon-start" id="start"></p>
+                    <p class="info icon-end" id="ending"></p>
+                    <p class="info icon-driver" id="driver"></p>
+                    <p class="info icon-vehicle" id="bus"></p>
+                    <p class="info icon-money" id="price"></p>
                 </li>
                 <li class="clear"></li>
             </ul>
@@ -100,6 +66,61 @@
         </div>
     </div>
 </div>
+<script>
+
+
+
+    $(function(){
+        $.ajax({
+            type: "post",
+            //接口地址
+            url: "bus/statistics/personOverOrderDetail",
+            data: {},
+            dataType: "json",
+            //成功后返回的数据
+            success: function(res){
+                console.log(res)
+                var records = res.data
+                console.log(records)
+                var ss = records.length
+                if (ss > 0) {
+                    for (var i = 0; i < ss; i++) {
+                        var shuju = records[i]
+                        //成都东站 30.628834 104.141478
+                        var start = shuju.aza204
+                        start = start.replace(start.substring(start.length-19),"")
+                        var ending = shuju.aza205
+                        ending = ending.replace(ending.substring(ending.length-19),"")
+                        $('#start').text(start)
+                        $('#ending').text(ending)
+                        $('#driver').text(shuju.driverName)
+                        $('#bus').text(shuju.licensePlate)
+                        $('#price').text(shuju.aza217)
+                    }
+                }
+            }
+        });
+    });
+
+    $(function(){
+        $.ajax({
+            type: "post",
+            //接口地址
+            url: "bus/statistics/personOrderTotal",
+            data: {},
+            dataType: "json",
+            //成功后返回的数据
+            success: function(data){
+                if(data != null || data != undefined){
+                    // console.log(data)
+                    $('#amount').text(data.amount);
+                    $('#mileage').text(data.mileage);
+                    $('#charge').text(data.charge);
+                }
+            }
+        });
+    });
+</script>
 <script>
     layui.use(['layer', 'rate', 'laydate'], function () {
         let layer = layui.layer;
@@ -115,7 +136,7 @@
             layer.open({
                 type: 2
                 , title: '详情'
-                , content: 'busOrder/busOrderDetail?type=detail&order_id=' + 764
+                , content: 'busOrder/busOrderDetail?type=detail&order_id=' + $(this).attr("order_id")
                 , area: ['95%', '95%']
             });
         });
@@ -124,7 +145,7 @@
 
     function initChart() {
         let myChart = echarts.init(document.getElementById('chart'));
-        let option = {
+        myChart.setOption({
             color: ['#3398DB'],
             title: {
                 text: '近一年每月订单数'
@@ -145,7 +166,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: ['2019-08', '2019-09', '2019-10', '2019-11', '2019-12', '2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06', '2020-07'],
+                    data: [],
                     axisTick: {
                         alignWithLabel: true
                     }
@@ -153,7 +174,7 @@
             ],
             yAxis: [
                 {
-                    type: 'value'
+                    // type: 'value'
                 }
             ],
             series: [
@@ -161,11 +182,47 @@
                     name: '订单数',
                     type: 'bar',
                     barWidth: '30%',
-                    data: [10, 9, 12, 2, 15, 3, 6, 8, 10, 5, 8, 9]
+                    data: []
                 }
             ]
-        };
-        myChart.setOption(option);
+        });
+        var xZhou = [];
+        var yZhou = [];
+        $.ajax({
+            type : "post",
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "bus/statistics/personMonthlyOrder",    //请求发送到TestServlet处
+            data : {},
+            dataType : "json",        //返回数据形式为json
+            success : function(result) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (result) {
+                    var res = result.data;
+                    for(var i=0;i<res.length;i++){
+                        xZhou.push(res[i].driveDate);    //挨个取出类别并填入类别数组
+                    }
+                    for(var i=0;i<res.length;i++){
+                        yZhou.push(res[i].count);    //挨个取出销量并填入销量数组
+                    }
+                    myChart.setOption({        //加载数据图表
+                        xAxis: {
+                            data: xZhou
+                        },
+                        series: [{
+                            // 根据名字对应到相应的系列
+                            name: '订单数',
+                            data: yZhou
+                        }]
+                    });
+                }
+
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                alert("图表请求数据失败!");
+                myChart.hideLoading();
+            }
+        })
     }
 </script>
 #end

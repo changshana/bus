@@ -1492,13 +1492,46 @@ SELECT aaa002,SUM(aza218) miles FROM
 GROUP BY aaa020
 #end
 
+#sql("getOrderTotal")
+SELECT count(1) amount ,SUM(aza202) charge,SUM(aza203) mileage from bus_order
+where 1=1
+ #if(begin)
+ and aaa998 >= #para(begin)
+ #end
+ #if(end)
+ and aaa998 <= #para(end)
+ #end
+#end
 
+#sql("getOverOrderDetail")
+SELECT bo.*,ba01.aaa002 licensePlate,ba02.aaa002 driverName FROM (
+SELECT * from bus_order WHERE aca036 = 2 and aaa996 = 2
+ #if(begin)
+ and aaa998 >= #para(begin)
+ #end
+ #if(end)
+ and aaa998 <= #para(end)
+ #end
+) bo LEFT
+JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+#end
 
+#sql("getMonthlyOrder")
+SELECT DATE_FORMAT(aba032,'%Y-%m') driveDate,count(DATE_FORMAT(aba032,'%Y-%m')) count FROM bus_order
+where 1=1
+  #if(begin)
+ and aaa998 >= #para(begin)
+ #end
+ #if(end)
+ and aaa998 <= #para(end)
+ #end
+GROUP BY driveDate
+#end
 
-
-
-
-
+#sql("getAllManageOpenid")
+SELECT DISTINCT aca031 FROM bus_order WHERE aca044 = 4
+#end
 
 
 
