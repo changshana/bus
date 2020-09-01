@@ -1,5 +1,6 @@
 package com.mht.bus;
 
+import cn.dreampie.ValidateKit;
 import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Record;
@@ -8,16 +9,18 @@ import com.mht.bus.service.BusCa04Service;
 import com.mht.bus.service.BusOrderService;
 import com.mht.bus.service.BusTokenService;
 import com.mht.bus.util.WxUtil;
+import com.mht.bus.util.wxToken.TokenThread;
 import com.mht.common.CommonController;
-import com.mht.common.model.BusAa02;
-import com.mht.common.model.BusCa04;
-import com.mht.common.model.BusOrder;
-import com.mht.common.model.BusToken;
+import com.mht.common.model.*;
+import com.mht.common.utils.AESUtil;
+import com.mht.system.SystemController;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.mht.system.SystemController.sysUserService;
 
 /**
  * Package: com.mht.bus
@@ -114,10 +117,33 @@ public class BusWxController extends CommonController {
             ca04.setAca049(0);//违约次数为0
             ca04.setAaa998(new Date());//创建时间
             ca04.setAaa996(1);//状态  默认为1
+
+            //注册进sys_user
+//            SysUser sysUser = new SysUser();
+            SysUser sysUser = sysUserService.checkName(aca043);
+            if(sysUser == null){
+                sysUser.setLoginName(aca043);   //登录名
+                sysUser.setUserName(aca043);    //用户名
+                sysUser.setSiteId(392);          //教学点代码      默认值
+                sysUser.setPlatIds("0,9");       //系统平台编号    默认值
+                if (ValidateKit.isNullOrEmpty(sysUser.getStatus())) {
+                    sysUser.setStatus(0);
+                }
+                sysUser.setPassword(AESUtil.AESEncode("123456"));   //设置密码为默认值123456
+                if (ValidateKit.isNullOrEmpty(sysUser.getUserId())) {
+                    sysUser.setCreateTime(getNowDate());
+                    sysUserService.save(sysUser);
+                }
+            }else {
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "注册名重复！");
+                renderJson(res);
+                return;
+            }
+            int sysUserId = sysUserService.findByName(aca043);
+
+            ca04.setAza001(sysUserId);  //存储sys_user关联id
             busCa04Service.save(ca04);
-//        UserEventLog userEventLog = new UserEventLog(user.getId(), user.getUserName(), user.getRealName(), new Date());
-//        userEventLog.setContent("欢迎 " + user.getUserName() + " 注册来到系统");
-//        eventPublisher.publishEvent(new UserEvent(userEventLog));
             res.put("flag", Boolean.TRUE);
             res.put("msg", "注册成功！");
             res.put("openid", openid);
@@ -129,6 +155,10 @@ public class BusWxController extends CommonController {
         renderJson(res);
     }
 
+//    public  void aaa (){
+//        SysUser sysUser = sysUserService.checkName("admin_zsc");
+//        renderJson(sysUser);
+//    }
 
     /*未分页的驾驶员列表  返回给微信端 只返回该时段能用的驾驶员*/
     public void getBusAa02All() {
@@ -158,7 +188,14 @@ public class BusWxController extends CommonController {
             String personType = cond.getStr("userType");//人员类型
             String username = cond.getStr("username");//用户名
             String openid = cond.getStr("openId");//openid
+
+            //个人用车还是公家用车
+            Integer aza219 = Integer.parseInt(cond.getStr("aza219"));
+
             BusOrder busOrder = new BusOrder();
+
+            busOrder.setAza219(1);  //应取上面的aza219的值 待修改
+
             SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             busOrder.setAba032(slf.parse(dateTime));
             busOrder.setAza207(carTypeId);
@@ -177,8 +214,7 @@ public class BusWxController extends CommonController {
             }
             if ("驾驶员".equals(personType)) {
                 busOrder.setAca044(3);
-            }
-            if ("管理员".equals(personType)) {
+            }            if ("管理员".equals(personType)) {
                 busOrder.setAca044(4);
             }
             busOrder.setAca031(openid);
@@ -195,12 +231,21 @@ public class BusWxController extends CommonController {
             busOrder.setAaa996(0);  //开车状态（0为等待发车，1为正在行驶，2为行程结束）
             busOrder.setAca036(0);  //乘坐状态（0为未乘坐，1为正在乘坐，2为乘坐结束）
             busOrder.setAza206(0);  //订单状态（0为待审核，1为审核通过，2为不通过）
-            busOrder.setAza210(0);  //驾驶员未确认订单收到（0未收到，1收到）
+            busOrder.setAza210(0);  //默认驾驶员未确认订单收到（0未收到，1收到）
             busOrder.setAza209(Integer.parseInt(mileage) / 4);        //预估时长来自于计算  待定
             busOrder.setAca050(1);
+
             busOrderService.save(busOrder);
+
+            /*得到所有管理员的openid*/
+            List<Record> records = busOrderService.records(cond, "bus.getAllManageOpenid");
+            /*得到accessToken*/
+            String accessToken = getAccessToken();
             res.put("msg", "下单成功，订单正在审核，请等待！");
             res.put("flag", Boolean.TRUE);
+            res.put("openids",records);
+            res.put("accessToken",accessToken);
+            res.put("busOrder",busOrder);
         } catch (Exception e) {
             res.put("msg", "下单失败，请联系管理员！");
             res.put("flag", Boolean.FALSE);
@@ -720,5 +765,11 @@ public class BusWxController extends CommonController {
             e.printStackTrace();
         }
         renderJson(res);
+    }
+
+    /*获取accessToken*/
+    public static String getAccessToken(){
+        String jstoken = TokenThread.accessToken.getAccessToken();
+        return jstoken;
     }
 }

@@ -3,7 +3,9 @@
 #define css()
 <link href="lp/bus/css/addOrder.css" media="all" rel="stylesheet"/>
 #end
+<!--
 <form class="layui-form addForm content-box" method="post">
+-->
     <div class="left">
         <div class="info-out">
             <div class="info">
@@ -51,15 +53,16 @@
 
         <div class="btn-box">
             <a class="btn btn-confirm">确定</a>
-            <button class="btn btn-back">重置</button>
-        </div>
-        <div class="btn-box">
-            <a type="back" class="btn" onclick="returnPage()">返回</a>
+            #if(type!='detail')
+            <button class="btn btn-back">返回</button>
+            #end
         </div>
     </div>
     <div id="container-none"></div>
     <div id="container"></div>
+<!--
 </form>
+-->
 <script charset="utf-8"
         src="https://map.qq.com/api/js?v=2.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR&libraries=place,tools"></script>
 <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR"></script>
@@ -74,12 +77,15 @@
         let rate = layui.rate;
         let laydate = layui.laydate;
         init();
+        #if(order)
+        initWithOrder(#(order));
+        #end
         laydate.render({
             elem: "#time"
             , type: "datetime"
             , min: 0
             , format: 'yyyy-MM-dd HH:mm'
-            // , range: " ~ "
+            , value: '#(order==null?"":order.aba032)'
         });
         //渲染
         var ins1 = rate.render({
@@ -117,7 +123,6 @@
             history.go(-1);
         });
         $(".btn-confirm").bind('click', function () {
-            //TODO 提交申请
             var startLat = $("#start_pos").attr("lat");
             var startLng = $("#start_pos").attr("lng");
             var endLat = $("#end_pos").attr("lat");
@@ -166,7 +171,9 @@
             return false;
         }
         //显示线路 里程和大致时间
-        displayRout();
+        var from = startPoiList[startIndex].latLng;
+        var to = endPoiList[endIndex].latLng;
+        displayRout(startPoiList[startIndex].latLng, endPoiList[endIndex].latLng);
     });
 
     //设置被选择的车辆ID
@@ -222,6 +229,24 @@
                 layer.close(loadLayer);
             }
         });
+    }
+
+    //订单信息复现
+    function initWithOrder(order) {
+        var startArr = order.aza204.split(" ");
+        $("#start").val(startArr[0]).attr("readOnly", "true");
+        var from = {'lat': startArr[1], 'lng': startArr[2]};
+        var endArr = order.aza205.split(" ");
+        $("#endPoint").val(endArr[0]).attr("readOnly", "true");
+        var to = {'lat': endArr[1], 'lng': endArr[2]};
+        displayRout(from, to);
+        $(".btn_yes").remove();
+        setVehicleId(order.aza201);
+        setDriverId(order.aza208);
+        $("#aaa999").html(order.aaa999).attr("readOnly", "true");
+        $(".btn-choose").remove();
+        $(".btn-confirm").remove();
+        $(".btn-back").addClass('back');
     }
 
 </script>

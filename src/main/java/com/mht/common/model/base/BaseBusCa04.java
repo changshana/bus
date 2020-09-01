@@ -234,4 +234,19 @@ public abstract class BaseBusCa04<M extends BaseBusCa04<M>> extends Model<M> imp
 		return getStr("aaa999");
 	}
 
+	/**
+	*设置关联sys_user的id 
+	*/
+	public M setAza001(java.lang.Integer aza001) {
+		set("aza001", aza001);
+		return (M)this;
+	}
+
+	/**
+	*获取关联sys_user的id 
+	*/
+	public java.lang.Integer getAza001() {
+		return getInt("aza001");
+	}
+
 }
