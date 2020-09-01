@@ -8,20 +8,22 @@
         <div class="title">
             <p class="title-txt">领导视图</p>
             <input class="date-panel" id="date-panel" readonly>
+            <input id="startMonth" readonly type="hidden" value="#(startMonth)">
+            <input id="endMonth" readonly type="hidden" value="#(endMonth)">
         </div>
         <div class="container">
             <ul class="info-list">
                 <li class="info">
                     <p class="info-title">订单总数</p>
-                    <p class="info-value">2673</p>
+                    <p class="info-value" id="order_num">2673</p>
                 </li>
                 <li class="info">
                     <p class="info-title">收费总金额</p>
-                    <p class="info-value">2673</p>
+                    <p class="info-value" id="fee_num">2673</p>
                 </li>
                 <li class="info">
                     <p class="info-title">总车辆</p>
-                    <p class="info-value">80</p>
+                    <p class="info-value" id="bus_num">80</p>
                 </li>
                 <li class="clear"></li>
             </ul>
@@ -38,8 +40,8 @@
                     <p class="chart-title">驾驶员信息</p>
                     <div class="chart-container">
                         <table class="layui-table"
-                               lay-data="{cellMinWidth:60,url:'bus/getBusAa02List', page:true,dataId:'person_id',limit:50, id:'driverList',height: '360px'}"
-                               lay-filter="busAa02List">
+                               lay-data="{cellMinWidth:60,url:'bus/getBusAa02List', page:true,dataId:'aaa020',limit:50, id:'driverList',height: '360px'}"
+                               lay-filter="driverList">
                             <thead>
                             <tr>
                                 <th lay-data="{field:'aaa002'}">姓名</th>
@@ -54,9 +56,9 @@
                     </div>
                 </div>
                 <div class="chart">
-                    <p class="chart-title">评分详情</p>
+                    <p class="chart-title" id="eva-title">评分详情(全部驾驶员)</p>
                     <div class="chart-container rate-container">
-                        <p class="rate">
+                        <p class="rate" id="five">
                             <span class="star type1"></span>
                             <span class="star type1"></span>
                             <span class="star type1"></span>
@@ -64,7 +66,7 @@
                             <span class="star type1"></span>
                             <span class="text">五星：120/60%</span>
                         </p>
-                        <p class="rate">
+                        <p class="rate" id="four">
                             <span class="star type1"></span>
                             <span class="star type1"></span>
                             <span class="star type1"></span>
@@ -72,7 +74,7 @@
                             <span class="star type2"></span>
                             <span class="text">四星：120/60%</span>
                         </p>
-                        <p class="rate">
+                        <p class="rate" id="three">
                             <span class="star type1"></span>
                             <span class="star type1"></span>
                             <span class="star type1"></span>
@@ -80,7 +82,7 @@
                             <span class="star type2"></span>
                             <span class="text">三星：120/60%</span>
                         </p>
-                        <p class="rate">
+                        <p class="rate" id="two">
                             <span class="star type1"></span>
                             <span class="star type1"></span>
                             <span class="star type2"></span>
@@ -88,7 +90,7 @@
                             <span class="star type2"></span>
                             <span class="text">二星：120/60%</span>
                         </p>
-                        <p class="rate">
+                        <p class="rate" id="one">
                             <span class="star type1"></span>
                             <span class="star type2"></span>
                             <span class="star type2"></span>
@@ -110,41 +112,114 @@
         let table = layui.table;
         table.on('row(driverList)', function (obj) {
             let row = obj.data;
-
+            initEvaData($("#startMonth").val(), $("#endMonth").val(), row.aaa020, row.aaa002);
         });
+        initData('#(startMonth)', '#(endMonth)');
+        initEvaData('#(startMonth)', '#(endMonth)');
         laydate.render({
             elem: '#date-panel'
             , range: '~'
             , format: 'yyyy-MM'
             , btns: ['confirm']
             , theme: '#7F8EFF'
+            , type: 'month'
+            , value: '#(startMonth) ~ #(endMonth)'
             , done: function (value) {
                 let start = value.substr(0, value.indexOf(" ")).trim();
                 let end = value.substr(value.indexOf("~") + 1).trim();
+                $("#startMonth").val(start);
+                $("#endMonth").val(end);
                 initData(start, end);
+                initEvaData(start, end);
             }
         });
         initChart1();
         initChart2();
     });
 
-    function initData(start, end) {
-        //TODO 加载数据
+    function initEvaData(start, end, driverId, driverName) {
+        let loadIndex = layer.load(2, {shade: .5});
+        $.ajax({
+            url: 'bus/statistics/getEvaData'
+            , data: {'start': start, "end": end, 'driverId': driverId}
+            , type: 'post'
+            , success: function (res) {
+                layer.close(loadIndex);
+                if (res.flag) {
+                    layer.msg(res.msg, {icon: 6});
+                    let data = res.data;
+                    if (data.total == 0) {
+                        data.total = 1;
+                    }
+                    $("#one .text").html('一星：' + data.one + '(' + (Math.round(data.one * 100.0 / data.total)) + '%)');
+                    $("#two .text").html('一星：' + data.two + '(' + (Math.round(data.two * 100.0 / data.total)) + '%)');
+                    $("#three .text").html('一星：' + data.three + '(' + (Math.round(data.three * 100.0 / data.total)) + '%)');
+                    $("#four .text").html('一星：' + data.four + '(' + (Math.round(data.four * 100.0 / data.total)) + '%)');
+                    $("#five .text").html('一星：' + data.one + '(' + (Math.round(data.five * 100.0 / data.total)) + '%)');
+                    if (isNotEmpty(driverName)) {
+                        $("#eva-title").html('评分详情(' + driverName + ')');
+                    } else {
+                        $("#eva-title").html('评分详情(全部驾驶员)');
+                    }
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            }
+            , error: function (res) {
+                alertMsg("数据加载失败，请联系管理员！", "error");
+                layer.close(loadIndex);
+            }
+        });
     }
 
-    function initChart1() {
+    function initData(start, end) {
+        let loadIndex = layer.load(2, {shade: .5});
+        $.ajax({
+            url: 'bus/statistics/getCOSData'
+            , data: {'start': start, "end": end}
+            , type: 'post'
+            , success: function (res) {
+                layer.close(loadIndex);
+                if (res.flag) {
+                    layer.msg(res.msg, {icon: 6});
+                    let data = res.data;
+                    $("#order_num").html(data.totalData.totalOrder);
+                    $("#fee_num").html(data.totalData.totalFee);
+                    $("#bus_num").html(data.totalData.totalBus);
+                    let month = [];
+                    let order = [];
+                    let fee = [];
+                    $.each(data.monthData, function (i, val) {
+                        month.push(val.month);
+                        order.push(val.monthOrder);
+                        fee.push(val.monthFee);
+                    });
+                    initChart1(month, order);
+                    initChart2(month, fee);
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            }
+            , error: function (res) {
+                alertMsg("数据加载失败，请联系管理员！", "error");
+                layer.close(loadIndex);
+            }
+        });
+    }
+
+    function initChart1(xAxisData, seriesData) {
         let myChart = echarts.init(document.getElementById('chart1'));
         let option = {
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06', '2020-07']
+                data: xAxisData
             },
             yAxis: {
                 type: 'value'
             },
             series: [{
-                data: [220, 132, 101, 134, 190, 133, 132],
+                data: seriesData,
                 type: 'line',
                 areaStyle: {}
             }],
@@ -153,7 +228,7 @@
         myChart.setOption(option);
     }
 
-    function initChart2() {
+    function initChart2(xAxisData, seriesData) {
         let myChart = echarts.init(document.getElementById('chart2'));
         let option = {
             color: ['#95A1FD'],
@@ -172,7 +247,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: ['2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06', '2020-07'],
+                    data: xAxisData,
                     axisTick: {
                         alignWithLabel: true
                     }
@@ -188,7 +263,7 @@
                     name: '收费金额',
                     type: 'bar',
                     barWidth: '20%',
-                    data: [1025, 5202, 2010, 1334, 4390, 2330, 3220]
+                    data: seriesData
                 }
             ]
         };
