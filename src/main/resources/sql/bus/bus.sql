@@ -1467,3 +1467,37 @@ order by aca036
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
 JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
 #end
+
+#sql("getCOSTotalData")
+    select
+        count(*) as totalOrder
+        ,IFNULL(sum(aza217),0) as totalFee
+        ,(select count(*) from bus_aa01 where aaa996=1) as totalBus
+    from bus_order
+    where  DATE_FORMAT(aaa998,'%Y-%m') between #para(start) and #para(end)
+#end
+
+#sql("getCOSMonthData")
+    select
+    DATE_FORMAT(a.aaa998,'%Y-%m') as month
+    ,count(*) as monthOrder
+    ,IFNULL(sum(a.aza217),0) as monthFee
+    from bus_order a
+    #if(start && end)
+	where DATE_FORMAT(a.aaa998,'%Y-%m') BETWEEN #para(start) and #para(end)
+	#end
+    GROUP BY month
+    ORDER BY month asc
+#end
+
+#sql("getOrderEvaData")
+    select
+        (select count(*) from bus_order where aca032=5 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as five
+        ,(select count(*) from bus_order where aca032=4 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as four
+        ,(select count(*) from bus_order where aca032=3 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as three
+        ,(select count(*) from bus_order where aca032=2 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as two
+        ,(select count(*) from bus_order where aca032=1 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as one
+        ,(select count(*) from bus_order where aca032 between 0 and 5 #if(driverId) and aza208=#para(driverId) #end #if(start && end) and DATE_FORMAT(aaa998,'%Y-%m') BETWEEN #para(start) and #para(end) #end) as total
+    from bus_order a
+	limit 0,1
+#end
