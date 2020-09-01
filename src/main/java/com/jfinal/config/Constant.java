@@ -11,7 +11,7 @@ package com.jfinal.config;
  * Modified By:
  */
 public class Constant {
-    public static String IP_PORT = "http://127.0.0.1:8080/lp/";
+    public static String IP_PORT = "http://127.0.0.1:8080/lp_war_exploded/";
     public static String IMG_ADDRESS = "http://127.0.0.1:8080/lp/upload/";
     //第一个
 //    public static String appid = "wxd80120cbfe499af5";

@@ -15,11 +15,14 @@ import com.mht.common.model.*;
 import com.mht.common.utils.AESUtil;
 import com.mht.system.SystemController;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.mht.bus.util.wxToken.PropertiesUtils.getProperties;
 import static com.mht.system.SystemController.sysUserService;
 
 /**
@@ -240,7 +243,7 @@ public class BusWxController extends CommonController {
             /*得到所有管理员的openid*/
             List<Record> records = busOrderService.records(cond, "bus.getAllManageOpenid");
             /*得到accessToken*/
-            String accessToken = getAccessToken();
+            String accessToken = getProperties();
             res.put("msg", "下单成功，订单正在审核，请等待！");
             res.put("flag", Boolean.TRUE);
             res.put("openids",records);
@@ -767,9 +770,4 @@ public class BusWxController extends CommonController {
         renderJson(res);
     }
 
-    /*获取accessToken*/
-    public static String getAccessToken(){
-        String jstoken = TokenThread.accessToken.getAccessToken();
-        return jstoken;
-    }
 }
