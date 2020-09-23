@@ -1309,7 +1309,7 @@ and bo.aca036=#para(aca036)
 #if(search_param)
 and (bo.aaa997 like concat('%',#para(search_param),'%')
 #end
-ORDER BY bo.aba032
+ORDER BY bo.aba032 desc
 #end
 
 #sql("getBusBa02All")

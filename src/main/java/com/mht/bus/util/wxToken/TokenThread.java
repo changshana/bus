@@ -6,6 +6,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.json.HTTPTokener;
 import org.json.JSONObject;
 
+
 /**
  * Package: com.mht.bus.util.wxToken
  * Description： TODO
@@ -30,6 +31,7 @@ public class TokenThread implements Runnable {
                 accessToken = this.getAccessToken(); //调用getAccessToken获取access_token
                 if (null != accessToken) {
                     System.out.println(accessToken.getAccessToken());
+//                    updateProperties(accessToken.getAccessToken());
                     Thread.sleep(7000 * 1000); //获取到access_token 休眠7000秒
                 } else {
                     Thread.sleep(1000 * 3); //access_token为空 休眠3秒

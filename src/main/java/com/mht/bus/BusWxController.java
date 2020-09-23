@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.mht.bus.util.wxToken.PropertiesUtils.getProperties;
 import static com.mht.system.SystemController.sysUserService;
 
 /**
@@ -179,26 +178,24 @@ public class BusWxController extends CommonController {
         Map res = new HashMap();
         try {
             Kv cond = getCond(getParaMap());
-            String dateTime = cond.getStr("dateTime");  //时间
+            String dateTime = cond.getStr("dateTime");      //时间
             Integer carTypeId = Integer.parseInt(cond.getStr("carType"));   //车型id
-            Integer carId = Integer.parseInt(cond.getStr("car"));   //车辆id
-            Integer driverId = Integer.parseInt(cond.getStr("driver"));   //驾驶员id
-            String start = cond.getStr("start");  //出发地点+经纬度
-            String end = cond.getStr("end");  //终点+经纬度
-            String remarks = cond.getStr("remarks");  //备注
-//        String code = cond.getStr("code");  //code  用来获取用户信息
-            String mileage = cond.getStr("mileage");  //里程
-            String personType = cond.getStr("userType");//人员类型
-            String username = cond.getStr("username");//用户名
-            String openid = cond.getStr("openId");//openid
+            Integer carId = Integer.parseInt(cond.getStr("car"));           //车辆id
+            Integer driverId = Integer.parseInt(cond.getStr("driver"));     //驾驶员id
+            String start = cond.getStr("start");            //出发地点+经纬度
+            String end = cond.getStr("end");                //终点+经纬度
+            String remarks = cond.getStr("remarks");        //备注
+//        String code = cond.getStr("code");                     //code  用来获取用户信息
+            String mileage = cond.getStr("mileage");        //里程
+            String personType = cond.getStr("userType");    //人员类型
+            String username = cond.getStr("username");      //用户名
+            String openid = cond.getStr("openId");          //openid
 
             //个人用车还是公家用车
             Integer aza219 = Integer.parseInt(cond.getStr("aza219"));
 
             BusOrder busOrder = new BusOrder();
-
-            busOrder.setAza219(1);  //应取上面的aza219的值 待修改
-
+            busOrder.setAza219(aza219);  //应取上面的aza219的值 待修改
             SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             busOrder.setAba032(slf.parse(dateTime));
             busOrder.setAza207(carTypeId);
@@ -222,11 +219,11 @@ public class BusWxController extends CommonController {
             }
             busOrder.setAca031(openid);
             BusCa04 busCa04 = busCa04Service.getBusCa04ByAca042(openid);
-            busOrder.setAaa997(username);    //设置用户名字
+            busOrder.setAaa997(username);               //设置用户名字
             busOrder.setAba041(busCa04.getAca040());    //设置用户id
             busOrder.setAaa998(new Date());             //设置创建时间
-            busOrder.setAca035(0);  //支付状态（0未支付，1已支付）
-            busOrder.setOutTradeNo("");             /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
+            busOrder.setAca035(0);                      //支付状态（0未支付，1已支付）
+            busOrder.setOutTradeNo("");                 /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
 
             int estimatedCost = Integer.parseInt(mileage) / 4;    /*预估费用  这里的费用计算     待定*/
             BigDecimal bigDecimal = new BigDecimal(estimatedCost);
@@ -243,7 +240,8 @@ public class BusWxController extends CommonController {
             /*得到所有管理员的openid*/
             List<Record> records = busOrderService.records(cond, "bus.getAllManageOpenid");
             /*得到accessToken*/
-            String accessToken = getProperties();
+//            String accessToken = getProperties();
+            String accessToken = TokenThread.accessToken.getAccessToken();
             res.put("msg", "下单成功，订单正在审核，请等待！");
             res.put("flag", Boolean.TRUE);
             res.put("openids",records);
@@ -477,7 +475,8 @@ public class BusWxController extends CommonController {
     }
 
 
-    /*修改某订单驾驶员*/
+    /*修改某订单驾
+    驶员*/
     public void updateDriver() {
         Map res = new HashMap();
         try {
@@ -674,10 +673,16 @@ public class BusWxController extends CommonController {
     public void rideEnd() throws ParseException {
         Map res = new HashMap();
         try {
-
             Kv cond = getCond(getParaMap());
             String aca030 = cond.getStr("aca030");  //订单id
             BusOrder order = busOrderService.findById(Integer.parseInt(aca030));
+            //判断用户是否点了开始
+            if(order.getAza214() == null){
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "用户请先确认行程开始！");
+                renderJson(res);
+                return;
+            }
             BigDecimal aza212 = order.getAza212();  //起点里程
             String aza213 = cond.getStr("aza213");  //终点里程   需要用户输入
             Double actualMileage = Double.parseDouble(aza213) - aza212.doubleValue(); //实际里程
@@ -711,6 +716,13 @@ public class BusWxController extends CommonController {
             Kv cond = getCond(getParaMap());
             String aca030 = cond.getStr("aca030");  //订单id
             BusOrder order = busOrderService.findById(Integer.parseInt(aca030));
+            //判断驾驶员是否点了开始
+            if(order.getAza214() == null){
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "驾驶员请先确认行程开始！");
+                renderJson(res);
+                return;
+            }
             BigDecimal aza212 = order.getAza212();       //起点里程
             String aza213 = cond.getStr("aza213");  //终点里程   需要用户输入
             Double actualMileage = Double.parseDouble(aza213) - aza212.doubleValue(); //实际里程
@@ -743,7 +755,6 @@ public class BusWxController extends CommonController {
     public void evaluate() {
         Map res = new HashMap();
         try {
-
             Kv cond = getCond(getParaMap());
             //拿到订单id  添加评价
             Integer aca030 = Integer.parseInt(cond.getStr("aca030")); //订单id

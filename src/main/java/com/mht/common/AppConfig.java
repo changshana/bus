@@ -100,12 +100,6 @@ public class AppConfig extends JFinalConfig {
         DruidPlugin druidPlugin = createDruidPlugin();
         me.add(druidPlugin);
 
-        /**
-         * 配置定时器插件
-         */
-        Cron4jPlugin cp = new Cron4jPlugin("task.txt");//直接配置cron4j
-        me.add(cp);
-
         // 配置ActiveRecord插件
         ActiveRecordPlugin arp = new ActiveRecordPlugin(DbKit.MAIN_CONFIG_NAME, druidPlugin);
         arp.setShowSql(true);

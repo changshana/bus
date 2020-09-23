@@ -82,6 +82,7 @@ public class BusStatistics extends CommonController {
     }
 
 
+
     /****************************** 用户统计开始 ****************************************/
 
     /*个人订单总数  个人订单里程数   个人订单总金额*/
@@ -103,6 +104,7 @@ public class BusStatistics extends CommonController {
     }
 
 
+
     /*个人已完成订单详情*/
     public void personOverOrderDetail(){
         Map res = new HashMap();
@@ -119,6 +121,7 @@ public class BusStatistics extends CommonController {
         renderJson(res);
     }
 
+    
     /*柱状图  个人每月订单数*/
     public void personMonthlyOrder(){
         Map res = new HashMap();
@@ -136,7 +139,6 @@ public class BusStatistics extends CommonController {
     }
 
     /****************************** 用户统计结束 ****************************************/
-
     /****************************** 通用统计开始 ****************************************/
     /*订单总数  收费总金额  总车辆输*/
 
