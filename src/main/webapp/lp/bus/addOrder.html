@@ -3,9 +3,7 @@
 #define css()
 <link href="lp/bus/css/addOrder.css" media="all" rel="stylesheet"/>
 #end
-<!--
 <form class="layui-form addForm content-box" method="post">
--->
     <div class="left">
         <div class="info-out">
             <div class="info">
@@ -20,7 +18,15 @@
                 <div class="other-info">
                     <p>
                         <span>出发时间</span>
-                        <input class="input-panel" id="time"  readonly/>
+                        <input class="input-panel" id="time" readonly/>
+                    </p>
+                    <p>
+                        <span>乘坐人数</span>
+                        <input class="layui-input" id="aza220"  />
+                    </p>
+                    <p>
+                        <span>联系人电话</span>
+                        <input class="layui-input" id="aza221"  />
                     </p>
                     <p>
                         <span>备注信息</span>
@@ -40,29 +46,22 @@
                 </div>
                 <div class="choose-box" id="driver-box">
                     <a class="btn btn-choose" id="choose_driver">点击选择驾驶员</a>
-                    <!--<div class="vehicle-info-box" id="dirver">
-                        &lt;!&ndash;                <img src="lp/bus/img/vehicle.jpg" class="vehicle-img" />&ndash;&gt;
-                        <p>姓名：<span>驾驶员A</span></p>
-                        <p>联系电话：<span>12345678910</span></p>
-                        <p>服务星级：<span id="rate-panel">*****</span></p>
-                        <div class="gap"></div>
-                    </div>-->
                 </div>
             </div>
         </div>
 
         <div class="btn-box">
             <a class="btn btn-confirm">确定</a>
-            #if(type!='detail')
-            <button class="btn btn-back">返回</button>
-            #end
+            <!--#if(type!='detail')-->
+            <!--<button class="btn btn-back">重置</button>-->
+            <!--#end-->
+            <input class="layui-btn" type=”button” name=”Submit” onclick='javascript:history.back(-1);' value='返回'>
+
         </div>
     </div>
     <div id="container-none"></div>
     <div id="container"></div>
-<!--
 </form>
--->
 <script charset="utf-8"
         src="https://map.qq.com/api/js?v=2.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR&libraries=place,tools"></script>
 <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&key=ZHLBZ-IUWCK-GIUJ2-AQQHR-KLO7S-6NFCR"></script>
@@ -70,7 +69,7 @@
 <script>
     let startPoiList = null, startIndex = null;
     let endPoiList = null, endIndex = null;
-    let vehicle_id, driver_id;
+    let vehicle_id, driver_id
     let layer;
     layui.use(['layer', 'rate', 'laydate'], function () {
         layer = layui.layer;
@@ -136,10 +135,12 @@
                 url: 'busOrder/orderBus'
                 , type: 'post'
                 , data: {
-                    'aza204':$("#start").val(),    //起点
-                    'aza205':$("#endPoint").val(),    //终点
-                    'aba032':$("#time").val(),    //发车时间
-                    'aaa999':$("#aaa999").val(),    //备注
+                    'aza204':$("#start").val(),         //起点
+                    'aza205':$("#endPoint").val(),      //终点
+                    'aba032':$("#time").val(),          //发车时间
+                    'aza220':$("#aza220").val(),        //乘车人数
+                    'aza221':$("#aza221").val(),         //联系人电话
+                    'aaa999':$("#aaa999").val(),        //备注
                     'startLat': startLat,   //起点经度
                     'startLng': startLng,   //起点纬度
                     'endLat': endLat,   //终点经度

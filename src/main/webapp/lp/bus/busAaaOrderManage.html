@@ -5,8 +5,10 @@
         <div class="layui-col-md5">
             <div class="layui-btn-container">
                 <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
-                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加
-                </button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                <button class="layui-btn" data-type="passAll"><i class="layui-icon layui-icon-release"></i> 审核通过</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-close-fill"></i> 审核拒绝</button>
+                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-close"></i> 取消订单</button>
                 <!--<button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>-->
             </div>
         </div>
@@ -21,6 +23,20 @@
                             </select>
                         </div>
                     </div>-->
+                </div>
+            </form>
+        </div>
+        <div class="layui-col-md5 condition-box">
+            <form name="cond-form" class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">审核状态</label>
+                        <div class="layui-input-block">
+                            <select id="aza206" lay-filter="aza206">
+                                <option value="">--请选择--</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -81,12 +97,12 @@
     layui.use(['table', 'form'], function () {
         var table = layui.table, form = layui.form, $ = layui.$;
         $(function () {
-            fnGetCode('bus_aa99', 'aba060', null, null, 'aba060');
+            fnGetCode('bus_aa99', 'aza206', null, null, 'aza206');
         });
         table.on('tool(busOrderList)', function (obj) {
             var data = obj.data;
             if (obj.event === 'toDetail') {
-                windowNewLocation("busOrder/busOrderDetail?order_id=" + data.aca030);   //改为车辆管理详情
+                windowNewLocation("busOrder/busOrderDetail?order_id=" + data.aca030);   //改为车辆订单详情
             }
             if (obj.event === 'view') {
                 windowNewLocation("bus/addOrUpdateBusBa04?aba020=" + data.aba020 + "&type=view");
@@ -107,15 +123,16 @@
                 });
             }
         });
-        form.on('select(aba060)', function (obj) {
+        form.on('select(aza206)', function (obj) {
             reloadData();
         });
 
         function reloadData() {
             table.reload('busOrderList', {
                 where: {
-                    search_param: $('#search_param').val(),
-                    aba060: $("#aba060").val()
+                    // search_param: $('#search_param').val(),
+                    search_param:'',
+                    aza206: $("#aza206").val()
                 }
             });
         };
@@ -123,7 +140,7 @@
             refresh: function () {
                 //todo 清空条件
                 $('#search_param').val("");
-                $('#aba060').val("");
+                $('#aza206').val("");
                 form.render('select');
             },
             reloadData: function () {
@@ -131,6 +148,32 @@
             },
             add: function () {
                 windowNewLocation("busOrder/addOrder");
+            },
+            passAll:function () {
+                var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.alert('请先选中您要审核的数据行！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aca030 + ',';
+                    });
+
+                    layer.confirm("确定要审核通过所选信息？<br/><span style='color: orangered;'>注意：<br/>审核成功将通知相应司机！</span>", function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'busOrder/checkOrder',
+                            data: {"ids": ids},
+                            success: function (res) {
+                                layer.alert(res.msg)
+                                layer.close(index);
+                                reloadData();
+                            }, error: function () {
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
             },
             delete: function () {
                 var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;

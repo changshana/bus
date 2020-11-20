@@ -2,15 +2,16 @@
 #define main()
 <div class="content-box">
     <div class="layui-row">
-        <div class="layui-col-md5">
+        <div class="layui-col-md4">
             <div class="layui-btn-container">
                 <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
                 <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加
                 </button>
                 <button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
+                <a  class="layui-btn" href="busOrder/busOrder">切换图库模式</a>
             </div>
         </div>
-        <div class="layui-col-md5 condition-box">
+        <div class="layui-col-md4 condition-box">
             <form name="cond-form" class="layui-form" action="">
                 <div class="layui-form-item">
                     <div class="layui-inline">
@@ -24,7 +25,7 @@
                 </div>
             </form>
         </div>
-        <div class="layui-col-md2">
+        <div class="layui-col-md4">
             <div class="search-box">
                 <div class="layui-inline">
                     <input class="layui-input" name="search_param" id="search_param" autocomplete="off"
@@ -44,7 +45,7 @@
             <th lay-data="{field:'aaa005'}">车牌</th>
             <th lay-data="{field:'aba002'}">车型</th>
             <th lay-data="{field:'aaa007'}">座位数</th>
-            <th lay-data="{field:''}">驾驶证</th>
+            <th lay-data="{field:'aza002'}">驾驶证</th>
             <th lay-data="{field:'aba002',templet:'#seatInfo'}">车辆座次类型</th>
             <th lay-data="{field:'aaa009',templet:'#img'}">照片</th>
             <th lay-data="{field:'aaa999'}">备注</th>

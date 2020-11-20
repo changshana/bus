@@ -1045,6 +1045,7 @@ select
         #end
     #end
   #end
+  order by aca044
 #end
 #sql("getCa07List")
   select
@@ -1246,6 +1247,7 @@ and a.aaa008=#para(aaa008)
 #if(aaa001)
 and a.aaa001=#para(aaa001)
 #end
+order by a.aaa009
 #end
 
 #sql("getBookedBus")
@@ -1278,6 +1280,7 @@ bb02.aba020,
 ba01.aba060,
 ba01.aaa008,
 ba01.aaa009,
+ba01.aza002,
 (select aaa005 from bus_aa99 where aaa002='aaa995' and aaa004=ba01.aba060) as aba060_desc
 from bus_aa01 ba01
 left join bus_ba02 bb02 on bb02.aba020=ba01.aba020
@@ -1317,32 +1320,43 @@ select * from  bus_ba02
 #end
 
 #sql("getToBeReviewed")
-SELECT * FROM bus_order WHERE 1=1
+SELECT bo.*,ba01.aaa002 licensePlate FROM bus_order bo
+LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+WHERE 1=1
 #if(aca031)
 and aca031=#para(openid)
 #end
 and aza206 = 0
 and aca050 = 1
+order by  aba032 desc
 #end
 
 #sql("getOrdersInProgress")
-SELECT * FROM bus_order WHERE 1=1
+SELECT bo.*,bi.*,ba01.aaa002 licensePlate FROM bus_order bo
+LEFT JOIN bus_imgs bi ON bo.aca030 = bi.aaa001
+LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+WHERE 1=1
 #if(aca031)
 and aca031=#para(openid)
 #end
-and aaa996 = 1
-and aca036 = 1
-and aca050 = 1
+and bo.aca050 = 1
+order by  bo.aba032 desc
+
 #end
 
 #sql("getOverOrder")
-SELECT * FROM bus_order WHERE 1=1
+SELECT bo.*,ba01.aaa002 licensePlate FROM bus_order bo
+ LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+ WHERE 1=1
 #if(aca031)
 and aca031=#para(openid)
 #end
-and aaa996 = 2
-and aca036 = 2
-and aca050 = 1
+and bo.aaa996 = 2
+and bo.aca036 = 2
+and bo.aca050 = 1
+order by  aba032 desc
 #end
 
 #sql("getBusCa04ByOpenid")
@@ -1364,7 +1378,8 @@ and aaa996 = 0
 and aza206 = 1
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+order by  aba032 desc
 #end
 
 #sql("findOrderProcess")
@@ -1378,7 +1393,8 @@ and aaa996 = 1
 and aza206 = 1
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+order by  aba032 desc
 #end
 
 #sql("findOrderOver")
@@ -1392,13 +1408,18 @@ and aca036 = 2
 and aca050 = 1
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+order by  aba032 desc
 #end
 
 -- select * from (select * from bus_ca04 where aca042 = ?) bc left join bus_aa02 ba on bc.aca046 = ba.aaa004
 
 #sql("getToBeReviewedManage")
-select bo.*,ba.aaa002,ba.aaa007 from bus_order bo LEFT JOIN bus_aa02 ba ON bo.aza208=ba.aaa020 where bo.aza206 = 0 and bo.aca050 = 1
+select bo.*,ba.aaa002,ba.aaa007,ba01.aaa002 licensePlate,ba.aaa002 driverName from bus_order bo
+LEFT JOIN bus_aa02 ba ON bo.aza208=ba.aaa020
+LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+ where bo.aza206 = 0 and bo.aca050 = 1
+order by  aba032 desc
 #end
 
 
@@ -1410,20 +1431,22 @@ and aca050 = 1
 and aza211=#para(aza211)
 #end
 and aza206 > 0
+order by  aba032 desc
 #end
 
 #sql("getApprovedOrder")
-SELECT bo.*,ba01.aaa002 licensePlate,ba02.aaa002 driverName FROM (
+SELECT bo.*,ba01.aaa002 licensePlate,ba02.aaa002 driverName,imgs.* FROM (
 select * from bus_order where 1=1
 #if(aca031)
 and aca031=#para(aca031)
 #end
 and aza206 = 1
 and aca050 = 1
-order by aca036
-) bo LEFT
-JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+) bo
+LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_imgs imgs on bo.aca030 = imgs.aaa002
+order by  aba032 desc
 #end
 
 #sql("getDriverIdList")
@@ -1465,7 +1488,7 @@ and aca032 is not NULL
 order by aca036
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
 #end
 
 #sql("getCOSTotalData")
@@ -1548,7 +1571,7 @@ SELECT * from bus_order WHERE aca036 = 2 and aaa996 = 2
  #end
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
-JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
+LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
 #end
 
 #sql("getMonthlyOrder")
@@ -1567,13 +1590,27 @@ GROUP BY driveDate
 SELECT DISTINCT aca031 FROM bus_order WHERE aca044 = 4
 #end
 
+#sql("findCancelOrderList")
+select * from bus_order where aca050 = 2 order by aba032 desc
+#end
+
+#sql("getBusStateList")
+SELECT * FROM bus_aa01 WHERE aaa001
+not in
+(SELECT aza201 FROM bus_order WHERE 1 = 1
+ #if(date)
+and aba032 >= #para(date)
+#end
+ #if(dateEnd)
+and aba032 < #para(dateEnd)
+#end
+)
+#end
 
 
-
-
-
-
-
+#sql("getManageList")
+select * from bus_ca04 where aca044 = "管理员"
+#end
 
 
 

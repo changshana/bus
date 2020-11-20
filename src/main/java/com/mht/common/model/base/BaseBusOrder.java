@@ -70,7 +70,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置车辆班次ID(弃用)  改为订单是否被取消（0取消，1使用） 
+	*设置改为订单是否被取消（0取消，1使用），2为管理员同意订单后未发车，取消的订单，3为管理员审核通过的取消的订单 
 	*/
 	public M setAca050(java.lang.Integer aca050) {
 		set("aca050", aca050);
@@ -78,7 +78,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取车辆班次ID(弃用)  改为订单是否被取消（0取消，1使用） 
+	*获取改为订单是否被取消（0取消，1使用），2为管理员同意订单后未发车，取消的订单，3为管理员审核通过的取消的订单 
 	*/
 	public java.lang.Integer getAca050() {
 		return getInt("aca050");
@@ -97,6 +97,21 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	*/
 	public java.util.Date getAba032() {
 		return get("aba032");
+	}
+
+	/**
+	*设置预计归还时间 
+	*/
+	public M setAba033(java.util.Date aba033) {
+		set("aba033", aba033);
+		return (M)this;
+	}
+
+	/**
+	*获取预计归还时间 
+	*/
+	public java.util.Date getAba033() {
+		return get("aba033");
 	}
 
 	/**
@@ -295,7 +310,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置预估费用（单位为元） 
+	*设置预估费用（订单未结束前是预估费用，结束后是实际费用） 
 	*/
 	public M setAza202(java.math.BigDecimal aza202) {
 		set("aza202", aza202);
@@ -303,14 +318,14 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取预估费用（单位为元） 
+	*获取预估费用（订单未结束前是预估费用，结束后是实际费用） 
 	*/
 	public java.math.BigDecimal getAza202() {
 		return get("aza202");
 	}
 
 	/**
-	*设置里程（单位为公里，可精确到小数点后两位 
+	*设置里程（单位为公里，可精确到小数点后两位）订单未结束前是预估里程，结束后是实际里程 
 	*/
 	public M setAza203(java.math.BigDecimal aza203) {
 		set("aza203", aza203);
@@ -318,7 +333,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取里程（单位为公里，可精确到小数点后两位 
+	*获取里程（单位为公里，可精确到小数点后两位）订单未结束前是预估里程，结束后是实际里程 
 	*/
 	public java.math.BigDecimal getAza203() {
 		return get("aza203");
@@ -370,7 +385,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置预估时长（单位为分钟） 
+	*设置预估时长（单位为分钟，订单结束后改为真实时长） 
 	*/
 	public M setAza209(java.lang.Integer aza209) {
 		set("aza209", aza209);
@@ -378,7 +393,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取预估时长（单位为分钟） 
+	*获取预估时长（单位为分钟，订单结束后改为真实时长） 
 	*/
 	public java.lang.Integer getAza209() {
 		return getInt("aza209");
@@ -532,6 +547,81 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	*/
 	public java.lang.Integer getAza219() {
 		return getInt("aza219");
+	}
+
+	/**
+	*设置预约乘车人数 
+	*/
+	public M setAza220(java.lang.String aza220) {
+		set("aza220", aza220);
+		return (M)this;
+	}
+
+	/**
+	*获取预约乘车人数 
+	*/
+	public java.lang.String getAza220() {
+		return getStr("aza220");
+	}
+
+	/**
+	*设置预约联系人电话 
+	*/
+	public M setAza221(java.lang.String aza221) {
+		set("aza221", aza221);
+		return (M)this;
+	}
+
+	/**
+	*获取预约联系人电话 
+	*/
+	public java.lang.String getAza221() {
+		return getStr("aza221");
+	}
+
+	/**
+	*设置是否为紧急用车（0为紧急用车，1为正常用车） 
+	*/
+	public M setAza222(java.lang.Integer aza222) {
+		set("aza222", aza222);
+		return (M)this;
+	}
+
+	/**
+	*获取是否为紧急用车（0为紧急用车，1为正常用车） 
+	*/
+	public java.lang.Integer getAza222() {
+		return getInt("aza222");
+	}
+
+	/**
+	*设置审核通过未发车的订单的取消理由 
+	*/
+	public M setAza223(java.lang.String aza223) {
+		set("aza223", aza223);
+		return (M)this;
+	}
+
+	/**
+	*获取审核通过未发车的订单的取消理由 
+	*/
+	public java.lang.String getAza223() {
+		return getStr("aza223");
+	}
+
+	/**
+	*设置单双程  1为单程，2为往返 
+	*/
+	public M setAza224(java.lang.Integer aza224) {
+		set("aza224", aza224);
+		return (M)this;
+	}
+
+	/**
+	*获取单双程  1为单程，2为往返 
+	*/
+	public java.lang.Integer getAza224() {
+		return getInt("aza224");
 	}
 
 }

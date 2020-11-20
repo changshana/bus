@@ -1,0 +1,98 @@
+#@common()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+#end
+#define main()
+<fieldset class="layui-elem-field layui-field-title">
+    <legend>编辑信息</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="busOrder/addOrUpdateBusCa04" method="post">
+    <input type="hidden" name="busCa04.aca040" value="#(busCa04.aca040)">
+    <div class="layui-form-item">
+        <label class="layui-form-label">工号/学号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca041"  value="#(busCa04.aca041)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca042"  value="#(busCa04.aca042)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca043"  value="#(busCa04.aca043)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">人员类型</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca044"  value="#(busCa04.aca044)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件类型</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca045"  value="#(busCa04.aca045)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca046"  value="#(busCa04.aca046)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">电话号码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca047"  value="#(busCa04.aca047)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单位名称/所在班号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca048"  value="#(busCa04.aca048)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">违约次数</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aca049"  value="#(busCa04.aca049)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">信息更新时间</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aaa995"  value="#(busCa04.aaa995)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input type="text" name="busCa04.aaa996"  value="#(busCa04.aaa996)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <input type="hidden" name="busCa04.aaa997" value="#(busCa04.aaa997)">
+    <input type="hidden" name="busCa04.aaa998" value="#(busCa04.aaa998)">
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+			<textarea name="busCa04.aaa999"  class="layui-textarea">#(busCa04.aaa999)</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <a type="back" class="layui-btn layui-btn-primary" onclick="returnPage()">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laydate','upload'], function(){
+    });
+</script>
+#end

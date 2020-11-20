@@ -39,10 +39,12 @@ public class _MappingKit {
 		arp.addMapping("bus_ca07", "aca070", BusCa07.class);
 		arp.addMapping("bus_ca08", "aca080", BusCa08.class);
 		arp.addMapping("bus_direction", "direction_id", BusDirection.class);
+		arp.addMapping("bus_imgs", "aaa001", BusImgs.class);
 		arp.addMapping("bus_info", "info_id", BusInfo.class);
 		arp.addMapping("bus_order", "aca030", BusOrder.class);
 		arp.addMapping("bus_pass", "pass_id", BusPass.class);
 		arp.addMapping("bus_payinfo", "payInfo_id", BusPayinfo.class);
+		arp.addMapping("bus_price", "aaa001", BusPrice.class);
 		arp.addMapping("bus_token", "id", BusToken.class);
 		arp.addMapping("bus_type", "type_id", BusType.class);
 		arp.addMapping("car_direction", "direction_id", CarDirection.class);

@@ -478,7 +478,7 @@ public class  CommonController extends Controller {
      * 获取openId
      * 方法体说明：向远程接口发起请求，返回字节流类型结果
      */
-    public  String  getOpenId(String js_code,String appid,String secret){
+    public String  getOpenId(String js_code, String appid, String secret){
         InputStream is = null;
         String str=null;
         String openid=null;

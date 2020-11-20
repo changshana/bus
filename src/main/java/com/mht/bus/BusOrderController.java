@@ -14,7 +14,9 @@ import com.mht.common.CommonController;
 import com.mht.common.model.BusAa01;
 import com.mht.common.model.BusCa04;
 import com.mht.common.model.BusOrder;
+import com.mht.common.model.BusPrice;
 import com.mht.common.utils.Format;
+import org.apache.poi.hssf.record.ArrayRecord;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -73,6 +75,42 @@ public class BusOrderController extends CommonController {
             e.printStackTrace();
         }
     }
+
+    public void getBusCa04List1() {
+        Kv cond = getCond(getParaMap());
+        renderJson(Format.layuiPage(busCa04Service.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), cond)));
+    }
+    /*用户管理*/
+
+    public void addOrUpdateBusCa04() {
+        String aca040 = getPara("aca040", "");
+        BusCa04 busCa04 = getModel(BusCa04.class, "busCa04");
+        if (!aca040.isEmpty()) {
+            busCa04 = busCa04Service.findById(aca040);
+        }
+        setAttr("busCa04", busCa04);
+        render("busCa04Detail.html");
+    }
+
+    public void saveBusCa04() {
+        BusCa04 busCa04 = getModel(BusCa04.class, "busCa04");
+        if (busCa04.getAca040() == null) {
+            busCa04Service.save(busCa04);
+        } else {
+            busCa04Service.update(busCa04);
+        }
+        redirect("/index");
+    }
+
+    public void deleteBusCa04() {
+        String ids = getPara("ids");
+        String[] arr = ids.split(",");
+        for (String id : arr) {
+            busCa04Service.delete(id);
+        }
+        renderJson();
+    }
+
 
     /*车辆表   保存信息到BusAa01 和 BusImg*/
     public void saveBusAa01() {
@@ -245,6 +283,23 @@ public class BusOrderController extends CommonController {
         }
     }
 
+    private static Integer getPrice(Integer m){
+        BusPrice busPrice = busPriceService.findFirst();
+        Integer aaa002 = busPrice.getAaa002();
+        Integer aaa003 = busPrice.getAaa003();
+        Integer aaa004 = busPrice.getAaa004();
+        Integer aaa005 = busPrice.getAaa005();
+        Integer aaa006 = busPrice.getAaa006();
+        if(m <= aaa002){
+            return aaa003;
+        }
+        else if(m > aaa002 && m <= aaa005){
+            return (m - aaa002) * aaa004 + aaa003;
+        }else {
+            return (aaa005 - aaa002)*aaa004 + aaa003 + (m- aaa005)*aaa006;
+        }
+    }
+
     /*点击车辆进入预约 预约车辆 */
     public void orderBus() throws ParseException {
         Map<String, Object> result = new HashMap<>();
@@ -254,11 +309,13 @@ public class BusOrderController extends CommonController {
             String aza205 = cond.getStr("aza205");
             String aba032 = cond.getStr("aba032");
             String aaa999 = cond.getStr("aaa999");
+            String aza220 = cond.getStr("aza220");  //乘车人数
+            String aza221 = cond.getStr("aza221");  //联系人电话
             String startLat = cond.getStr("startLat");
             String startLng = cond.getStr("startLng");
             String endLat = cond.getStr("endLat");
             String endLng = cond.getStr("endLng");
-            Integer aaa020 = Integer.parseInt(cond.getStr("aaa020"));
+//            Integer aaa020 = Integer.parseInt(cond.getStr("aaa020"));  驾驶员id
             Integer aaa001 = Integer.parseInt(cond.getStr("aaa001"));
             String mileage = cond.getStr("mileage");    //预估距离
             Integer aza209 = Integer.parseInt(cond.getStr("minute"));  //预估分钟
@@ -275,28 +332,34 @@ public class BusOrderController extends CommonController {
             SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             busOrder.setAba032(slf.parse(aba032.toString()));
             busOrder.setAaa999(aaa999);
-            busOrder.setAza208(aaa020);
+//            busOrder.setAza208(aaa020);
             busOrder.setAza201(aaa001);
-            String openid = "oLao_5Wv2ob3SCQGn1o8I6DSvdCU"; //暂时默认为zhz的订单
+            String openid = "oDtWb5ZFgJAoGesVmjVoNObZVIXE"; //暂时默认为zhz的订单
             busOrder.setAca031(openid);
             BusCa04 busCa04 = busCa04Service.getBusCa04ByAca042(openid);
             busOrder.setAaa997(busCa04.getAca043());    //设置用户名字
             busOrder.setAba041(busCa04.getAca040());    //设置用户id
             busOrder.setAaa998(new Date());             //设置创建时间
-            busOrder.setAca035(0);  //支付状态（0未支付，1已支付）
-            busOrder.setOutTradeNo("");             /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
+            busOrder.setAca035(0);                      //支付状态（0未支付，1已支付）
+            busOrder.setOutTradeNo("");                 /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
             busOrder.setAza209(aza209);
-            busOrder.setAza203(new BigDecimal(mileage));    //设置预估里程
-            busOrder.setAca044(1);  //设置人员类型，需要更改
-            busOrder.setAca050(1);  //订单是否被取消的状态
-            //int estimatedCost = Integer.parseInt(mileage) / 4;    /*预估费用  这里的费用计算     待定*/
-            BigDecimal bigDecimal = new BigDecimal(mileage);
+            busOrder.setAza203(new BigDecimal(mileage));            //设置预估里程
+            busOrder.setAca044(1);                                  //设置人员类型，需要更改
+            busOrder.setAca050(1);                                  //订单是否被取消的状态
+
+            int anInt = Integer.parseInt(mileage);
+            Integer price = getPrice(anInt);/*预估费用  这里的费用计算     待定*/
+            BigDecimal bigDecimal = new BigDecimal(price);
             busOrder.setAza202(bigDecimal);
+
+
 
             busOrder.setAaa996(0);  //开车状态（0为等待发车，1为正在行驶，2为行程结束）
             busOrder.setAca036(0);  //乘坐状态（0为未乘坐，1为正在乘坐，2为乘坐结束）
             busOrder.setAza206(0);  //订单状态（0为待审核，1为审核通过，2为不通过）
             busOrder.setAza210(0);  //默认驾驶员未确认订单收到（0未收到，1收到）
+            busOrder.setAza220(aza220);
+            busOrder.setAza221(aza221);
             busOrderService.save(busOrder);
             result.put("msg", "预约成功！");
             result.put("flag", Boolean.TRUE);
@@ -350,11 +413,13 @@ public class BusOrderController extends CommonController {
     public void busOrderDetail() {
         String order_id = getPara("order_id");
         if (!ValidateKit.isNullOrEmpty(order_id)) {
+            BusOrder busOrder = busOrderService.findById(Integer.parseInt(order_id));
             setAttr("order", JSON.toJSON(busOrderService.findById(Integer.parseInt(order_id))));
         }
         setAttr("type", getPara("type"));
         render("addOrder.html");
     }
+
 
     /**
      * 选择车辆
@@ -401,14 +466,14 @@ public class BusOrderController extends CommonController {
 
     /*********************************统计分析***************************************/
     /*个人用车  字段az219*/
-    public void personalCar(){
+    public void personalCar() {
         Kv cond = getCond(getParaMap());
         Map res = new HashMap();
         try {
-        List<Record> records = busOrderService.records(cond, "bus.personalCar");
+            List<Record> records = busOrderService.records(cond, "bus.personalCar");
             res.put("flag", Boolean.TRUE);
             res.put("msg", "每天个人用车单数！");
-            res.put("data",records);
+            res.put("data", records);
         } catch (Exception e) {
             res.put("flag", Boolean.FALSE);
             res.put("msg", "查询异常！");
@@ -418,14 +483,14 @@ public class BusOrderController extends CommonController {
     }
 
     /*部门用车*/
-    public void departmentCar(){
+    public void departmentCar() {
         Kv cond = getCond(getParaMap());
         Map res = new HashMap();
         try {
             List<Record> records = busOrderService.records(cond, "bus.departmentCar");
             res.put("flag", Boolean.TRUE);
             res.put("msg", "每天部门用车单数！");
-            res.put("data",records);
+            res.put("data", records);
         } catch (Exception e) {
             res.put("flag", Boolean.FALSE);
             res.put("msg", "查询异常！");
@@ -435,14 +500,14 @@ public class BusOrderController extends CommonController {
     }
 
     /*收费统计 暂时按天统计收入*/
-    public void chargeStatistical(){
+    public void chargeStatistical() {
         Kv cond = getCond(getParaMap());
         Map res = new HashMap();
         try {
             List<Record> records = busOrderService.records(cond, "bus.chargeStatistical");
             res.put("flag", Boolean.TRUE);
             res.put("msg", "每天的收费总计！");
-            res.put("data",records);
+            res.put("data", records);
         } catch (Exception e) {
             res.put("flag", Boolean.FALSE);
             res.put("msg", "查询异常！");
@@ -451,15 +516,27 @@ public class BusOrderController extends CommonController {
         renderJson(res);
     }
 
+    public void milesByBus1() {
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> R = new ArrayList<>();
+            ArrayList<Object> O = new ArrayList<>();
+            HashMap<Object, Object> M = new HashMap<>();
+        } catch (Exception e) {
+
+        }
+    }
+
     /*车辆行驶的里程数*/
-    public void milesByBus(){
+    public void milesByBus() {
         Kv cond = getCond(getParaMap());
         Map res = new HashMap();
         try {
             List<Record> records = busOrderService.records(cond, "bus.milesByBus");
             res.put("flag", Boolean.TRUE);
             res.put("msg", "车辆行驶的里程数！");
-            res.put("data",records);
+            res.put("data", records);
         } catch (Exception e) {
             res.put("flag", Boolean.FALSE);
             res.put("msg", "查询异常！");
@@ -469,14 +546,14 @@ public class BusOrderController extends CommonController {
     }
 
     /*司机驾驶里程数*/
-    public void milesByDriver(){
+    public void milesByDriver() {
         Kv cond = getCond(getParaMap());
         Map res = new HashMap();
         try {
             List<Record> records = busOrderService.records(cond, "bus.milesByDriver");
             res.put("flag", Boolean.TRUE);
             res.put("msg", "司机驾驶里程数！");
-            res.put("data",records);
+            res.put("data", records);
         } catch (Exception e) {
             res.put("flag", Boolean.FALSE);
             res.put("msg", "查询异常！");
@@ -486,30 +563,97 @@ public class BusOrderController extends CommonController {
     }
 
     /*价格管理*/
-    public void priceManage(){
+    public void priceManage() {
 
     }
 
 
     /*订单重现 返回最新的订单信息*/
-    public void orderReappear(){
+    public void orderReappear() {
         Kv cond = getCond(getParaMap());    //需要参数下单人的姓名或者id   暂定为姓名
 //        BusOrder busOrder = busOrderService.findFirst();
     }
 
+//    public void addOrUpdateBusCa04() {
+//        String aca040 = getPara("aca040", "");
+//        BusCa04 busCa04 = getModel(BusCa04.class, "busCa04");
+//        if (!aca040.isEmpty()) {
+//            busCa04 = busCa04Service.findById(aca040);
+//        }
+//        setAttr("busCa04", busCa04);
+//        render("busCa04Detail.html");
+//    }
 
 
+    /*********************计费参数设置 开始********************************/
+    public static final BusPriceService busPriceService = BusPriceService.me;
 
+    /*车辆计算规则*/
+    public void busPrice() {
+        BusPrice busPrice = BusPrice.dao.findFirst("select * from bus_price");
+        if (busPrice == null) {
+            busPrice = new BusPrice();
+        }
+        setAttr("busPrice", busPrice);
+        render("busParamDetail.html");
+    }
 
+    public void savePrice() {
+        BusPrice busPrice = getModel(BusPrice.class, "busPrice");
+        if (busPrice.getAaa001() == null) {
+            busPriceService.save(busPrice);
+        } else {
+            busPriceService.update(busPrice);
+        }
+        redirect("/busOrder/busPrice");
+    }
 
+    /*********************校车参数设置 结束********************************/
 
+    //查询所有管理员
+    public void getManageList() {
+        Kv cond = getCond(getParaMap());
+        Map res = new HashMap();
+        try {
+            List<Record> records = busCa04Service.records(cond, "bus.getManageList");
+            for (Record record : records) {
+                Integer aaa996 = record.getInt("aaa996");
+                if (aaa996 == 1) {
+                    record.set("aaa996_dsc", "有效");
+                } else {
+                    record.set("aaa996_dsc", "无效");
+                }
+            }
+            res.put("data", records);
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "查询异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
 
-
-
-
-
-
-
+    /*****************************管理员审核订单**************************************/
+    /*管理员审核订单 */
+    public void checkOrder() {
+        Map res = new HashMap();
+        try {
+            String ids = getPara("ids");
+            String[] arr = ids.split(",");
+            for (String id : arr) {
+                BusOrder busOrder = busOrderService.findById(Integer.parseInt(id));
+                busOrder.setAza206(1);
+                busOrderService.update(busOrder);
+            }
+            res.put("msg", "审核通过!");
+            res.put("flag", Boolean.TRUE);
+            //查询管理员电话
+//                NewBusStaticUtil.sendMessage("15181716179","测试");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
 
 
 }

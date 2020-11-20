@@ -1,0 +1,80 @@
+#@busCommon()
+#define css()
+<link rel="stylesheet" href="lp/static/css/system/sysSetting.css">
+<style>
+    .addForm .layui-form-label {
+        width: 170px;
+    }
+    .addForm .layui-input-block {
+        margin-left: 220px;
+    }
+    .layui-form-item {
+        margin-bottom: 15px !important;
+    }
+    .layui-elem-quote {
+        clear:both;
+    }
+    .layui-form-item .tip{
+        color: red;
+        font-size: 16px;
+        margin-left: 220px;
+    }
+    .layui-elem-quote .tip{
+        color: red;
+        font-size: 16px;
+    }
+</style>
+#end
+#define main()
+<fieldset style="margin-top:50px;"  class="layui-elem-field layui-field-title">
+    <legend>计费参数设置</legend>
+</fieldset>
+<form class="layui-form addForm content-box" action="busOrder/savePrice" method="post">
+    <input type="hidden" name="busPrice.aaa001" value="#(busPrice.aaa001)">
+    <blockquote class="layui-elem-quote">计费设置<span class="tip">（费用计算规则）</span></blockquote>
+    <div class="layui-form-item layui-col-md7">
+        <label class="layui-form-label">起步里程（单位：公里）</label>
+        <div class="layui-input-block">
+            <input type="text" required name="busPrice.aaa002"  value="#(busPrice.aaa002)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md7">
+        <label class="layui-form-label">起步价（单位：元）</label>
+        <div class="layui-input-block">
+            <input type="text" required name="busPrice.aaa003"  value="#(busPrice.aaa003)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md7">
+        <label class="layui-form-label">每公里价格（单位：元，起步价后累加）</label>
+        <div class="layui-input-block">
+            <input type="text" required name="busPrice.aaa004"  value="#(busPrice.aaa004)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md7">
+        <label class="layui-form-label">里程限制（单位：公里，超过此里程加价）</label>
+        <div class="layui-input-block">
+            <input type="text" required name="busPrice.aaa005"  value="#(busPrice.aaa005)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-col-md7">
+        <label class="layui-form-label">里程限制后价格（单位：元，按每公里计价）</label>
+        <div class="layui-input-block">
+            <input type="text" required name="busPrice.aaa006"  value="#(busPrice.aaa006)"  placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item  layui-input-block">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formBox">保存</button>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','layer'], function(){
+        let form=layui.form,layer=layui.layer,$=layui.$;
+        form.on('submit(formBox)',function(formData){
+            layer.load(2,{shade:.5});
+        });
+    });
+</script>
+#end
