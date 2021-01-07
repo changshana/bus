@@ -3,12 +3,11 @@ package com.mht.bus;
 import cn.dreampie.ValidateKit;
 import com.jfinal.config.Constant;
 import com.jfinal.kit.Kv;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.mht.bus.service.*;
-import com.mht.bus.util.JsonUtil;
-import com.mht.bus.util.MyTestUtil;
-import com.mht.bus.util.WxResponse;
-import com.mht.bus.util.WxUtil;
+import com.mht.bus.util.*;
+import com.mht.bus.util.wxToken.NewBusStaticUtil;
 import com.mht.bus.util.wxToken.TokenThread;
 import com.mht.common.CommonController;
 import com.mht.common.model.*;
@@ -50,6 +49,7 @@ public class BusWxController extends CommonController {
     public static final BusAa02Service busAa02Service = BusAa02Service.me;
     public static final BusAa04Service busAa04Service = BusAa04Service.me;
     public static final BusImgsService busImgsService = BusImgsService.me;
+    public static final BusCommonService busCommonService=BusCommonService.me;
 
 
     /*登录*/
@@ -131,8 +131,6 @@ public class BusWxController extends CommonController {
 //        UserToken userToken = userTokenService.bind(user);
 //        return RestResponse.ok(userToken.getToken());
     }
-
-
     /*注册*/
     public void register() {
         Map res = new HashMap();
@@ -218,6 +216,118 @@ public class BusWxController extends CommonController {
         renderJson(res);
     }
 
+
+    /**
+     * 关联微信
+     */
+    public void associateWx(){
+        String aca041=getPara("account");//登录账号
+        String js_code=getPara("js_code");//用于获取微信OpenId
+        String aca044=getPara("type");//人员类型
+//        String appid=getPara("appid");
+//        String secret=getPara("secret");
+        String idcard=getPara("idcard","");
+        Map res=new HashMap();
+        try{
+            if(ValidateKit.isNullOrEmpty(aca044)){
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "人员类型不能为空！");
+                renderJson(res);
+                return;
+            }
+            if(ValidateKit.isNullOrEmpty(idcard)){
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "证件号不能为空！");
+                renderJson(res);
+                return;
+            }
+            //判断此账号是否已绑定账号
+            if(ValidateKit.isNullOrEmpty(aca041)){
+                res.put("flag", Boolean.FALSE);
+                res.put("msg", "登录账号不能为空");
+                renderJson(res);
+                return;
+            }
+            if(ValidateKit.isNullOrEmpty(js_code) || ValidateKit.isNullOrEmpty(appid) || ValidateKit.isNullOrEmpty(secret) ){
+                res.put("msg", "获取微信授权信息失败！");
+                res.put("flag", Boolean.FALSE);
+                renderJson(res);
+                return;
+            }else{
+                //查询该人员是否存在
+                Record personInfo=busCommonService.getOriginPersonInfo(aca044,aca041,idcard);
+                if(ValidateKit.isNullOrEmpty(personInfo)){
+                    res.put("msg","未查询到有效的人员信息！");
+                    res.put("flag",Boolean.FALSE);
+                    renderJson(res);
+                    return;
+                }else{
+                    //获取openid
+                    String openid=null;
+                    openid=getOpenId(js_code,appid,secret);
+                    if(ValidateKit.isNullOrEmpty(openid)){
+                        res.put("flag", Boolean.FALSE);
+                        res.put("msg", "获取openid失败！");
+                        renderJson(res);
+                        return;
+                    }else{
+                        List<Record> records= Db.find("select * from bus_ca04 where aca041=? and aca044=? and aca042!=? and aaa996=1",aca041,aca044,openid);
+                        if(!ValidateKit.isNullOrEmpty(records) && records.size()>0){
+                            res.put("flag", Boolean.FALSE);
+                            res.put("msg", "此账号已被其他微信绑定！");
+                            renderJson(res);
+                            return;
+                        }
+                        BusCa04 ca04=busCa04Service.getBusCa04ByAca042(openid);
+                        if(ValidateKit.isNullOrEmpty(ca04)){//新绑定的账号
+                            ca04=new BusCa04();
+                            /*ca04.setAca041(aca041);
+                            ca04.setAca042(openid);
+                            ca04.setAca043(personInfo.getStr("name"));
+                            ca04.setAca044(aca044);
+                            ca04.setAaa996(1);
+                            ca04.setAaa997(personInfo.getStr("name"));
+                            ca04.setAaa998(getNowTimeStamp());
+                            ca04.setAaa999("微信绑定");*/
+                            ca04.setAca044(aca044);
+                            ca04.setAca042(openid);
+                            ca04.setAca049(0);//违约次数为0
+                            ca04=busCommonService.assembleInfo(ca04,personInfo);
+                            busCa04Service.save(ca04);
+                        }else{//以前绑定过的账号
+                            if(aca041.equalsIgnoreCase(ca04.getAca041()) && aca044.equals(ca04.getAca044()+"")) {//是同一个人
+                                ca04.setAca042(openid);
+                                ca04=busCommonService.assembleInfo(ca04,personInfo);
+                                busCa04Service.update(ca04);
+                            }else{
+                                res.put("msg","该微信已绑定其他有效的账号("+ca04.getAca041()+")！");
+                                res.put("flag",Boolean.FALSE);
+                                renderJson(res);
+                                return;
+                            }
+
+                        }
+                        Map data=new HashMap();
+                        data.put("name",ca04.getAca043());
+                        data.put("openid",ca04.getAca042());
+                        data.put("idcard",personInfo.getStr("idCard"));
+                        data.put("type",aca044);
+
+                        res.put("flag", Boolean.TRUE);
+                        res.put("data", data);
+                        res.put("msg", "身份信息验证成功！");
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "哦豁，一不小心就出错了");
+        }
+        renderJson(res);
+    }
+
+
     /*未分页的驾驶员列表  返回给微信端 只返回该时段能用的驾驶员*/
     public void getBusAa02All() {
         try {
@@ -229,6 +339,7 @@ public class BusWxController extends CommonController {
         }
     }
 
+    //计算小车价格
     private static Integer getPrice(Integer sm){
         int m = sm/1000;
         BusPrice busPrice = busPriceService.findFirst();
@@ -292,9 +403,9 @@ public class BusWxController extends CommonController {
             String isSingle = cond.getStr("oneTwoWay");      //单双程  1为单程，2为往返
 
             //个人用车还是公家用车
-            Integer aza219 = Integer.parseInt(cond.getStr("aza219"));
+//            Integer aza219 = Integer.parseInt(cond.getStr("aza219"));
             BusOrder busOrder = new BusOrder();
-            busOrder.setAza219(aza219);  //应取上面的aza219的值 待修改
+//            busOrder.setAza219(aza219);  //应取上面的aza219的值 待修改
             SimpleDateFormat slf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             busOrder.setAba032(slf.parse(dateTime));
             busOrder.setAza207(carTypeId);
@@ -353,6 +464,7 @@ public class BusWxController extends CommonController {
             busOrder.setAza210(0);  //默认驾驶员未确认订单收到（0未收到，1收到）
             busOrder.setAza209(Integer.parseInt(disTime));  //预估时长
             busOrder.setAca050(1);
+            busOrder.setAca035(0);  //订单支付状态  0为未支付，1为已支付
 
             busOrderService.save(busOrder);
 
@@ -373,6 +485,7 @@ public class BusWxController extends CommonController {
         }
         renderJson(res);
     }
+
 
     /*******************************通用订单中心***********************************/
     /*待审核订单*/
@@ -488,8 +601,7 @@ public class BusWxController extends CommonController {
         }
     }
 
-    /*我的收藏*/
-    /*钱包*/
+
     /*个人资料*/
     public void personalData() {
         try {
@@ -531,8 +643,6 @@ public class BusWxController extends CommonController {
         }
         renderJson(res);
     }
-    /*意见反馈*/
-    /*通知信息*/
 
 
     /************************管理员处理订单***********************************/
@@ -551,21 +661,16 @@ public class BusWxController extends CommonController {
         Map res = new HashMap();
         try {
             Kv cond = getCond(getParaMap());
-//        String aca031 = cond.getStr("openid");
             String aza206 = cond.getStr("aza206"); //订单审核状态
             String aca030 = cond.getStr("aca030"); //订单id
-            String aza211 = cond.getStr("aza211"); //操作员id        网页端用这个
             String openid = cond.getStr("openid"); //openid         小程序用这个
+            String price = cond.getStr("price"); //   管理员定价
             Integer operatorId = null;
-            if (aza211 == null) {
-                operatorId = busCa04Service.findByOpenId1(openid).getAca040();
-            } else {
-                operatorId = Integer.parseInt(aza211);
-            }
-//        BusOrder busOrder = busOrderService.findByOpenid(aca031);
+            operatorId = busCa04Service.findByOpenId1(openid).getAca040();
             BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
             busOrder.setAza206(Integer.parseInt(aza206));
             busOrder.setAza211(operatorId);
+            busOrder.setAza217(new BigDecimal(price));
             busOrderService.update(busOrder);
             Integer checkCode = busOrder.getAza206();
             if (checkCode == 1) {
@@ -573,9 +678,8 @@ public class BusWxController extends CommonController {
                 res.put("flag", Boolean.TRUE);
                 //查询管理员电话
 
-                //审核通过后给管理员发短信
-//                NewBusStaticUtil.sendMessage("15181716179","测试");
-
+                //审核通过后给申请人发短信
+                MessageUtil.sendMessage("15181716179","订单审核已通过，请及时支付");
             } else {
                 res.put("msg", "审核未通过");
                 res.put("flag", Boolean.FALSE);
@@ -609,7 +713,7 @@ public class BusWxController extends CommonController {
             busOrder.setAza208(aza208);
             busOrderService.update(busOrder);
             res.put("flag", Boolean.TRUE);
-            res.put("msg", "驾驶员重新分配成功！");
+            res.put("msg", "驾驶员分配成功！");
         } catch (Exception e) {
             e.printStackTrace();
             res.put("flag", Boolean.FALSE);
@@ -629,7 +733,7 @@ public class BusWxController extends CommonController {
             busOrder.setAza201(busId);
             busOrderService.update(busOrder);
             res.put("flag", Boolean.TRUE);
-            res.put("msg", "车辆重新分配成功！");
+            res.put("msg", "车辆分配成功！");
         } catch (Exception e) {
             e.printStackTrace();
             res.put("flag", Boolean.FALSE);
@@ -766,7 +870,7 @@ public class BusWxController extends CommonController {
             busImgs.setAaa003(storePath);
             busImgs.setAaa004("行程开始");
             busImgsService.save(busImgs);
-
+            busOrder.setAca036(1);  //乘坐状态
             busOrder.setAaa996(1);  //发车状态
 //            busOrder.setAza202(new BigDecimal(aza202));
 //            busOrder.setAza203(new BigDecimal(aza203));
@@ -894,6 +998,7 @@ public class BusWxController extends CommonController {
             busImgs.setAaa006("行程结束");
             busImgsService.update(busImgs);
 
+            busOrder.setAca036(2);  //乘坐状态
             busOrder.setAaa996(2);                                              //发车状态
             busOrder.setAza218(new BigDecimal(actualMileage/1000));                  //实际里程
             Integer price = getPrice(actualMileage.intValue());
@@ -1064,7 +1169,119 @@ public class BusWxController extends CommonController {
         renderJson(records);
     }
 
+    //查询未支付但是审核通过的订单
+    public void  nonPayment(){
+        Map res = new HashMap();
+        try {
+            Kv cond = getCond(getParaMap());
+            List<Record> records = busOrderService.records(cond, "bus.getNonPaymentOrder");
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "未付款订单");
+            res.put("data",records);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    //假支付
+    public void  payment(){
+        Map res = new HashMap();
+        try {
+            Kv cond = getCond(getParaMap());
+            String orderId = cond.getStr("orderId");
+            BusOrder byId = busOrderService.findById(Integer.parseInt(orderId));
+            byId.setOutTradeNo("11111111");
+            byId.setAca035(1);
+            busOrderService.update(byId);
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "支付成功！");
+        } catch (Exception e) {
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "支付异常！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    //注册用的 用户角色/人员类型
+    public void  userRole (){
+        List<Record> records = busOrderService.records("bus.getUserRole");
+        renderJson(records);
+    }
+
+    //登录用的 用户角色/人员类型
+    public void  userRoleLogin (){
+        List<Record> records = busOrderService.records("bus.getUserRoleLogin");
+        renderJson(records);
+    }
 
 
+    public static final BusCa08Service busCa08Service= BusCa08Service.me;
+    public void saveBusCa08(){
+        Map res = new HashMap();
+        BusCa08 busCa08=new BusCa08();
+        Kv cond = getCond(getParaMap());
+        busCa08.setAca081(cond.getStr("aca081"));
+        busCa08.setAca082(cond.getStr("aca082"));
+        busCa08.setAca083(cond.getStr("aca083"));
+        busCa08.setAca084(cond.getStr("aca084"));
+        busCa08.setAca044(cond.getStr("aca044"));
+        SysUser user=getUserInfo();
+        if(busCa08.getAca080()==null){
+            if(!ValidateKit.isNullOrEmpty(user)){
+                busCa08.setAaa997(user.getUserName());
+            }
+            busCa08.setAaa996(1);
+            busCa08.setAaa997("小程序注册");
+            busCa08.setAaa998(getNowTimeStamp());
+            busCa08Service.save(busCa08);
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "注册成功！");
+        }else{
+//            busCa08Service.update(busCa08);
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "注册失败！");
+        }
+//        redirect("/bus/busCa08");
+        renderJson(res);
+    }
+
+    //返回车辆提前预约所需时间
+    public void  getAdvanceRes (){
+
+        BusPrice busPrice = BusPrice.dao.findFirst("select * from bus_price");
+        if(busPrice.getAaa007() == null){
+            busPrice.setAaa007(24);
+        }
+        if(busPrice.getAaa008() == null){
+            busPrice.setAaa008(48);
+        }
+        renderJson(busPrice);
+}
+
+
+    public static final BusInvoiceService busInvoiceService= BusInvoiceService.me;
+    //发票记录
+    public void invoice(){
+        Map res = new HashMap();
+        try {
+            Kv cond = getCond(getParaMap());
+            BusInvoice busInvoice = new BusInvoice();
+            busInvoice.setAaa002(Integer.parseInt(cond.getStr("orderId")));   //订单id
+            busInvoice.setAaa003(cond.getStr("aaa003"));    //发票抬头
+            busInvoice.setAaa004(cond.getStr("aaa004"));    //用户邮箱
+            busInvoice.setAaa005(0);
+            busInvoiceService.save(busInvoice);
+            res.put("flag", Boolean.TRUE);
+            res.put("msg", "开票申请已提交！");
+        }
+        catch (Exception e){
+            res.put("flag", Boolean.FALSE);
+            res.put("msg", "提交申请失败，请联系管理员！");
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
 
 }

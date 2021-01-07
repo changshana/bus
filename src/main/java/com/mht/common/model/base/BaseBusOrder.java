@@ -160,7 +160,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*设置支付状态 
+	*设置支付状态 0为未支付，1为已支付 
 	*/
 	public M setAca035(java.lang.Integer aca035) {
 		set("aca035", aca035);
@@ -168,7 +168,7 @@ public abstract class BaseBusOrder<M extends BaseBusOrder<M>> extends Model<M> i
 	}
 
 	/**
-	*获取支付状态 
+	*获取支付状态 0为未支付，1为已支付 
 	*/
 	public java.lang.Integer getAca035() {
 		return getInt("aca035");

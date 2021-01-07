@@ -1299,9 +1299,10 @@ select * from  bus_ca03
 #end
 
 #sql("getBusOrderList")
-select ba02.aaa002 driver,ba1.aaa005 ride,ba2.aaa005 pay,bo.* from  bus_order bo
+select ba02.aaa002 driver,ba1.aaa005 ride,ba2.aaa005 pay,ba3.aaa005 aza206_detail, bo.* from  bus_order bo
 LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca036' and aaa996 = 1) ba1 ON bo.aca036 = ba1.aaa004
 LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aca035' and aaa996 = 1) ba2 ON bo.aca035 = ba2.aaa004
+LEFT JOIN  (SELECT * FROM bus_aa99 WHERE aaa002 = 'aza206' and aaa996 = 1) ba3 ON bo.aza206 = ba3.aaa004
 LEFT JOIN bus_aa02 ba02 ON bo.aza208 = ba02.aaa020
 #if(aca035)
 and bo.aca035=#para(aca035)
@@ -1328,6 +1329,7 @@ and aca031=#para(openid)
 #end
 and aza206 = 0
 and aca050 = 1
+and LENGTH(out_trade_no) = 0
 order by  aba032 desc
 #end
 
@@ -1376,6 +1378,8 @@ and aza208=#para(aza208)
 #end
 and aaa996 = 0
 and aza206 = 1
+-- 支付状态 aca035  已支付1，未支付0
+and aca035 = 1
 ) bo LEFT
 JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
 LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
@@ -1442,6 +1446,7 @@ and aca031=#para(aca031)
 #end
 and aza206 = 1
 and aca050 = 1
+and LENGTH(out_trade_no) > 0
 ) bo
 LEFT JOIN bus_aa01 ba01 on bo.aza201 = ba01.aaa001
 LEFT JOIN bus_aa02 ba02 on bo.aza208 = ba02.aaa020
@@ -1613,9 +1618,20 @@ select * from bus_ca04 where aca044 = "管理员"
 #end
 
 
+#sql("getNonPaymentOrder")
+select * from bus_order where 1=1 and LENGTH(out_trade_no) = 0 and aza206 = 1
+ #if(openid)
+ and aca031 = #para(openid)
+ #end
+#end
 
+#sql("getUserRole")
+SELECT * FROM bus_aa99 WHERE aaa002 = 'aca044' and aaa004 not in (3,4) ORDER BY aaa004
+#end
 
-
+#sql("getUserRoleLogin")
+SELECT * FROM bus_aa99 WHERE aaa002 = 'aca044' ORDER BY aaa004
+#end
 
 
 

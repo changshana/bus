@@ -152,22 +152,38 @@ public class BusCommonService extends CommonService {
         Record record=new Record();
         DbPro shareDb= Db.use("share");
         switch (type){
-            case "1"://本科生
-                record=shareDb.findFirst("select XH as account,XM as name,ZJH as idCard,ZJLXMC,SZBH,SJC from t_zhdhq_share_bks_jbxx where XH=? and ZJH=?",account,identity);
-                break;
-            case "2"://研究生
-                record=shareDb.findFirst("select XH as account,XM as name,ZJH as idCard,ZJLXMC,SZNJ,SJC,SJ from t_zhdhq_share_yjs_jbxx where XH=? and ZJH=?",account,identity);
-                break;
-            case "3"://教职工
-                record=shareDb.findFirst("select GH as account,XM as name,ZJH as idCard,ZJLXMC,SJ,DWMC,CLRQ as SJC from t_zhdhq_share_jzg_jbxx where GH=? and ZJH=?",account,identity);
-                break;
+//            case "1"://本科生
+//                record=shareDb.findFirst("select XH as account,XM as name,ZJH as idCard,ZJLXMC,SZBH,SJC from t_zhdhq_share_bks_jbxx where XH=? and ZJH=?",account,identity);
+//                break;
+//            case "2"://研究生
+//                record=shareDb.findFirst("select XH as account,XM as name,ZJH as idCard,ZJLXMC,SZNJ,SJC,SJ from t_zhdhq_share_yjs_jbxx where XH=? and ZJH=?",account,identity);
+//                break;
+//            case "3"://教职工
+//                record=shareDb.findFirst("select GH as account,XM as name,ZJH as idCard,ZJLXMC,SJ,DWMC,CLRQ as SJC from t_zhdhq_share_jzg_jbxx where GH=? and ZJH=?",account,identity);
+//                break;
             case "4"://驾驶员
                 record=Db.use(DbKit.MAIN_CONFIG_NAME).findFirst("select aaa007 as account,aaa002 as name,aaa004 as idCard,DATE_FORMAT(aaa998,'%Y-%m-%d %H:%i:%s') as aaa998 from bus_aa02 where aaa996=1 and aaa007=? and aaa004=?",account,identity);
                 break;
-            case "5"://调度员
+            case "3"://调度员
                 record=Db.use(DbKit.MAIN_CONFIG_NAME).findFirst("select aaa042 as account,aaa041 as name,aaa043 as idCard,DATE_FORMAT(aaa998,'%Y-%m-%d %H:%i:%s') as aaa998 from bus_aa04 where aaa042=? and aaa043=? and aaa996=1",account,identity);
                 break;
-            case "6"://临时绑定人员
+            case "5"://临时绑定人员
+                /*Kv cond=new Kv();
+                cond.put("aca081",account);
+                cond.put("aca084",identity);
+                cond.put("aaa996",1);
+                record=record(cond,"bus.getBusCa08List");*/
+                record=Db.use(DbKit.MAIN_CONFIG_NAME).findFirst("select a.aca081 as account,a.aca082 as name,a.aca084 as idCard,a.aca083,DATE_FORMAT(a.aaa998,'%Y-%m-%d %H:%i:%s') as aaa998 from bus_ca08 a where a.aca081=? and a.aca084=? and aaa996=1",account,identity);
+                break;
+            case "1"://临时人员中的教职工
+                /*Kv cond=new Kv();
+                cond.put("aca081",account);
+                cond.put("aca084",identity);
+                cond.put("aaa996",1);
+                record=record(cond,"bus.getBusCa08List");*/
+                record=Db.use(DbKit.MAIN_CONFIG_NAME).findFirst("select a.aca081 as account,a.aca082 as name,a.aca084 as idCard,a.aca083,DATE_FORMAT(a.aaa998,'%Y-%m-%d %H:%i:%s') as aaa998 from bus_ca08 a where a.aca081=? and a.aca084=? and aaa996=1",account,identity);
+                break;
+            case "2"://临时人员中的学生
                 /*Kv cond=new Kv();
                 cond.put("aca081",account);
                 cond.put("aca084",identity);

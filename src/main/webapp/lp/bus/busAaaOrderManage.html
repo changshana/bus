@@ -6,9 +6,8 @@
             <div class="layui-btn-container">
                 <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
                 <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
-                <button class="layui-btn" data-type="passAll"><i class="layui-icon layui-icon-release"></i> 审核通过</button>
-                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-close-fill"></i> 审核拒绝</button>
-                <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-close"></i> 取消订单</button>
+                <button class="layui-btn" data-type="pass"><i class="layui-icon layui-icon-close-fill"></i> 拒绝申请</button>
+                <button class="layui-btn" data-type="cancel"><i class="layui-icon layui-icon-close"></i> 取消订单</button>
                 <!--<button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>-->
             </div>
         </div>
@@ -58,7 +57,7 @@
         <tr>
             <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
             <th lay-data="{width:80,toolbar: '#editBar'}">详情</th>
-            <th lay-data="{field:'aba032'}">发车时间</th>
+            <th lay-data="{field:'aba032', sort: true}">发车时间</th>
             <!--<th lay-data="{field:'aaa005'}">评价星级</th>-->
             <!--<th lay-data="{field:'aaa005'}">评价类型</th>-->
             <!--<th lay-data="{field:'aaa005'}">评价备注</th>-->
@@ -71,6 +70,7 @@
             <th lay-data="{field:'aza205'}">终点</th>
             <!--<th lay-data="{field:'aaa005',templet:'#car'}">车辆</th>-->
             <th lay-data="{field:'driver'}">驾驶员</th>
+            <th lay-data="{field:'aza206_detail'}">审核状态</th>
             <th lay-data="{field:'pay'}">支付状态</th>
             <th lay-data="{field:'ride'}">乘坐状态</th>
             <th lay-data="{field:'aaa999'}">备注</th>
@@ -126,12 +126,11 @@
         form.on('select(aza206)', function (obj) {
             reloadData();
         });
-
         function reloadData() {
             table.reload('busOrderList', {
                 where: {
-                    // search_param: $('#search_param').val(),
-                    search_param:'',
+                    search_param: $('#search_param').val(),
+                    // search_param:'',
                     aza206: $("#aza206").val()
                 }
             });
@@ -149,7 +148,7 @@
             add: function () {
                 windowNewLocation("busOrder/addOrder");
             },
-            passAll:function () {
+            pass:function () {
                 var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;
                 if (data.length == 0) {
                     layer.alert('请先选中您要审核的数据行！');
@@ -158,8 +157,8 @@
                     $.each(data, function (i, obj) {
                         ids += obj.aca030 + ',';
                     });
-
-                    layer.confirm("确定要审核通过所选信息？<br/><span style='color: orangered;'>注意：<br/>审核成功将通知相应司机！</span>", function (index) {
+                    console.log(ids)
+                    layer.confirm("确定要拒绝通过所选信息？<br/><span style='color: orangered;'>注意：<br/>拒绝后将通知申请人！</span>", function (index) {
                         $.ajax({
                             type: 'post',
                             url: 'busOrder/checkOrder',

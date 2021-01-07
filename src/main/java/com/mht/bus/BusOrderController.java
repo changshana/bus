@@ -143,7 +143,6 @@ public class BusOrderController extends CommonController {
             e.printStackTrace();
         }
 //        List<BusBa02> list = busAa02Service.findAll();
-
     }
 
     /*车辆信息*/
@@ -395,9 +394,10 @@ public class BusOrderController extends CommonController {
     public void getBusOrderList() {
         try {
             Kv cond = getCond(getParaMap());
-            renderJson(Format.layuiPage(
+            Map<String, Object> map = Format.layuiPage(
                     busOrderService.paginate(getParaToInt("page", 1), getParaToInt("limit", 10), cond)
-            ));
+            );
+            renderJson(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -641,11 +641,12 @@ public class BusOrderController extends CommonController {
             String ids = getPara("ids");
             String[] arr = ids.split(",");
             for (String id : arr) {
+                //判断订单是否
                 BusOrder busOrder = busOrderService.findById(Integer.parseInt(id));
-                busOrder.setAza206(1);
+                busOrder.setAza206(2);
                 busOrderService.update(busOrder);
             }
-            res.put("msg", "审核通过!");
+            res.put("msg", "操作完成!");
             res.put("flag", Boolean.TRUE);
             //查询管理员电话
 //                NewBusStaticUtil.sendMessage("15181716179","测试");
