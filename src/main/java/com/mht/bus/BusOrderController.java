@@ -633,20 +633,54 @@ public class BusOrderController extends CommonController {
         renderJson(res);
     }
 
-    /*****************************管理员审核订单**************************************/
-    /*管理员审核订单 */
-    public void checkOrder() {
+    /*****************************管理员网页端处理订单**************************************/
+    /* 管理员拒绝订单申请 */
+    public void cutOrder() {
         Map res = new HashMap();
         try {
             String ids = getPara("ids");
             String[] arr = ids.split(",");
             for (String id : arr) {
-                //判断订单是否
+                //判断订单是否已处理
                 BusOrder busOrder = busOrderService.findById(Integer.parseInt(id));
+                if(busOrder.getAza206() != 0){
+                    res.put("msg", "订单已审核，请勿重复操作!");
+                    res.put("flag", Boolean.FALSE);
+                    renderJson(res);
+                    return;
+                }
                 busOrder.setAza206(2);
                 busOrderService.update(busOrder);
             }
             res.put("msg", "操作完成!");
+            res.put("flag", Boolean.TRUE);
+            //查询管理员电话
+//                NewBusStaticUtil.sendMessage("15181716179","测试");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        renderJson(res);
+    }
+
+    /* 管理员取消订单申请 */
+    public void cancelOrder() {
+        Map res = new HashMap();
+        try {
+            String ids = getPara("ids");
+            String[] arr = ids.split(",");
+            for (String id : arr) {
+                //判断订单是否已处理
+                BusOrder busOrder = busOrderService.findById(Integer.parseInt(id));
+                if(busOrder.getAaa996() == 1){
+                    res.put("msg", "订单已开始，无法取消!");
+                    res.put("flag", Boolean.FALSE);
+                    renderJson(res);
+                    return;
+                }
+                busOrder.setAca050(0);
+                busOrderService.update(busOrder);
+            }
+            res.put("msg", "取消成功!");
             res.put("flag", Boolean.TRUE);
             //查询管理员电话
 //                NewBusStaticUtil.sendMessage("15181716179","测试");

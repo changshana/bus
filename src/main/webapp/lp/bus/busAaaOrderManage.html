@@ -6,7 +6,7 @@
             <div class="layui-btn-container">
                 <button class="layui-btn" data-type="refresh"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
                 <button class="layui-btn" data-type="add"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
-                <button class="layui-btn" data-type="pass"><i class="layui-icon layui-icon-close-fill"></i> 拒绝申请</button>
+                <button class="layui-btn" data-type="cut"><i class="layui-icon layui-icon-close-fill"></i> 拒绝申请</button>
                 <button class="layui-btn" data-type="cancel"><i class="layui-icon layui-icon-close"></i> 取消订单</button>
                 <!--<button class="layui-btn" data-type="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>-->
             </div>
@@ -31,7 +31,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">审核状态</label>
                         <div class="layui-input-block">
-                            <select id="aza206" lay-filter="aza206">
+                            <select id="aza206" name="aza206" lay-filter="aza206">
                                 <option value="">--请选择--</option>
                             </select>
                         </div>
@@ -96,9 +96,7 @@
 <script type="text/javascript">
     layui.use(['table', 'form'], function () {
         var table = layui.table, form = layui.form, $ = layui.$;
-        $(function () {
-            fnGetCode('bus_aa99', 'aza206', null, null, 'aza206');
-        });
+        fnGetCode('bus_aa99', 'aza206', "请选择", null, 'aza206');
         table.on('tool(busOrderList)', function (obj) {
             var data = obj.data;
             if (obj.event === 'toDetail') {
@@ -126,6 +124,7 @@
         form.on('select(aza206)', function (obj) {
             reloadData();
         });
+
         function reloadData() {
             table.reload('busOrderList', {
                 where: {
@@ -148,7 +147,7 @@
             add: function () {
                 windowNewLocation("busOrder/addOrder");
             },
-            pass:function () {
+            cut:function () {
                 var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;
                 if (data.length == 0) {
                     layer.alert('请先选中您要审核的数据行！');
@@ -158,10 +157,10 @@
                         ids += obj.aca030 + ',';
                     });
                     console.log(ids)
-                    layer.confirm("确定要拒绝通过所选信息？<br/><span style='color: orangered;'>注意：<br/>拒绝后将通知申请人！</span>", function (index) {
+                    layer.confirm("确定要拒绝所选订单？<br/><span style='color: orangered;'>注意：拒绝后将通知申请人！</span>", function (index) {
                         $.ajax({
                             type: 'post',
-                            url: 'busOrder/checkOrder',
+                            url: 'busOrder/cutOrder',
                             data: {"ids": ids},
                             success: function (res) {
                                 layer.alert(res.msg)
@@ -174,6 +173,35 @@
                     });
                 }
             },
+
+            cancel:function () {
+                var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.alert('请先选中您要审核的数据行！');
+                } else {
+                    var ids = "";
+                    $.each(data, function (i, obj) {
+                        ids += obj.aca030 + ',';
+                    });
+                    console.log(ids)
+                    layer.confirm("确定要取消所选订单？<br/><span style='color: orangered;'>注意：取消后将通知申请人！</span>", function (index) {
+                        $.ajax({
+                            type: 'post',
+                            url: 'busOrder/cancelOrder',
+                            data: {"ids": ids},
+                            success: function (res) {
+                                layer.alert(res.msg)
+                                layer.close(index);
+                                reloadData();
+                            }, error: function () {
+                                windowNewLocation('error');
+                            }
+                        });
+                    });
+                }
+            },
+
+
             delete: function () {
                 var checkStatus = table.checkStatus('busOrderList'), data = checkStatus.data;
                 if (data.length == 0) {

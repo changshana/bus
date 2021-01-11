@@ -389,7 +389,7 @@ public class BusWxController extends CommonController {
             Integer carTypeId = Integer.parseInt(cond.getStr("carType"));   //车型id
 //            Integer driverId = Integer.parseInt(cond.getStr("driver"));     //驾驶员id
             String disTime = cond.getStr("disTime");        //预估时长
-            String car = cond.getStr("car");    //车辆id
+//            String car = cond.getStr("car");    //车辆id
             String start = cond.getStr("start");            //出发地点+经纬度
             String end = cond.getStr("end");                //终点+经纬度
             String remarks = cond.getStr("remarks");        //备注
@@ -600,7 +600,6 @@ public class BusWxController extends CommonController {
             e.printStackTrace();
         }
     }
-
 
     /*个人资料*/
     public void personalData() {
@@ -941,28 +940,28 @@ public class BusWxController extends CommonController {
     }
 
     //用户确认行程结束时应看到订单的里程数  并且只有驾驶员点确认结束了用户才能点确认
-    public void orderStateEnd(){
-        Map res = new HashMap();
-        try {
-            Kv cond = getCond(getParaMap());
-            String aca030 = cond.getStr("aca030");  //订单idres.put("flag", Boolean.TRUE);
-            BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
-            Integer aaa996 = busOrder.getAaa996();
-            Integer aca036 = busOrder.getAca036();
-            if(aca036 == 1 && aaa996 != 2){
-                res.put("flag", Boolean.FALSE);
-                res.put("msg", "驾驶员未确认行程结束！");
-            }else {
-                res.put("End", busOrder.getAza213());
-                res.put("msg", "终点驾驶员里程数！");
-            }
-        } catch (Exception e) {
-            res.put("flag", Boolean.FALSE);
-            res.put("msg", "系统错误！");
-            e.printStackTrace();
-        }
-        renderJson(res);
-    }
+//    public void orderStateEnd(){
+//        Map res = new HashMap();
+//        try {
+//            Kv cond = getCond(getParaMap());
+//            String aca030 = cond.getStr("aca030");  //订单idres.put("flag", Boolean.TRUE);
+//            BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
+//            Integer aaa996 = busOrder.getAaa996();
+//            Integer aca036 = busOrder.getAca036();
+//            if(aca036 == 1 && aaa996 != 2){
+//                res.put("flag", Boolean.FALSE);
+//                res.put("msg", "驾驶员未确认行程结束！");
+//            }else {
+//                res.put("End", busOrder.getAza213());
+//                res.put("msg", "终点驾驶员里程数！");
+//            }
+//        } catch (Exception e) {
+//            res.put("flag", Boolean.FALSE);
+//            res.put("msg", "系统错误！");
+//            e.printStackTrace();
+//        }
+//        renderJson(res);
+//    }
 
     /*********************************行程结束******************************************/
 
@@ -1001,8 +1000,8 @@ public class BusWxController extends CommonController {
             busOrder.setAca036(2);  //乘坐状态
             busOrder.setAaa996(2);                                              //发车状态
             busOrder.setAza218(new BigDecimal(actualMileage/1000));                  //实际里程
-            Integer price = getPrice(actualMileage.intValue());
-            busOrder.setAza217(new BigDecimal(price));                          //实际费用
+//            Integer price = getPrice(actualMileage.intValue());
+//            busOrder.setAza217(new BigDecimal(price));                          //实际费用
             busOrder.setAza216(aza209);                                         //实际时长
             busOrder.setAza215(slf.format(dateEnd));                            //实际结束时间
             busOrderService.update(busOrder);
@@ -1016,38 +1015,38 @@ public class BusWxController extends CommonController {
     }
 
     /*用户确认行程结束  乘坐状态aca036*/
-    public void rideEnd() throws ParseException {
-        Map res = new HashMap();
-        try {
-            Kv cond = getCond(getParaMap());
-            String aca030 = cond.getStr("aca030");  //订单id
-            BusOrder order = busOrderService.findById(Integer.parseInt(aca030));
-            //判断用户是否点了开始
-            if(order.getAza214() == null){
-                res.put("flag", Boolean.FALSE);
-                res.put("msg", "用户请先确认行程开始！");
-                renderJson(res);
-                return;
-            }
-            BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
-            Integer aca036 = busOrder.getAca036();
-            Integer aaa996 = busOrder.getAaa996();
-            if(aca036 == 1 && aaa996 != 2){
-                res.put("flag", Boolean.FALSE);
-                res.put("msg", "驾驶员未确认行程结束！");
-                renderJson(res);
-                return;
-            }
-            busOrder.setAca036(2);  //乘坐状态
-            busOrderService.update(busOrder);
-            res.put("flag", Boolean.TRUE);
-            res.put("msg", "用户确认行程结束");
-            res.put("data", busOrder);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        renderJson(res);
-    }
+//    public void rideEnd() throws ParseException {
+//        Map res = new HashMap();
+//        try {
+//            Kv cond = getCond(getParaMap());
+//            String aca030 = cond.getStr("aca030");  //订单id
+//            BusOrder order = busOrderService.findById(Integer.parseInt(aca030));
+//            //判断用户是否点了开始
+//            if(order.getAza214() == null){
+//                res.put("flag", Boolean.FALSE);
+//                res.put("msg", "用户请先确认行程开始！");
+//                renderJson(res);
+//                return;
+//            }
+//            BusOrder busOrder = busOrderService.findById(Integer.parseInt(aca030));
+//            Integer aca036 = busOrder.getAca036();
+//            Integer aaa996 = busOrder.getAaa996();
+//            if(aca036 == 1 && aaa996 != 2){
+//                res.put("flag", Boolean.FALSE);
+//                res.put("msg", "驾驶员未确认行程结束！");
+//                renderJson(res);
+//                return;
+//            }
+//            busOrder.setAca036(2);  //乘坐状态
+//            busOrderService.update(busOrder);
+//            res.put("flag", Boolean.TRUE);
+//            res.put("msg", "用户确认行程结束");
+//            res.put("data", busOrder);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        renderJson(res);
+//    }
 
     /*********************************评价功能******************************************/
     /*用户对驾驶员的评价*/
@@ -1249,7 +1248,6 @@ public class BusWxController extends CommonController {
 
     //返回车辆提前预约所需时间
     public void  getAdvanceRes (){
-
         BusPrice busPrice = BusPrice.dao.findFirst("select * from bus_price");
         if(busPrice.getAaa007() == null){
             busPrice.setAaa007(24);
