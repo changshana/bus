@@ -17,8 +17,8 @@ public class AccessTokenServlet extends HttpServlet {
     public void init() throws ServletException {
         //获取servlet初始参数appid和appsecret（参数在web.xml配置），并赋值给TokenThread对应的静态全局变量。
         //TokenThread.appId和TokenThread.appSecret是静态的
-        TokenThread.appId = "wx9bd39c7ee3f7315c";
-        TokenThread.appSecret = "bdef4a40fca943d9b15e57a3fd4f5cc0";
+        TokenThread.appId = "wx3b93735a3e04b33d";
+        TokenThread.appSecret = "64001f7bd40619e9950ab313e4f9c93e";
         System.out.println("appid:"+TokenThread.appId);
         System.out.println("appSecret:"+TokenThread.appSecret);
         new Thread(new TokenThread()).start(); //启动进程

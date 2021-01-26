@@ -1317,7 +1317,7 @@ ORDER BY bo.aba032 desc
 #end
 
 #sql("getBusBa02All")
-select * from  bus_ba02
+select * from  bus_ba02 where aaa996 = 1
 #end
 
 #sql("getToBeReviewed")

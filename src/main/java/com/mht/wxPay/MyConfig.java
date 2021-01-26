@@ -39,13 +39,13 @@ public class MyConfig extends WXPayConfig {
     }
 
     public String getAppID() {
-        return "wx148d26cb07543413";
+        return "wx3b93735a3e04b33d";
     }
     public String getMchID() {
-        return "1533294791";
+        return "1605702588";
     }
     public String getKey() {
-        return "4c2ec483c22646aa9171ab2f7944d97d";
+        return "d51ab42f0a330a8f084b49f223313b45";
     }
 
     public InputStream getCertStream() {

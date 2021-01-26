@@ -72,7 +72,7 @@ public abstract class BaseBusPayinfo<M extends BaseBusPayinfo<M>> extends Model<
 	/**
 	*设置单价 
 	*/
-	public M setPrice(java.lang.Integer price) {
+	public M setPrice(java.math.BigDecimal price) {
 		set("price", price);
 		return (M)this;
 	}
@@ -80,14 +80,14 @@ public abstract class BaseBusPayinfo<M extends BaseBusPayinfo<M>> extends Model<
 	/**
 	*获取单价 
 	*/
-	public java.lang.Integer getPrice() {
-		return getInt("price");
+	public java.math.BigDecimal getPrice() {
+		return get("price");
 	}
 
 	/**
 	*设置支付金额 
 	*/
-	public M setFee(java.lang.Integer fee) {
+	public M setFee(java.math.BigDecimal fee) {
 		set("fee", fee);
 		return (M)this;
 	}
@@ -95,8 +95,8 @@ public abstract class BaseBusPayinfo<M extends BaseBusPayinfo<M>> extends Model<
 	/**
 	*获取支付金额 
 	*/
-	public java.lang.Integer getFee() {
-		return getInt("fee");
+	public java.math.BigDecimal getFee() {
+		return get("fee");
 	}
 
 	/**
@@ -177,7 +177,7 @@ public abstract class BaseBusPayinfo<M extends BaseBusPayinfo<M>> extends Model<
 	/**
 	*设置退款金额 
 	*/
-	public M setRefundFee(java.lang.Integer refundFee) {
+	public M setRefundFee(java.math.BigDecimal refundFee) {
 		set("refund_fee", refundFee);
 		return (M)this;
 	}
@@ -185,8 +185,8 @@ public abstract class BaseBusPayinfo<M extends BaseBusPayinfo<M>> extends Model<
 	/**
 	*获取退款金额 
 	*/
-	public java.lang.Integer getRefundFee() {
-		return getInt("refund_fee");
+	public java.math.BigDecimal getRefundFee() {
+		return get("refund_fee");
 	}
 
 	/**

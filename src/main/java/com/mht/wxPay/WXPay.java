@@ -103,7 +103,9 @@ public class WXPay {
         else if (SignType.HMACSHA256.equals(this.signType)) {
             reqData.put("sign_type", WXPayConstants.HMACSHA256);
         }
-        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
+        String key = config.getKey();
+//        String key = "d51ab42f0a330a8f084b49f223313b45";  //新的
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, key, this.signType));
         return reqData;
     }
 

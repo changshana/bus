@@ -19,8 +19,8 @@ import org.json.JSONObject;
  */
 public class TokenThread implements Runnable {
 
-    public static String appId = "wx9bd39c7ee3f7315c";
-    public static String appSecret = "bdef4a40fca943d9b15e57a3fd4f5cc0";
+    public static String appId = "wx3b93735a3e04b33d";
+    public static String appSecret = "64001f7bd40619e9950ab313e4f9c93e";
     //注意是静态的，可以全局存储访问
     public static AccessToken accessToken = null;
 
@@ -59,7 +59,7 @@ public class TokenThread implements Runnable {
         //此处获取的access_token和网页授权时获取的access_token的不同
         String jsticket = "";
         String url = "https://api.weixin.qq.com/cgi-bin/token";
-        String param = "grant_type=client_credential&appid=" + "wx9bd39c7ee3f7315c" + "&secret=" + "bdef4a40fca943d9b15e57a3fd4f5cc0";
+        String param = "grant_type=client_credential&appid=" + "wx3b93735a3e04b33d" + "&secret=" + "64001f7bd40619e9950ab313e4f9c93e";
         try {
             jsticket = Httprequests.sendGet(url, param);
 //            jsticket = Http.methodGet("https://api.weixin.qq.com/cgi-bin/token", "grant_type=client_credential&appid=" + this.appId + "&secret=" + this.appSecret + "");

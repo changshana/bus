@@ -396,12 +396,14 @@ public class BusController extends CommonController {
     public void saveBusBa02() {
         BusBa02 busBa02 = getModel(BusBa02.class, "busBa02");
         if (busBa02.getAba020() == null) {
+            //存到busBa02
             busBa02.setAaa996(1);
             busBa02.setAaa997(getUserInfo().getUserName());
             busBa02.setAaa998(getNowTimeStamp());
             busBa02Service.save(busBa02);
         } else {
             busBa02Service.update(busBa02);
+            BusAa99 busAa99 = new BusAa99();
         }
         redirect("/bus/busBa02");
     }

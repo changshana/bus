@@ -14,6 +14,7 @@ import com.mht.wxPay.WXPay;
 import com.mht.wxPay.WXPayConstants;
 import com.mht.wxPay.WXPayUtil;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -221,9 +222,9 @@ public class BusCa03Service extends CommonService {
         try{
             BusPayinfo payinfo=BusPayinfo.dao.findFirst("select * from bus_payinfo where out_trade_no=?",out_trade_no);
             if(!ValidateKit.isNullOrEmpty(payinfo)){
-                int price=payinfo.getPrice();
-                int totalFee=payinfo.getFee();
-                int refund_fee=payinfo.getRefundFee()==null?0:payinfo.getRefundFee();
+                int price=payinfo.getPrice().intValue();
+                int totalFee=payinfo.getFee().intValue();
+                int refund_fee=payinfo.getRefundFee()==null?0:payinfo.getRefundFee().intValue();
                 String feeType=payinfo.getFeeType();
                 MyConfig config=new MyConfig();
                 WXPay wxpay = new WXPay(config);
@@ -250,7 +251,7 @@ public class BusCa03Service extends CommonService {
                             payinfo.setPayState(BusStaticUtil.PAY_STATE_REFUND_PART);//部分退款
                         }
                         payinfo.setOutRefundNo(res.get("out_refund_no"));
-                        payinfo.setRefundFee(refund_fee+price);
+                        payinfo.setRefundFee(new BigDecimal(refund_fee+price));
                         payinfo.setRefundFeeType(feeType);
                         payinfo.setRemark(payinfo.getRemark()+refund_desc+":￥"+price/100.0+"元；<br/>");
                         payinfoService.update(payinfo);

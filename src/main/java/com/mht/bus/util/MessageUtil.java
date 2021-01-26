@@ -1,16 +1,18 @@
 package com.mht.bus.util;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mht.common.model.dto.MessageDto;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -30,9 +32,11 @@ public class MessageUtil {
 
 
     public static void main(String[] args) throws Exception {
-        String message = sendMessage("15181716179", "校车部门测试");
+        String message = sendMessage("15181716179,15181716179", "校车部门测试");
         System.out.println(message);
     }
+
+
 
     /**
      *
@@ -114,9 +118,10 @@ public class MessageUtil {
         Cipher cipher = Cipher.getInstance("AES/CBC/pkcs5padding");//"算法/模式/补码方式"
         IvParameterSpec iv = new IvParameterSpec("hfouH6789087#754".getBytes());//使用CBC模式，需要一个向量iv，可增加加密算法的强度
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-        byte[] encrypted = cipher.doFinal(data.getBytes());
-
-        return new BASE64Encoder().encode(encrypted);//此处使用BASE64做转码功能，同时能起到2次加密的作用。
+        byte[] bytes = data.getBytes("UTF-8");
+        byte[] encrypted = cipher.doFinal(bytes);
+        String encode = new BASE64Encoder().encode(encrypted);
+        return encode;//此处使用BASE64做转码功能，同时能起到2次加密的作用。
     }
 
 }

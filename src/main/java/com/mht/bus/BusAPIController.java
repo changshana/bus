@@ -33,8 +33,8 @@ import java.util.*;
  */
 public class BusAPIController extends CommonController {
 
-    private static final String APPID="wx148d26cb07543413";
-    private static final String SECRET="304a830a5b9584b940f3342f7dfff96d";
+    private static final String APPID="wx3b93735a3e04b33d";
+    private static final String SECRET="64001f7bd40619e9950ab313e4f9c93e";
     public static final BusCa04Service busCa04Service = BusCa04Service.me;
     public static final BusPayinfoService busPayinfoService=BusPayinfoService.me;
     public static final BusCa03Service ca03Service=BusCa03Service.me;
@@ -356,26 +356,27 @@ public class BusAPIController extends CommonController {
         renderJson(res);
     }
 
-
+    public static final BusOrderService busOrderService = BusOrderService.me;
     /**
      * 统一下单
-     * @apiNote 下单之前，已经预锁定座位信息 chooseId
+     * @apiNote
      */
     public void unifiedOrder(){
         Map res=new HashMap();
-        String openid=getPara("openid");
-        int total_fee=getParaToInt("total_fee");
-        String chooseId=getPara("chooseId");
+        String openId=getPara("openid");
+        int orderId=Integer.parseInt(getPara("orderId"));   //订单ID
+        String total_fee = getPara("total_fee");           //费用
+        BigDecimal bigDecimal = new BigDecimal(total_fee);
         try{
             //1.查询下单人员信息
-            BusCa04 ca04=busCa04Service.getBusCa04ByAca042(openid);
-            if(ValidateKit.isNullOrEmpty(openid) || ValidateKit.isNullOrEmpty(ca04)){
+            BusCa04 ca04=busCa04Service.getBusCa04ByAca042(openId);
+            if(ValidateKit.isNullOrEmpty(openId) || ValidateKit.isNullOrEmpty(ca04)){
                 res.put("flag",Boolean.FALSE);
                 res.put("msg","账号绑定失效，请重新绑定！");
-                ca03Service.deleteCa03ByIds(chooseId);
+//                ca03Service.deleteCa03ByIds(chooseId);
             }else if(ValidateKit.isNullOrEmpty(total_fee)){
                 res.put("flag",Boolean.FALSE);
-                ca03Service.deleteCa03ByIds(chooseId);
+//                ca03Service.deleteCa03ByIds(chooseId);
             }else{
                 //生成订单号
                 String out_trade_no= getNo(BusStaticUtil.PAY_TITLE,ca04.getAca040());
@@ -387,48 +388,57 @@ public class BusAPIController extends CommonController {
                 data.put("out_trade_no",out_trade_no);//商户系统内部单号
                 data.put("device_info", "");
                 data.put("fee_type", "CNY");
-                data.put("total_fee", String.valueOf(total_fee));//金额
+                data.put("total_fee", total_fee);//金额
                 data.put("spbill_create_ip", InetAddress.getLocalHost().getHostAddress());//发起请求的Ip
                 data.put("notify_url", PropKit.get("plat_url")+"/busAPI/callBack");//支付回调url
                 data.put("trade_type", "JSAPI");  // 此处指定为微信小程序和公众号
                 data.put("product_id", "1");//1表示车票
-                data.put("openid",openid);
+                data.put("openid",openId);
                 //下单
                 Map<String, String> resp = wxPay.unifiedOrder(data);
                 if(resp!=null && (BusStaticUtil.SUCCESS.equals(resp.get("return_code")))){//检查通信是否成功
                     if(BusStaticUtil.SUCCESS.equals(resp.get("result_code"))){//下单成功
                         BusPayinfo payinfo=new BusPayinfo();
                         payinfo.setOutTradeNo(out_trade_no);
-                        payinfo.setOpenid(openid);
-                        payinfo.setPrice(BusStaticUtil.getPrice(ca04));
-                        payinfo.setFee(total_fee);
+                        payinfo.setOpenid(openId);
+//                        payinfo.setPrice(BusStaticUtil.getPrice(ca04));
+                        payinfo.setPrice(bigDecimal);
+                        payinfo.setFee(bigDecimal);
                         payinfo.setFeeType("CNY");
                         payinfo.setTimeStart(getNowTimeStamp());
                         payinfo.setPayState(0);//表示已下单
-                        payinfo.setRefundFee(0);//退款金额
-                        payinfo.setRemark("订单支付总金额：￥"+(total_fee/100.00)+"元；<br/>");
-                        busPayinfoService.save(payinfo);
+                        payinfo.setRefundFee(new BigDecimal(0));//退款金额
+                        payinfo.setRemark("订单支付总金额：￥"+(total_fee)+"元；<br/>");
+                        busPayinfoService.save(payinfo);            //支付详情
+
+                        //busOrder中存记录
+                        BusOrder busOrder = busOrderService.findById(orderId);
+                        busOrder.setAca035(1);
+                        busOrder.setOutTradeNo(out_trade_no);
+                        busOrder.setAza217(bigDecimal);
+                        busOrderService.update(busOrder);
+
                         //out_trade_no存入选座表
-                        ca03Service.updateOutTradeNo(chooseId,out_trade_no,true);
+//                        ca03Service.updateOutTradeNo(chooseId,out_trade_no,true);
                         Map paySign=getPaySign(resp, MyConfig.getInstance(),out_trade_no);
                         res.put("flag",Boolean.TRUE);
                         res.put("msg","获取成功！");
                         res.put("data",paySign);
                     }else{//下单失败
-                        ca03Service.updateOutTradeNo(chooseId,out_trade_no,false);
+//                        ca03Service.updateOutTradeNo(chooseId,out_trade_no,false);
                         res.put("flag",Boolean.FALSE);
                         res.put("msg",resp.get("err_code")+" ; "+resp.get("err_code_des"));
                     }
                 }else{//通信失败
                     //失败删除选坐信息
-                    ca03Service.updateOutTradeNo(chooseId,out_trade_no,false);
+//                    ca03Service.updateOutTradeNo(chooseId,out_trade_no,false);
                     res.put("flag",Boolean.FALSE);
                     res.put("msg","网络错误，下单失败！");
                 }
             }
         }catch (Exception e){
             //下单异常删除选座信息
-            ca03Service.deleteCa03ByIds(chooseId);
+//            ca03Service.deleteCa03ByIds(chooseId);
             e.printStackTrace();
             res.put("flag",Boolean.FALSE);
             res.put("msg","下单失败！"+e.getMessage());
@@ -539,7 +549,7 @@ public class BusAPIController extends CommonController {
             }else{
                 //失败后删除选座位信息
                 payinfo.delete();
-                Db.update("delete from bus_ca03 where aca035=0 and out_trade_no =?",out_trade_no);
+//                Db.update("delete from bus_ca03 where aca035=0 and out_trade_no =?",out_trade_no);
                 BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
                 out.write(BusStaticUtil.CALLBACK_OK.getBytes());
                 out.flush();
@@ -580,7 +590,7 @@ public class BusAPIController extends CommonController {
             }else{
                 String out_trade_no = data.get("out_trade_no");//out_trade_no
                 //更新选座信息表
-                Db.update("update bus_ca03 set aca035=1 where aca035=0 and out_trade_no=?",out_trade_no);
+//                Db.update("update bus_ca03 set aca035=1 where aca035=0 and out_trade_no=?",out_trade_no);
                 payinfo.setTimeEnd(new SimpleDateFormat("yyyyMMddHHmmss").parse(data.get("time_end")));//支付完成时间
                 payinfo.setTransactionId(data.get("transaction_id"));//微信支付订单号
                 payinfo.setPayState(BusStaticUtil.PAY_STATE_PAID);//支付成功

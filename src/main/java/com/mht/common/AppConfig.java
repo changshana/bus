@@ -149,9 +149,9 @@ public class AppConfig extends JFinalConfig {
     @Override
     public void afterJFinalStart(){
         //启动时添加校车定时任务到校车调度线程池
-        BusStaticUtil.addBusLockedRefreshTask();
+//        BusStaticUtil.addBusLockedRefreshTask();
         //启动时添加未完成的校车任务到校车调度线程池
-        BusStaticUtil.initBusCheck();
+//        BusStaticUtil.initBusCheck();
     }
 
     @Override

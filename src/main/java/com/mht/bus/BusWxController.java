@@ -6,27 +6,20 @@ import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.mht.bus.service.*;
-import com.mht.bus.util.*;
-import com.mht.bus.util.wxToken.NewBusStaticUtil;
+import com.mht.bus.util.MessageUtil;
 import com.mht.bus.util.wxToken.TokenThread;
 import com.mht.common.CommonController;
 import com.mht.common.model.*;
 import com.mht.common.utils.AESUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.mht.bus.BusOrderController.busBa02Service;
 import static com.mht.bus.BusOrderController.busPriceService;
+import static com.mht.bus.util.MessageUtil.sendMessage;
 import static com.mht.system.SystemController.sysUserService;
 
 /**
@@ -339,23 +332,144 @@ public class BusWxController extends CommonController {
         }
     }
 
-    //计算小车价格
-    private static Integer getPrice(Integer sm){
-        int m = sm/1000;
-        BusPrice busPrice = busPriceService.findFirst();
-        Integer aaa002 = busPrice.getAaa002();
-        Integer aaa003 = busPrice.getAaa003();
-        Integer aaa004 = busPrice.getAaa004();
-        Integer aaa005 = busPrice.getAaa005();
-        Integer aaa006 = busPrice.getAaa006();
-        if(m <= aaa002){
-            return aaa003;
+    /**
+     * 计算费用
+     * @param sm        预估里程
+     * @param busType   车辆类型
+     * @param isSingle  单双程
+     * @return
+     */
+    private static Integer getPrice(Integer sm,Integer busType,String isSingle){
+        Integer price = 0;  //最终费用
+        if(Integer.parseInt(isSingle) != 1){
+            sm = sm * 2;
         }
-        else if(m > aaa002 && m <= aaa005){
-            return (m - aaa002) * aaa004 + aaa003;
-        }else {
-            return (aaa005 - aaa002)*aaa004 + aaa003 + (m- aaa005)*aaa006;
+        BusBa02 busBa02 = busBa02Service.findById(busType + "");
+        String aba002 = busBa02.getAba002();
+        //总里程价格表（费用单位：元）：≤50公里   450；51-100公里   900；101-150公里  1200
+        // ；151-200公里  1400；201-300公里  1800；301-400公里  2100；401-500公里  2400。
+        if("考斯特".equals(aba002)){
+            if(sm <= 50 * 1000){
+                price = 450;
+            }else if (sm >50 * 1000 && sm<=100 * 1000){
+                price = 900;
+            }
+            else if (sm >100 * 1000 && sm<=150 * 1000){
+                price = 1200;
+            }
+            else if (sm >150 * 1000 && sm<=200 * 1000){
+                price = 1400;
+            }
+            else if (sm >200 * 1000 && sm<=300 * 1000){
+                price = 1800;
+            }
+            else if (sm >300 * 1000 && sm<=400 * 1000){
+                price = 2100;
+            }
+            else if (sm >400 * 1000 && sm<=500 * 1000){
+                price = 2400;
+            }
+            else {
+                price = 10000;
+            }
         }
+        //总里程价格表（费用单位：元）：≤50公里   700；51-100公里   900；101-150公里  1100
+        // ；151-200公里  1300；201-300公里  1600；301-400公里  1850；401-500公里  2100。
+        if("大巴（37座）".equals(aba002)){
+            if(sm <= 50 * 1000){
+                price = 700;
+            }else if (sm >50 * 1000 && sm<=100 * 1000){
+                price = 900;
+            }
+            else if (sm >100 * 1000 && sm<=150 * 1000){
+                price = 1100;
+            }
+            else if (sm >150 * 1000 && sm<=200 * 1000){
+                price = 1300;
+            }
+            else if (sm >200 * 1000 && sm<=300 * 1000){
+                price = 1600;
+            }
+            else if (sm >300 * 1000 && sm<=400 * 1000){
+                price = 1850;
+            }
+            else if (sm >400 * 1000 && sm<=500 * 1000){
+                price = 2100;
+            }
+            else {
+                price = 10000;
+            }
+        }
+        //总里程价格表（费用单位：元）：≤50公里   900；51-100公里   1200；101-150公里  1300；
+        // 151-200公里  1500；201-300公里  1900；301-400公里  2250；401-500公里  2600。
+        if("大巴（47座）".equals(aba002)){
+            if(sm <= 50 * 1000){
+                price = 900;
+            }else if (sm >50 * 1000 && sm<=100 * 1000){
+                price = 1200;
+            }
+            else if (sm >100 * 1000 && sm<=150 * 1000){
+                price = 1300;
+            }
+            else if (sm >150 * 1000 && sm<=200 * 1000){
+                price = 1500;
+            }
+            else if (sm >200 * 1000 && sm<=300 * 1000){
+                price = 1900;
+            }
+            else if (sm >300 * 1000 && sm<=400 * 1000){
+                price = 2250;
+            }
+            else if (sm >400 * 1000 && sm<=500 * 1000){
+                price = 2600;
+            }
+            else {
+                price = 10000;
+            }
+        }
+        //总里程价格表（费用单位：元）：≤50公里   1100；51-100公里   1300；101-150公里  1500
+        // ；151-200公里  1700；201-300公里  2100；301-400公里  2500；401-500公里  2900。
+        if("大巴（54座）".equals(aba002)){
+            if(sm <= 50){
+                price = 1100;
+            }else if (sm >50 && sm<=100){
+                price = 1300;
+            }
+            else if (sm >100 && sm<=150){
+                price = 1500;
+            }
+            else if (sm >150 && sm<=200){
+                price = 1700;
+            }
+            else if (sm >200 && sm<=300){
+                price = 2100;
+            }
+            else if (sm >300 && sm<=400){
+                price = 2500;
+            }
+            else if (sm >400 && sm<=500){
+                price = 2900;
+            }
+            else {
+                price = 10000;
+            }
+        }
+
+        //BusPrice busPrice = busPriceService.findFirst();
+//        Integer aaa002 = busPrice.getAaa002();
+//        Integer aaa003 = busPrice.getAaa003();
+//        Integer aaa004 = busPrice.getAaa004();
+//        Integer aaa005 = busPrice.getAaa005();
+//        Integer aaa006 = busPrice.getAaa006();
+//        if(m <= aaa002){
+//            return aaa003;
+//        }
+//        else if(m > aaa002 && m <= aaa005){
+//            return (m - aaa002) * aaa004 + aaa003;
+//        }else {
+//            return (aaa005 - aaa002)*aaa004 + aaa003 + (m- aaa005)*aaa006;
+//        }
+        return price;
     }
 
     //预约之前返回预估费用  通过里程计算  这里就是预估费用的计费规则接口
@@ -364,8 +478,10 @@ public class BusWxController extends CommonController {
         try {
             Kv cond = getCond(getParaMap());
             String mileage = cond.getStr("mileage");
+            String carType = cond.getStr("carType");
+            String oneTwoWay = cond.getStr("oneTwoWay");
             int anInt = Integer.parseInt(mileage);
-            Integer price = getPrice(anInt);//预估费用
+            Integer price = getPrice(anInt,Integer.parseInt(carType),oneTwoWay);//预估费用
             res.put("flag", Boolean.TRUE);
             res.put("msg", "预估费用！");
             res.put("cost", price);
@@ -452,10 +568,7 @@ public class BusWxController extends CommonController {
             busOrder.setOutTradeNo("");                 /*商户订单号  这里需要支付后才会有订单号  暂未获取*/
 
             int anInt = Integer.parseInt(mileage);
-            Integer price = getPrice(anInt);/*预估费用  值来自于费用计算规则*/
-            if(Integer.parseInt(isSingle) == 2){    //车辆是需要往返是价格乘以2
-                price = price*2;
-            }
+            Integer price = getPrice(anInt,carTypeId,isSingle);/*预估费用  值来自于费用计算规则*/
             BigDecimal bigDecimal = new BigDecimal(price);
             busOrder.setAza202(bigDecimal);
             busOrder.setAaa996(0);  //开车状态（0为等待发车，1为正在行驶，2为行程结束）
@@ -678,7 +791,7 @@ public class BusWxController extends CommonController {
                 //查询管理员电话
 
                 //审核通过后给申请人发短信
-                MessageUtil.sendMessage("15181716179","订单审核已通过，请及时支付");
+                sendMessage("15181716179","订单审核已通过，请及时支付");
             } else {
                 res.put("msg", "审核未通过");
                 res.put("flag", Boolean.FALSE);
@@ -1282,4 +1395,18 @@ public class BusWxController extends CommonController {
         renderJson(res);
     }
 
+    public void wechatMes(){
+        renderJson("请升级新版微信客户端！！");
+    }
+
+   /* public static void main(String[] args) throws Exception {
+        String message = sendMessage("15181716179,15181716179", "校车部门测试");
+        System.out.println(message);
+    }*/
+
+    public void  test() throws Exception {
+        String message = sendMessage("15181716179,15181716179", "校车部门测试");
+        System.out.println(message);
+        renderJson(message);
+    }
 }

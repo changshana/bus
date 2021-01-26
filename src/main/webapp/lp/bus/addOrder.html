@@ -43,12 +43,13 @@
         </div>
 
         <div class="btn-box">
-            <a class="btn btn-confirm">确定</a>
+            <!--<a class="btn btn-confirm">确定</a>-->
             <!--#if(type!='detail')-->
             <!--<button class="btn btn-back">重置</button>-->
             <!--#end-->
-            <input class="layui-btn" type=”button” name=”Submit” onclick='javascript:history.back(-1);' value='返回'>
-
+            <input class="layui-btn" type="button" name="Submit" onclick='javascript:history.back(-1);' value='返回'>
+            <!--<a class="btn btn-confirm">确定</a>-->
+            <button class="layui-btn btn-confirm" lay-submit lay-filter="formBox">保存</button>
         </div>
     </div>
     <div id="container-none"></div>
